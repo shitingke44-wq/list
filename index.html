@@ -4,10 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
     <title>🗓️ 环球旅行日历 · 可编辑版</title>
-    <!-- Font Awesome 图标库（用于搜索图标） -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ===== 样式 ===== */
+        /* ===== 全局样式 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a1628; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; color: #e5efff; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
@@ -30,10 +29,9 @@
         .search-stats { font-size: 0.85rem; color: #6a8aaa; white-space: nowrap; }
         .search-stats strong { color: #f9d77e; }
 
-        /* ===== 搜索高亮 ===== */
         .highlight { background: #f9d77e30; color: #f9d77e; padding: 0 2px; border-radius: 4px; }
 
-        /* 日历样式（与之前一致） */
+        /* ===== 日历 ===== */
         .calendar-wrapper { margin-bottom: 28px; }
         .month-nav { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 12px 4px; border-bottom: 1px solid #1a3450; margin-bottom: 12px; }
         .month-nav .month-title { font-size: 1.3rem; font-weight: 400; color: #f9d77e; letter-spacing: 2px; }
@@ -73,15 +71,97 @@
         .nav-row .show-all-btn:hover { background: #2a4a6a; }
 
         .day-list { margin-top: 10px; }
-        .country-tip { background: #0d2640; border-left: 5px solid #f9d77e; border-radius: 14px; padding: 14px 20px; margin: 8px 0 16px 0; box-shadow: 0 0 0 1px #1a3a5a; cursor: pointer; transition: all 0.2s; }
-        .country-tip:hover { background: #123050; }
+
+        /* ===== 国家提示卡（含货币换算器） ===== */
+        .country-tip {
+            background: #0d2640;
+            border-left: 5px solid #f9d77e;
+            border-radius: 14px;
+            padding: 14px 20px;
+            margin: 8px 0 16px 0;
+            box-shadow: 0 0 0 1px #1a3a5a;
+            transition: all 0.2s;
+        }
         .country-tip .tip-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
-        .country-tip .tip-header .name { font-weight: 600; font-size: 1.1rem; }
+        .country-tip .tip-header .name { font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .country-tip .tip-header .currency { background: #1a3450; padding: 2px 14px; border-radius: 30px; font-size: 0.8rem; }
         .country-tip .tip-body { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 0.85rem; opacity: 0.85; }
         .country-tip .tip-body .apps span { background: #142b44; padding: 1px 10px; border-radius: 30px; margin-right: 4px; }
         .country-tip .tip-body .note { opacity: 0.7; font-size: 0.82rem; width: 100%; border-top: 1px dashed #1a3a5a; padding-top: 6px; margin-top: 4px; }
 
+        /* ===== 货币换算器（内联在提示卡中） ===== */
+        .currency-converter {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #1a3450;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 14px;
+            font-size: 0.85rem;
+        }
+        .currency-converter .rate-display {
+            color: #f9d77e;
+            font-weight: 500;
+            font-size: 0.9rem;
+            background: #0f1f33;
+            padding: 2px 12px;
+            border-radius: 30px;
+            border: 1px solid #1a3450;
+        }
+        .currency-converter .converter-input {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #0f1f33;
+            padding: 2px 12px 2px 16px;
+            border-radius: 30px;
+            border: 1px solid #1a3450;
+        }
+        .currency-converter .converter-input input {
+            background: transparent;
+            border: none;
+            color: #e5efff;
+            font-size: 0.85rem;
+            width: 80px;
+            padding: 4px 0;
+            font-family: inherit;
+            outline: none;
+        }
+        .currency-converter .converter-input input:focus { border-color: #f9d77e; }
+        .currency-converter .converter-input .currency-label { color: #6a8aaa; font-size: 0.75rem; }
+        .currency-converter .converter-result {
+            color: #8ab4d6;
+            font-size: 0.85rem;
+            min-width: 70px;
+        }
+        .currency-converter .swap-btn {
+            background: transparent;
+            border: 1px solid #1a3450;
+            color: #6a8aaa;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .currency-converter .swap-btn:hover {
+            background: #1a3450;
+            color: #f9d77e;
+            border-color: #f9d77e55;
+        }
+        .currency-converter .loading-rate {
+            color: #6a8aaa;
+            font-size: 0.8rem;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse-text { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
+        /* ===== 每日行程卡片 ===== */
         .day-entry { background: #0f1f33; border: 1px solid #1a3450; border-radius: 14px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
         .day-entry:hover { background: #142b44; border-color: #2a4a6a; }
         .day-entry .day-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 12px; }
@@ -93,7 +173,6 @@
         .day-entry .info-row { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 0.8rem; opacity: 0.75; margin-top: 4px; }
         .day-entry .info-row .label { opacity: 0.5; }
         .day-entry .reminder-box { background: #f9d77e15; border-left: 4px solid #f9d77e; padding: 8px 14px; margin-top: 8px; border-radius: 8px; color: #f9d77e; font-size: 0.9rem; }
-
         .day-entry .editable-fields { margin-top: 10px; border-top: 1px dashed #1a3450; padding-top: 10px; display: none; flex-direction: column; gap: 10px; }
         .day-entry .editable-fields.open { display: flex; }
         .day-entry .editable-fields .field-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
@@ -134,7 +213,8 @@
         .loading-overlay .spinner { width: 48px; height: 48px; border: 4px solid #1a3450; border-top-color: #f9d77e; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-overlay .text { font-size: 1.1rem; opacity: 0.7; }
-        @media (max-width: 700px) { .calendar-grid { gap: 4px; } .day-cell { min-height: 50px; padding: 4px 2px; } .day-cell .city { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.65rem; } .day-entry { padding: 10px 14px; } .header h1 { font-size: 1.4rem; } .month-nav .month-title { font-size: 1.1rem; } .month-nav button { font-size: 0.85rem; padding: 3px 12px; } .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; } .search-section { flex-direction: column; align-items: stretch; } }
+
+        @media (max-width: 700px) { .calendar-grid { gap: 4px; } .day-cell { min-height: 50px; padding: 4px 2px; } .day-cell .city { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.65rem; } .day-entry { padding: 10px 14px; } .header h1 { font-size: 1.4rem; } .month-nav .month-title { font-size: 1.1rem; } .month-nav button { font-size: 0.85rem; padding: 3px 12px; } .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; } .search-section { flex-direction: column; align-items: stretch; } .currency-converter { flex-direction: column; align-items: stretch; } .currency-converter .converter-input { width: 100%; } .currency-converter .converter-input input { width: 100%; } }
         @media (max-width: 480px) { .calendar-grid { gap: 3px; } .day-cell { min-height: 44px; border-radius: 6px; } .day-cell .date { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.55rem; } .day-cell .city { display: none; } .day-cell .flag { display: none; } }
         ::-webkit-scrollbar { width: 6px; background: #0a1628; } ::-webkit-scrollbar-thumb { background: #1a3450; border-radius: 10px; }
     </style>
@@ -208,7 +288,7 @@
     const TOTAL_DAYS = 70;
 
     // ================================================================
-    //  🌍 国家国旗映射（修正版）
+    //  🌍 国家国旗映射
     // ================================================================
     const countryMap = {
         '中国': '🇨🇳',
@@ -228,6 +308,243 @@
         '希腊': '🇬🇷',
         '埃及': '🇪🇬'
     };
+
+    // ================================================================
+    //  💱 货币换算配置
+    // ================================================================
+    const countryCurrencyMap = {
+        '中国': { code: 'CNY', symbol: '¥', name: '人民币' },
+        '哈萨克斯坦': { code: 'KZT', symbol: '₸', name: '坚戈' },
+        '乌兹别克斯坦': { code: 'UZS', symbol: 'soʻm', name: '苏姆' },
+        '阿塞拜疆': { code: 'AZN', symbol: '₼', name: '马纳特' },
+        '格鲁吉亚': { code: 'GEL', symbol: '₾', name: '拉里' },
+        '亚美尼亚': { code: 'AMD', symbol: '֏', name: '德拉姆' },
+        '土耳其': { code: 'TRY', symbol: '₺', name: '里拉' },
+        '波黑': { code: 'BAM', symbol: 'KM', name: '马克' },
+        '黑山': { code: 'EUR', symbol: '€', name: '欧元' },
+        '塞尔维亚': { code: 'RSD', symbol: 'din', name: '第纳尔' },
+        '奥地利': { code: 'EUR', symbol: '€', name: '欧元' },
+        '意大利': { code: 'EUR', symbol: '€', name: '欧元' },
+        '法国': { code: 'EUR', symbol: '€', name: '欧元' },
+        '西班牙': { code: 'EUR', symbol: '€', name: '欧元' },
+        '希腊': { code: 'EUR', symbol: '€', name: '欧元' },
+        '埃及': { code: 'EGP', symbol: '£', name: '埃及镑' }
+    };
+
+    // 获取所有需要查询的货币代码（去重）
+    const allCurrencyCodes = [...new Set(Object.values(countryCurrencyMap).map(c => c.code))];
+    const baseCurrency = 'CNY';
+
+    let exchangeRates = null;
+    let ratesLastUpdated = null;
+    let ratesLoading = false;
+
+    // ================================================================
+    //  💱 获取实时汇率（Frankfurter API，缓存1小时）
+    // ================================================================
+    async function fetchExchangeRates() {
+        // 如果缓存有效（1小时内），直接返回缓存
+        if (exchangeRates && ratesLastUpdated && (Date.now() - ratesLastUpdated < 60 * 60 * 1000)) {
+            return exchangeRates;
+        }
+
+        if (ratesLoading) {
+            // 等待已有请求完成
+            await new Promise(resolve => {
+                const check = () => {
+                    if (!ratesLoading) resolve();
+                    else setTimeout(check, 200);
+                };
+                check();
+            });
+            return exchangeRates;
+        }
+
+        ratesLoading = true;
+        try {
+            const symbols = allCurrencyCodes.filter(c => c !== baseCurrency).join(',');
+            const url = `https://api.frankfurter.app/latest?from=${baseCurrency}&to=${symbols}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            exchangeRates = data.rates;
+            ratesLastUpdated = Date.now();
+            console.log('💱 汇率已更新:', exchangeRates);
+            return exchangeRates;
+        } catch (err) {
+            console.warn('获取实时汇率失败，使用备用汇率', err);
+            // 备用汇率（基于你攻略中的汇率）
+            exchangeRates = {
+                'KZT': 140, 'UZS': 1840, 'AZN': 0.238, 'GEL': 0.385,
+                'AMD': 70, 'TRY': 4.76, 'BAM': 0.263, 'EUR': 0.128,
+                'RSD': 15, 'EGP': 4.5, 'USD': 0.14
+            };
+            ratesLastUpdated = Date.now();
+            return exchangeRates;
+        } finally {
+            ratesLoading = false;
+        }
+    }
+
+    // ================================================================
+    //  💱 汇率换算器组件（HTML生成）
+    // ================================================================
+    function generateCurrencyConverter(countryName) {
+        const currencyInfo = countryCurrencyMap[countryName];
+        if (!currencyInfo || currencyInfo.code === 'CNY') return '';
+        const code = currencyInfo.code;
+        const symbol = currencyInfo.symbol;
+        const name = currencyInfo.name;
+
+        return `
+            <div class="currency-converter" data-country="${countryName}" data-currency="${code}">
+                <span class="rate-display" id="rate_${countryName.replace(/\s/g,'_')}">🔄 加载汇率中...</span>
+                <div class="converter-input">
+                    <input type="number" placeholder="金额" class="conv-input" data-country="${countryName}" id="input_cny_${countryName.replace(/\s/g,'_')}" />
+                    <span class="currency-label">¥</span>
+                </div>
+                <span>≈</span>
+                <div class="converter-input">
+                    <span class="currency-label">${symbol}</span>
+                    <input type="number" placeholder="金额" class="conv-output" data-country="${countryName}" id="output_local_${countryName.replace(/\s/g,'_')}" readonly style="width:80px;background:transparent;border:none;color:#f9d77e;font-weight:500;outline:none;font-family:inherit;" />
+                </div>
+                <button class="swap-btn" onclick="swapConverter('${countryName}')" title="互换方向">⇄</button>
+                <span style="font-size:0.7rem;opacity:0.4;">${name}</span>
+            </div>
+        `;
+    }
+
+    // ================================================================
+    //  💱 汇率换算器交互逻辑
+    // ================================================================
+    let converterDirection = {}; // 记录每个国家的换算方向: 'cny2local' 或 'local2cny'
+
+    function setupConverter(countryName) {
+        const key = countryName.replace(/\s/g, '_');
+        const inputCny = document.getElementById(`input_cny_${key}`);
+        const outputLocal = document.getElementById(`output_local_${key}`);
+        if (!inputCny || !outputLocal) return;
+
+        const currencyInfo = countryCurrencyMap[countryName];
+        if (!currencyInfo) return;
+        const code = currencyInfo.code;
+
+        // 初始化方向
+        if (!converterDirection[countryName]) {
+            converterDirection[countryName] = 'cny2local';
+        }
+
+        // 获取当前汇率
+        const rate = exchangeRates ? exchangeRates[code] : null;
+        if (!rate) return;
+
+        // 更新汇率显示
+        const rateDisplay = document.getElementById(`rate_${key}`);
+        if (rateDisplay) {
+            rateDisplay.textContent = `1 ¥ = ${rate.toFixed(4)} ${code}`;
+        }
+
+        // 输入转换
+        inputCny.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            if (!isNaN(val) && val > 0) {
+                const result = val * rate;
+                outputLocal.value = result.toFixed(2);
+                converterDirection[countryName] = 'cny2local';
+            } else {
+                outputLocal.value = '';
+            }
+        });
+
+        // 输出框点击反向换算（也可以输入）
+        outputLocal.addEventListener('focus', function() {
+            // 如果当前是 CNY→Local 模式，点击时自动切换到 Local→CNY
+            if (converterDirection[countryName] === 'cny2local') {
+                // 清空输入，让用户输入本地货币
+                inputCny.value = '';
+                this.value = '';
+                converterDirection[countryName] = 'local2cny';
+                this.placeholder = '输入金额';
+                inputCny.placeholder = '换算结果';
+                // 交换样式提示
+                this.style.color = '#e5efff';
+                inputCny.style.color = '#f9d77e';
+                inputCny.readOnly = false;
+                this.readOnly = false;
+            }
+        });
+
+        outputLocal.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            if (!isNaN(val) && val > 0 && converterDirection[countryName] === 'local2cny') {
+                const result = val / rate;
+                inputCny.value = result.toFixed(2);
+            } else if (converterDirection[countryName] === 'cny2local') {
+                // 如果用户试图在输出框输入，切换到反向模式
+                const val2 = parseFloat(this.value);
+                if (!isNaN(val2) && val2 > 0) {
+                    converterDirection[countryName] = 'local2cny';
+                    inputCny.value = (val2 / rate).toFixed(2);
+                }
+            }
+        });
+
+        // 输入框点击恢复 CNY→Local 模式
+        inputCny.addEventListener('focus', function() {
+            if (converterDirection[countryName] === 'local2cny') {
+                converterDirection[countryName] = 'cny2local';
+                this.value = '';
+                outputLocal.value = '';
+                this.placeholder = '金额';
+                outputLocal.placeholder = '换算结果';
+                this.style.color = '#e5efff';
+                outputLocal.style.color = '#f9d77e';
+                this.readOnly = false;
+                outputLocal.readOnly = true;
+            }
+        });
+
+        // 设置初始占位
+        inputCny.placeholder = '金额';
+        outputLocal.placeholder = '换算结果';
+        outputLocal.readOnly = true;
+    }
+
+    function swapConverter(countryName) {
+        const key = countryName.replace(/\s/g, '_');
+        const inputCny = document.getElementById(`input_cny_${key}`);
+        const outputLocal = document.getElementById(`output_local_${key}`);
+        if (!inputCny || !outputLocal) return;
+
+        // 切换方向
+        if (converterDirection[countryName] === 'cny2local') {
+            converterDirection[countryName] = 'local2cny';
+            inputCny.value = '';
+            outputLocal.value = '';
+            inputCny.placeholder = '换算结果';
+            outputLocal.placeholder = '输入金额';
+            inputCny.style.color = '#f9d77e';
+            outputLocal.style.color = '#e5efff';
+            inputCny.readOnly = true;
+            outputLocal.readOnly = false;
+            outputLocal.focus();
+        } else {
+            converterDirection[countryName] = 'cny2local';
+            inputCny.value = '';
+            outputLocal.value = '';
+            inputCny.placeholder = '金额';
+            outputLocal.placeholder = '换算结果';
+            inputCny.style.color = '#e5efff';
+            outputLocal.style.color = '#f9d77e';
+            inputCny.readOnly = false;
+            outputLocal.readOnly = true;
+            inputCny.focus();
+        }
+    }
+
+    // 全局暴露函数
+    window.swapConverter = swapConverter;
+    window.setupConverter = setupConverter;
 
     // ================================================================
     //  全局状态
@@ -358,7 +675,7 @@
     }
 
     // ================================================================
-    //  初始化默认数据（如果数据库为空）
+    //  初始化默认数据
     // ================================================================
     async function initDefaultData() {
         if (tripData.length > 0) return;
@@ -485,7 +802,6 @@
                     cityEl.textContent = cityDisplay;
                     cell.appendChild(cityEl);
 
-                    // ===== 使用修正后的 countryMap =====
                     const flagEl = document.createElement('div');
                     flagEl.className = 'flag';
                     flagEl.textContent = countryMap[data.country] || '🌍';
@@ -513,7 +829,7 @@
     }
 
     // ================================================================
-    //  🔍 搜索功能：判断某天是否匹配搜索关键词
+    //  🔍 搜索功能
     // ================================================================
     function isDayMatchingSearch(data, query) {
         if (!query.trim()) return true;
@@ -527,7 +843,6 @@
             data.ticket_price || '',
             data.daily_note || ''
         ];
-        // sights 是 JSON 数组，需要展开
         let sightsArr = [];
         try {
             sightsArr = typeof data.sights === 'string' ? JSON.parse(data.sights) : (data.sights || []);
@@ -538,9 +853,6 @@
         return fields.some(f => f.toLowerCase().includes(q));
     }
 
-    // ================================================================
-    //  高亮文本中的关键词
-    // ================================================================
     function highlightText(text, query) {
         if (!query.trim() || !text) return text;
         const q = query.trim();
@@ -549,7 +861,7 @@
     }
 
     // ================================================================
-    //  渲染：行程列表（带搜索过滤 + 高亮）
+    //  渲染：行程列表
     // ================================================================
     function renderDayList() {
         const container = document.getElementById('dayList');
@@ -558,19 +870,16 @@
         let lastCountry = '';
         let daysToShow = tripData;
 
-        // 🔍 应用搜索过滤
         if (searchQuery.trim()) {
             daysToShow = tripData.filter(d => isDayMatchingSearch(d, searchQuery));
         }
 
-        // 如果选中了某天，只显示那天（搜索优先）
         if (selectedDay !== null && !searchQuery.trim()) {
             daysToShow = tripData.filter(d => d.day === selectedDay);
         }
 
         daysToShow.sort((a, b) => a.day - b.day);
 
-        // 更新搜索统计
         document.getElementById('totalCount').textContent = daysToShow.length;
 
         if (daysToShow.length === 0 && searchQuery.trim()) {
@@ -597,6 +906,7 @@
                             <div class="apps">📱 ${tip.apps}</div>
                             <div class="note">📌 ${tip.note}</div>
                         </div>
+                        ${generateCurrencyConverter(data.country)}
                     `;
                     container.appendChild(tipDiv);
                 }
@@ -625,7 +935,6 @@
                 imageHtml = `<div class="image-gallery">${images.map(url => `<img src="${url}" alt="行程图片" onclick="window.open('${url}','_blank')" />`).join('')}</div>`;
             }
 
-            // 🔍 高亮显示搜索关键词
             const cityDisplay = searchQuery.trim() ? highlightText(data.city || '待定', searchQuery) : (data.city || '待定');
             const countryDisplay = searchQuery.trim() ? highlightText(data.country || '未知', searchQuery) : (data.country || '未知');
             const hotelDisplay = searchQuery.trim() ? highlightText(data.hotel_name || '未填', searchQuery) : (data.hotel_name || '未填');
@@ -706,13 +1015,22 @@
             container.appendChild(hint);
         }
 
-        // 更新提醒计数
         const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
         const reminderItems = tripData.filter(d => {
             const note = d.daily_note || '';
             return reminderKeywords.some(kw => note.includes(kw));
         });
         document.getElementById('reminderCount').textContent = `⏰ ${reminderItems.length} 提醒`;
+
+        // 汇率加载完成后，设置所有换算器
+        if (exchangeRates) {
+            document.querySelectorAll('.currency-converter').forEach(el => {
+                const country = el.dataset.country;
+                if (country) {
+                    setTimeout(() => setupConverter(country), 100);
+                }
+            });
+        }
     }
 
     // ================================================================
@@ -872,7 +1190,6 @@
         if (day > TOTAL_DAYS) day = TOTAL_DAYS;
         selectedDay = day;
         currentDay = day;
-        // 搜索时跳转清空搜索
         if (searchQuery.trim()) {
             searchQuery = '';
             document.getElementById('searchInput').value = '';
@@ -907,6 +1224,8 @@
     // ================================================================
     async function refreshAll() {
         await loadFromSupabase();
+        // 重新获取汇率
+        await fetchExchangeRates();
         buildCalendar();
         renderDayList();
         updateBookSummary();
@@ -915,7 +1234,7 @@
     }
 
     // ================================================================
-    //  提醒汇总（包含预约 + 买票）
+    //  提醒汇总
     // ================================================================
     function updateBookSummary() {
         const container = document.getElementById('bookSummary');
@@ -960,7 +1279,6 @@
             if (val.trim()) {
                 clearBtn.classList.add('visible');
                 searchQuery = val;
-                // 清除选中状态
                 selectedDay = null;
                 buildCalendar();
                 renderDayList();
@@ -1007,15 +1325,25 @@
     //  初始化
     // ================================================================
     async function init() {
+        // 加载行程数据
         await loadFromSupabase();
+
+        // 获取实时汇率
+        await fetchExchangeRates();
+
+        // 设置搜索
         setupSearch();
+
+        // 渲染日历和行程列表
         buildCalendar();
         renderDayList();
         updateBookSummary();
+
         console.log('🗓️ 环球旅行日历已加载 · 共70天');
         console.log('📅 Day1 = 2027-08-04 (周三)');
         console.log('☁️ Cloudinary 预设: kst_upload_2026');
         console.log('🌍 国家国旗映射已修正');
+        console.log('💱 实时汇率已加载 (Frankfurter API)');
     }
 
     init();
