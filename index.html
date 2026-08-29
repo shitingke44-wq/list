@@ -4,17 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
     <title>🗓️ 环球旅行日历 · 可编辑版</title>
+    <!-- Font Awesome 图标库（用于搜索图标） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ===== 样式跟之前完全一样，此处省略重复代码 ===== */
-        /* 你可以直接复制之前版本的完整样式，或者用下面的简化版 */
+        /* ===== 样式 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #0a1628; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; color: #e5efff; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #1e3a5a; padding-bottom: 16px; margin-bottom: 28px; }
+        .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #1e3a5a; padding-bottom: 16px; margin-bottom: 16px; }
         .header h1 { font-weight: 300; font-size: 2rem; letter-spacing: 2px; }
         .header h1 small { font-size: 1rem; opacity: 0.5; font-weight: 300; margin-left: 12px; }
-        .header .stats { display: flex; gap: 16px; font-size: 0.85rem; }
+        .header .stats { display: flex; gap: 16px; font-size: 0.85rem; flex-wrap: wrap; }
         .header .stats span { background: #142b44; padding: 4px 16px; border-radius: 30px; opacity: 0.8; }
+
+        /* ===== 搜索框 ===== */
+        .search-section { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+        .search-box { flex: 1; min-width: 200px; position: relative; display: flex; align-items: center; background: #0f1f33; border: 1px solid #1a3450; border-radius: 40px; padding: 0 16px; transition: all 0.3s; }
+        .search-box:focus-within { border-color: #f9d77e; box-shadow: 0 0 20px #f9d77e15; }
+        .search-box i { color: #5a7a9a; font-size: 16px; margin-right: 10px; }
+        .search-box input { flex: 1; padding: 10px 0; border: none; background: transparent; color: #e5efff; font-size: 0.95rem; font-family: inherit; outline: none; }
+        .search-box input::placeholder { color: #4a6a8a; }
+        .search-box .clear-btn { background: none; border: none; color: #4a6a8a; cursor: pointer; font-size: 18px; padding: 4px 8px; display: none; transition: color 0.2s; }
+        .search-box .clear-btn:hover { color: #f9d77e; }
+        .search-box .clear-btn.visible { display: block; }
+        .search-stats { font-size: 0.85rem; color: #6a8aaa; white-space: nowrap; }
+        .search-stats strong { color: #f9d77e; }
+
+        /* ===== 搜索高亮 ===== */
+        .highlight { background: #f9d77e30; color: #f9d77e; padding: 0 2px; border-radius: 4px; }
+
+        /* 日历样式（与之前一致） */
         .calendar-wrapper { margin-bottom: 28px; }
         .month-nav { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 12px 4px; border-bottom: 1px solid #1a3450; margin-bottom: 12px; }
         .month-nav .month-title { font-size: 1.3rem; font-weight: 400; color: #f9d77e; letter-spacing: 2px; }
@@ -42,6 +61,7 @@
         .day-cell.selected { border-color: #f9d77e; background: #1a2a40; box-shadow: 0 0 20px #f9d77e33; }
         .day-cell.no-data { opacity: 0.3; cursor: default; }
         .day-cell.no-data:hover { transform: none; background: #0f1f33; border-color: #1a3450; }
+
         .nav-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
         .nav-row button { background: #142b44; border: 1px solid #1a3450; color: #e5efff; padding: 6px 18px; border-radius: 40px; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .nav-row button:hover { background: #1a3450; border-color: #f9d77e55; }
@@ -51,6 +71,7 @@
         .nav-row .today-btn:hover { background: #66bb6a; }
         .nav-row .show-all-btn { background: #1a3450; border-color: #f9d77e44; }
         .nav-row .show-all-btn:hover { background: #2a4a6a; }
+
         .day-list { margin-top: 10px; }
         .country-tip { background: #0d2640; border-left: 5px solid #f9d77e; border-radius: 14px; padding: 14px 20px; margin: 8px 0 16px 0; box-shadow: 0 0 0 1px #1a3a5a; cursor: pointer; transition: all 0.2s; }
         .country-tip:hover { background: #123050; }
@@ -60,6 +81,7 @@
         .country-tip .tip-body { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 0.85rem; opacity: 0.85; }
         .country-tip .tip-body .apps span { background: #142b44; padding: 1px 10px; border-radius: 30px; margin-right: 4px; }
         .country-tip .tip-body .note { opacity: 0.7; font-size: 0.82rem; width: 100%; border-top: 1px dashed #1a3a5a; padding-top: 6px; margin-top: 4px; }
+
         .day-entry { background: #0f1f33; border: 1px solid #1a3450; border-radius: 14px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
         .day-entry:hover { background: #142b44; border-color: #2a4a6a; }
         .day-entry .day-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 12px; }
@@ -71,6 +93,7 @@
         .day-entry .info-row { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 0.8rem; opacity: 0.75; margin-top: 4px; }
         .day-entry .info-row .label { opacity: 0.5; }
         .day-entry .reminder-box { background: #f9d77e15; border-left: 4px solid #f9d77e; padding: 8px 14px; margin-top: 8px; border-radius: 8px; color: #f9d77e; font-size: 0.9rem; }
+
         .day-entry .editable-fields { margin-top: 10px; border-top: 1px dashed #1a3450; padding-top: 10px; display: none; flex-direction: column; gap: 10px; }
         .day-entry .editable-fields.open { display: flex; }
         .day-entry .editable-fields .field-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
@@ -97,6 +120,7 @@
         .day-entry.collapsed { opacity: 0.6; padding: 10px 18px; }
         .day-entry.collapsed:hover { opacity: 0.9; }
         .day-entry.collapsed .edit-toggle { display: none; }
+
         .book-summary { background: #0d1f30; border-radius: 14px; padding: 14px 18px; margin-top: 16px; border: 1px solid #1a3450; }
         .book-summary .item { display: flex; align-items: baseline; gap: 8px; font-size: 0.9rem; padding: 4px 0; border-bottom: 1px solid #1a3450; flex-wrap: wrap; cursor: pointer; transition: 0.2s; }
         .book-summary .item:hover { opacity: 0.8; }
@@ -104,12 +128,13 @@
         .book-summary .item .label { color: #f9d77e; font-weight: 500; }
         .book-summary .item .detail { opacity: 0.8; font-size: 0.85rem; }
         .book-summary .item .date-tag { background: #e67e22; color: #fff; font-size: 0.65rem; padding: 1px 10px; border-radius: 30px; font-weight: 600; }
+
         .loading-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,22,40,0.85); display: none; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 20px; }
         .loading-overlay.active { display: flex; }
         .loading-overlay .spinner { width: 48px; height: 48px; border: 4px solid #1a3450; border-top-color: #f9d77e; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-overlay .text { font-size: 1.1rem; opacity: 0.7; }
-        @media (max-width: 700px) { .calendar-grid { gap: 4px; } .day-cell { min-height: 50px; padding: 4px 2px; } .day-cell .city { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.65rem; } .day-entry { padding: 10px 14px; } .header h1 { font-size: 1.4rem; } .month-nav .month-title { font-size: 1.1rem; } .month-nav button { font-size: 0.85rem; padding: 3px 12px; } .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; } }
+        @media (max-width: 700px) { .calendar-grid { gap: 4px; } .day-cell { min-height: 50px; padding: 4px 2px; } .day-cell .city { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.65rem; } .day-entry { padding: 10px 14px; } .header h1 { font-size: 1.4rem; } .month-nav .month-title { font-size: 1.1rem; } .month-nav button { font-size: 0.85rem; padding: 3px 12px; } .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; } .search-section { flex-direction: column; align-items: stretch; } }
         @media (max-width: 480px) { .calendar-grid { gap: 3px; } .day-cell { min-height: 44px; border-radius: 6px; } .day-cell .date { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.55rem; } .day-cell .city { display: none; } .day-cell .flag { display: none; } }
         ::-webkit-scrollbar { width: 6px; background: #0a1628; } ::-webkit-scrollbar-thumb { background: #1a3450; border-radius: 10px; }
     </style>
@@ -130,6 +155,16 @@
             <span id="reminderCount">⏰ 0 提醒</span>
             <span id="syncStatus" style="color:#6fcf97;">✅ 已同步</span>
         </div>
+    </div>
+
+    <!-- ===== 搜索框 ===== -->
+    <div class="search-section">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="🔍 搜索城市、国家、景点、酒店、备注..." />
+            <button class="clear-btn" id="clearSearchBtn"><i class="fas fa-times-circle"></i></button>
+        </div>
+        <div class="search-stats" id="searchStats">共 <strong id="totalCount">70</strong> 天</div>
     </div>
 
     <div class="nav-row">
@@ -173,6 +208,28 @@
     const TOTAL_DAYS = 70;
 
     // ================================================================
+    //  🌍 国家国旗映射（修正版）
+    // ================================================================
+    const countryMap = {
+        '中国': '🇨🇳',
+        '哈萨克斯坦': '🇰🇿',
+        '乌兹别克斯坦': '🇺🇿',
+        '阿塞拜疆': '🇦🇿',
+        '格鲁吉亚': '🇬🇪',
+        '亚美尼亚': '🇦🇲',
+        '土耳其': '🇹🇷',
+        '波黑': '🇧🇦',
+        '黑山': '🇲🇪',
+        '塞尔维亚': '🇷🇸',
+        '奥地利': '🇦🇹',
+        '意大利': '🇮🇹',
+        '法国': '🇫🇷',
+        '西班牙': '🇪🇸',
+        '希腊': '🇬🇷',
+        '埃及': '🇪🇬'
+    };
+
+    // ================================================================
     //  全局状态
     // ================================================================
     let tripData = [];
@@ -180,6 +237,7 @@
     let selectedDay = null;
     let currentMonth = 7;
     let currentYear = 2027;
+    let searchQuery = '';
 
     const startDate = new Date(2027, 7, 4);
 
@@ -427,15 +485,9 @@
                     cityEl.textContent = cityDisplay;
                     cell.appendChild(cityEl);
 
+                    // ===== 使用修正后的 countryMap =====
                     const flagEl = document.createElement('div');
                     flagEl.className = 'flag';
-                    const countryMap = {
-                        '中国': '🇨🇳', '哈萨克斯坦': '🇰🇿', '乌兹别克斯坦': '🇺🇿',
-                        '阿塞拜疆': '🇦🇿', '格鲁吉亚': '🇬🇪', '亚美尼亚': '🇦🇲',
-                        '土耳其': '🇹🇷', '波黑': '🇧🇦', '黑山': '🇲🇪',
-                        '塞尔维亚': '🇷🇸', '奥地利': '🇦🇹', '意大利': '🇮🇹',
-                        '法国': '🇫🇷', '西班牙': '🇪🇸', '希腊': '🇬🇷', '埃及': '🇪🇬'
-                    };
                     flagEl.textContent = countryMap[data.country] || '🌍';
                     cell.appendChild(flagEl);
 
@@ -461,7 +513,43 @@
     }
 
     // ================================================================
-    //  渲染：行程列表
+    //  🔍 搜索功能：判断某天是否匹配搜索关键词
+    // ================================================================
+    function isDayMatchingSearch(data, query) {
+        if (!query.trim()) return true;
+        const q = query.trim().toLowerCase();
+        const fields = [
+            data.city || '',
+            data.country || '',
+            data.hotel_name || '',
+            data.hotel_note || '',
+            data.transport_note || '',
+            data.ticket_price || '',
+            data.daily_note || ''
+        ];
+        // sights 是 JSON 数组，需要展开
+        let sightsArr = [];
+        try {
+            sightsArr = typeof data.sights === 'string' ? JSON.parse(data.sights) : (data.sights || []);
+        } catch(e) { sightsArr = []; }
+        const sightsText = sightsArr.join(' ');
+        fields.push(sightsText);
+
+        return fields.some(f => f.toLowerCase().includes(q));
+    }
+
+    // ================================================================
+    //  高亮文本中的关键词
+    // ================================================================
+    function highlightText(text, query) {
+        if (!query.trim() || !text) return text;
+        const q = query.trim();
+        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    // ================================================================
+    //  渲染：行程列表（带搜索过滤 + 高亮）
     // ================================================================
     function renderDayList() {
         const container = document.getElementById('dayList');
@@ -469,11 +557,30 @@
 
         let lastCountry = '';
         let daysToShow = tripData;
-        if (selectedDay !== null) {
+
+        // 🔍 应用搜索过滤
+        if (searchQuery.trim()) {
+            daysToShow = tripData.filter(d => isDayMatchingSearch(d, searchQuery));
+        }
+
+        // 如果选中了某天，只显示那天（搜索优先）
+        if (selectedDay !== null && !searchQuery.trim()) {
             daysToShow = tripData.filter(d => d.day === selectedDay);
         }
 
         daysToShow.sort((a, b) => a.day - b.day);
+
+        // 更新搜索统计
+        document.getElementById('totalCount').textContent = daysToShow.length;
+
+        if (daysToShow.length === 0 && searchQuery.trim()) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:40px 20px;opacity:0.5;font-size:1.1rem;">
+                    🔍 没有找到与 "<strong style="color:#f9d77e;">${searchQuery.trim()}</strong>" 匹配的行程
+                </div>
+            `;
+            return;
+        }
 
         daysToShow.forEach((data) => {
             if (data.country && data.country !== lastCountry && (selectedDay === null || data.day === selectedDay)) {
@@ -483,7 +590,7 @@
                     tipDiv.className = 'country-tip';
                     tipDiv.innerHTML = `
                         <div class="tip-header">
-                            <span class="name">🇨🇳 ${data.country}</span>
+                            <span class="name">${countryMap[data.country] || '🌍'} ${data.country}</span>
                             <span class="currency">💱 ${tip.currency}</span>
                         </div>
                         <div class="tip-body">
@@ -498,7 +605,7 @@
 
             const entry = document.createElement('div');
             entry.className = 'day-entry';
-            if (selectedDay === null) {
+            if (selectedDay === null && !searchQuery.trim()) {
                 entry.classList.add('collapsed');
             }
             entry.dataset.day = data.day;
@@ -518,22 +625,36 @@
                 imageHtml = `<div class="image-gallery">${images.map(url => `<img src="${url}" alt="行程图片" onclick="window.open('${url}','_blank')" />`).join('')}</div>`;
             }
 
+            // 🔍 高亮显示搜索关键词
+            const cityDisplay = searchQuery.trim() ? highlightText(data.city || '待定', searchQuery) : (data.city || '待定');
+            const countryDisplay = searchQuery.trim() ? highlightText(data.country || '未知', searchQuery) : (data.country || '未知');
+            const hotelDisplay = searchQuery.trim() ? highlightText(data.hotel_name || '未填', searchQuery) : (data.hotel_name || '未填');
+            const transportDisplay = searchQuery.trim() ? highlightText(data.transport_note || '未填', searchQuery) : (data.transport_note || '未填');
+            const ticketDisplay = data.ticket_price ? (searchQuery.trim() ? highlightText(data.ticket_price, searchQuery) : data.ticket_price) : '';
+            const dailyNoteDisplay = data.daily_note ? (searchQuery.trim() ? highlightText(data.daily_note, searchQuery) : data.daily_note) : '';
+            const hotelNoteDisplay = data.hotel_note ? (searchQuery.trim() ? highlightText(data.hotel_note, searchQuery) : data.hotel_note) : '';
+
+            const sightsHtml = sightsArr.map(s => {
+                const display = searchQuery.trim() ? highlightText(s, searchQuery) : s;
+                return `<span>${display}</span>`;
+            }).join('');
+
             entry.innerHTML = `
                 <div class="day-head">
                     <span class="day-label">Day ${data.day}</span>
-                    <span class="city">📍 ${data.city || '待定'}</span>
-                    <span class="country">${data.country || '未知'} · ${data.date || ''}</span>
+                    <span class="city">📍 ${cityDisplay}</span>
+                    <span class="country">${countryDisplay} · ${data.date || ''}</span>
                     <button class="edit-toggle" onclick="toggleEdit(${data.day})">✏️ 编辑</button>
                 </div>
-                <div class="sights">${sightsArr.map(s => `<span>${s}</span>`).join('')}</div>
+                <div class="sights">${sightsHtml}</div>
                 <div class="info-row">
-                    <span><span class="label">🏨</span> ${data.hotel_name || '未填'}</span>
-                    <span><span class="label">🚌</span> ${data.transport_note || '未填'}</span>
-                    ${data.ticket_price ? `<span><span class="label">🎟️</span> ${data.ticket_price}</span>` : ''}
+                    <span><span class="label">🏨</span> ${hotelDisplay}</span>
+                    <span><span class="label">🚌</span> ${transportDisplay}</span>
+                    ${ticketDisplay ? `<span><span class="label">🎟️</span> ${ticketDisplay}</span>` : ''}
                 </div>
                 ${imageHtml}
-                ${data.daily_note ? `<div style="font-size:0.85rem;opacity:0.6;margin-top:4px;border-top:1px solid #1a3450;padding-top:4px;">📝 ${data.daily_note}</div>` : ''}
-                ${data.hotel_note ? `<div style="font-size:0.8rem;opacity:0.5;margin-top:2px;">🏷️ ${data.hotel_note}</div>` : ''}
+                ${dailyNoteDisplay ? `<div style="font-size:0.85rem;opacity:0.6;margin-top:4px;border-top:1px solid #1a3450;padding-top:4px;">📝 ${dailyNoteDisplay}</div>` : ''}
+                ${hotelNoteDisplay ? `<div style="font-size:0.8rem;opacity:0.5;margin-top:2px;">🏷️ ${hotelNoteDisplay}</div>` : ''}
                 <div class="editable-fields" id="editFields_${data.day}">
                     <div class="field-row">
                         <label>🏨 住宿名称</label>
@@ -578,14 +699,14 @@
             container.appendChild(entry);
         });
 
-        if (selectedDay === null && daysToShow.length > 0) {
+        if (selectedDay === null && !searchQuery.trim() && daysToShow.length > 0) {
             const hint = document.createElement('div');
             hint.style.cssText = 'text-align:center;opacity:0.4;font-size:0.85rem;padding:16px 0;border-top:1px solid #1a3450;margin-top:8px;';
             hint.textContent = '💡 点击任意一天可展开查看详情 · 点击「编辑」可修改内容';
             container.appendChild(hint);
         }
 
-        // ===== 更新提醒计数（包含预约 + 买票） =====
+        // 更新提醒计数
         const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
         const reminderItems = tripData.filter(d => {
             const note = d.daily_note || '';
@@ -751,6 +872,12 @@
         if (day > TOTAL_DAYS) day = TOTAL_DAYS;
         selectedDay = day;
         currentDay = day;
+        // 搜索时跳转清空搜索
+        if (searchQuery.trim()) {
+            searchQuery = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.remove('visible');
+        }
         const data = getDayData(day);
         if (data && data.date) {
             const parts = data.date.split('-');
@@ -767,6 +894,9 @@
 
     function showAllDays() {
         selectedDay = null;
+        searchQuery = '';
+        document.getElementById('searchInput').value = '';
+        document.getElementById('clearSearchBtn').classList.remove('visible');
         buildCalendar();
         renderDayList();
         document.getElementById('jumpInput').value = '';
@@ -785,7 +915,7 @@
     }
 
     // ================================================================
-    //  🔥 提醒汇总（包含预约 + 买票 + 预订 + 购票）
+    //  提醒汇总（包含预约 + 买票）
     // ================================================================
     function updateBookSummary() {
         const container = document.getElementById('bookSummary');
@@ -800,7 +930,6 @@
         }
         let html = '<div style="font-weight:500;margin-bottom:8px;color:#f9d77e;">⏰ 预约 & 购票提醒汇总</div>';
         reminders.forEach(d => {
-            // 提取关键词高亮
             let displayText = d.daily_note || '';
             reminderKeywords.forEach(kw => {
                 displayText = displayText.replace(kw, `<strong style="color:#f9d77e;">${kw}</strong>`);
@@ -817,6 +946,45 @@
             `;
         });
         container.innerHTML = html;
+    }
+
+    // ================================================================
+    //  🔍 搜索框事件
+    // ================================================================
+    function setupSearch() {
+        const input = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+
+        input.addEventListener('input', function() {
+            const val = this.value;
+            if (val.trim()) {
+                clearBtn.classList.add('visible');
+                searchQuery = val;
+                // 清除选中状态
+                selectedDay = null;
+                buildCalendar();
+                renderDayList();
+                updateBookSummary();
+            } else {
+                clearBtn.classList.remove('visible');
+                searchQuery = '';
+                selectedDay = null;
+                buildCalendar();
+                renderDayList();
+                updateBookSummary();
+            }
+        });
+
+        clearBtn.addEventListener('click', function() {
+            input.value = '';
+            clearBtn.classList.remove('visible');
+            searchQuery = '';
+            selectedDay = null;
+            buildCalendar();
+            renderDayList();
+            updateBookSummary();
+            input.focus();
+        });
     }
 
     // ================================================================
@@ -840,12 +1008,14 @@
     // ================================================================
     async function init() {
         await loadFromSupabase();
+        setupSearch();
         buildCalendar();
         renderDayList();
         updateBookSummary();
         console.log('🗓️ 环球旅行日历已加载 · 共70天');
         console.log('📅 Day1 = 2027-08-04 (周三)');
         console.log('☁️ Cloudinary 预设: kst_upload_2026');
+        console.log('🌍 国家国旗映射已修正');
     }
 
     init();
