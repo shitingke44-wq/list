@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-    <title>🗓️ 环球旅行日历 · 可编辑版</title>
+    <title>🗓️ 环球旅行日历 · 费用统计版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         /* ===== 全局样式 ===== */
@@ -16,7 +16,6 @@
         .header .stats { display: flex; gap: 16px; font-size: 0.85rem; flex-wrap: wrap; }
         .header .stats span { background: #142b44; padding: 4px 16px; border-radius: 30px; opacity: 0.8; }
 
-        /* ===== 搜索框 ===== */
         .search-section { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
         .search-box { flex: 1; min-width: 200px; position: relative; display: flex; align-items: center; background: #0f1f33; border: 1px solid #1a3450; border-radius: 40px; padding: 0 16px; transition: all 0.3s; }
         .search-box:focus-within { border-color: #f9d77e; box-shadow: 0 0 20px #f9d77e15; }
@@ -31,7 +30,6 @@
 
         .highlight { background: #f9d77e30; color: #f9d77e; padding: 0 2px; border-radius: 4px; }
 
-        /* ===== 日历 ===== */
         .calendar-wrapper { margin-bottom: 28px; }
         .month-nav { display: flex; justify-content: space-between; align-items: center; padding: 8px 4px 12px 4px; border-bottom: 1px solid #1a3450; margin-bottom: 12px; }
         .month-nav .month-title { font-size: 1.3rem; font-weight: 400; color: #f9d77e; letter-spacing: 2px; }
@@ -52,6 +50,7 @@
         .day-cell .reminder-dot { background: #e67e22; opacity: 0.9; animation: pulse 1.5s ease-in-out infinite; }
         .day-cell .today-dot { background: #4caf50; opacity: 1; }
         .day-cell .edit-dot { background: #4a9eff; opacity: 1; }
+        .day-cell .has-cost-dot { background: #6fcf97; opacity: 1; }
         @keyframes pulse { 0% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.4; transform: scale(0.9); } }
         .day-cell.empty { opacity: 0.15; cursor: default; pointer-events: none; }
         .day-cell.empty:hover { transform: none; background: #0f1f33; border-color: #1a3450; }
@@ -72,16 +71,7 @@
 
         .day-list { margin-top: 10px; }
 
-        /* ===== 国家提示卡（含货币换算器） ===== */
-        .country-tip {
-            background: #0d2640;
-            border-left: 5px solid #f9d77e;
-            border-radius: 14px;
-            padding: 14px 20px;
-            margin: 8px 0 16px 0;
-            box-shadow: 0 0 0 1px #1a3a5a;
-            transition: all 0.2s;
-        }
+        .country-tip { background: #0d2640; border-left: 5px solid #f9d77e; border-radius: 14px; padding: 14px 20px; margin: 8px 0 16px 0; box-shadow: 0 0 0 1px #1a3a5a; transition: all 0.2s; }
         .country-tip .tip-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
         .country-tip .tip-header .name { font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         .country-tip .tip-header .currency { background: #1a3450; padding: 2px 14px; border-radius: 30px; font-size: 0.8rem; }
@@ -89,79 +79,15 @@
         .country-tip .tip-body .apps span { background: #142b44; padding: 1px 10px; border-radius: 30px; margin-right: 4px; }
         .country-tip .tip-body .note { opacity: 0.7; font-size: 0.82rem; width: 100%; border-top: 1px dashed #1a3a5a; padding-top: 6px; margin-top: 4px; }
 
-        /* ===== 货币换算器（内联在提示卡中） ===== */
-        .currency-converter {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #1a3450;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px 14px;
-            font-size: 0.85rem;
-        }
-        .currency-converter .rate-display {
-            color: #f9d77e;
-            font-weight: 500;
-            font-size: 0.9rem;
-            background: #0f1f33;
-            padding: 2px 12px;
-            border-radius: 30px;
-            border: 1px solid #1a3450;
-        }
-        .currency-converter .converter-input {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #0f1f33;
-            padding: 2px 12px 2px 16px;
-            border-radius: 30px;
-            border: 1px solid #1a3450;
-        }
-        .currency-converter .converter-input input {
-            background: transparent;
-            border: none;
-            color: #e5efff;
-            font-size: 0.85rem;
-            width: 80px;
-            padding: 4px 0;
-            font-family: inherit;
-            outline: none;
-        }
+        .currency-converter { margin-top: 10px; padding-top: 10px; border-top: 1px solid #1a3450; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 0.85rem; }
+        .currency-converter .rate-display { color: #f9d77e; font-weight: 500; font-size: 0.9rem; background: #0f1f33; padding: 2px 12px; border-radius: 30px; border: 1px solid #1a3450; }
+        .currency-converter .converter-input { display: flex; align-items: center; gap: 6px; background: #0f1f33; padding: 2px 12px 2px 16px; border-radius: 30px; border: 1px solid #1a3450; }
+        .currency-converter .converter-input input { background: transparent; border: none; color: #e5efff; font-size: 0.85rem; width: 80px; padding: 4px 0; font-family: inherit; outline: none; }
         .currency-converter .converter-input input:focus { border-color: #f9d77e; }
         .currency-converter .converter-input .currency-label { color: #6a8aaa; font-size: 0.75rem; }
-        .currency-converter .converter-result {
-            color: #8ab4d6;
-            font-size: 0.85rem;
-            min-width: 70px;
-        }
-        .currency-converter .swap-btn {
-            background: transparent;
-            border: 1px solid #1a3450;
-            color: #6a8aaa;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-        .currency-converter .swap-btn:hover {
-            background: #1a3450;
-            color: #f9d77e;
-            border-color: #f9d77e55;
-        }
-        .currency-converter .loading-rate {
-            color: #6a8aaa;
-            font-size: 0.8rem;
-            animation: pulse-text 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse-text { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        .currency-converter .swap-btn { background: transparent; border: 1px solid #1a3450; color: #6a8aaa; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .currency-converter .swap-btn:hover { background: #1a3450; color: #f9d77e; border-color: #f9d77e55; }
 
-        /* ===== 每日行程卡片 ===== */
         .day-entry { background: #0f1f33; border: 1px solid #1a3450; border-radius: 14px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: all 0.3s; }
         .day-entry:hover { background: #142b44; border-color: #2a4a6a; }
         .day-entry .day-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 12px; }
@@ -173,32 +99,73 @@
         .day-entry .info-row { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 0.8rem; opacity: 0.75; margin-top: 4px; }
         .day-entry .info-row .label { opacity: 0.5; }
         .day-entry .reminder-box { background: #f9d77e15; border-left: 4px solid #f9d77e; padding: 8px 14px; margin-top: 8px; border-radius: 8px; color: #f9d77e; font-size: 0.9rem; }
-        .day-entry .editable-fields { margin-top: 10px; border-top: 1px dashed #1a3450; padding-top: 10px; display: none; flex-direction: column; gap: 10px; }
+
+        .day-entry .editable-fields { margin-top: 10px; border-top: 1px dashed #1a3450; padding-top: 10px; display: none; flex-direction: column; gap: 12px; }
         .day-entry .editable-fields.open { display: flex; }
-        .day-entry .editable-fields .field-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
-        .day-entry .editable-fields .field-row label { font-size: 0.78rem; color: #8ab4d6; min-width: 70px; }
-        .day-entry .editable-fields .field-row input, .day-entry .editable-fields .field-row textarea { background: #0f1f33; border: 1px solid #1a3450; border-radius: 8px; padding: 6px 12px; color: #e5efff; font-size: 0.85rem; flex: 1; min-width: 120px; font-family: inherit; }
-        .day-entry .editable-fields .field-row input:focus, .day-entry .editable-fields .field-row textarea:focus { outline: none; border-color: #f9d77e; }
-        .day-entry .editable-fields .field-row textarea { min-height: 44px; resize: vertical; }
-        .day-entry .editable-fields .field-row .img-upload-btn { background: #1a3450; border: 1px dashed #3a6a8a; border-radius: 30px; padding: 4px 14px; font-size: 0.78rem; color: #8ab4d6; cursor: pointer; transition: 0.2s; }
-        .day-entry .editable-fields .field-row .img-upload-btn:hover { background: #1a4a6a; border-color: #f9d77e55; color: #f9d77e; }
-        .day-entry .editable-fields .field-row .img-upload-btn input { display: none; }
-        .day-entry .editable-fields .field-actions { display: flex; gap: 10px; margin-top: 6px; }
+        .day-entry .editable-fields .field-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; background: #0a1a2a; padding: 8px 12px; border-radius: 10px; border: 1px solid #1a3450; }
+        .day-entry .editable-fields .field-row .field-label { font-size: 0.78rem; color: #8ab4d6; min-width: 44px; font-weight: 500; }
+        .day-entry .editable-fields .field-row .field-text-input { flex: 2; min-width: 120px; background: #0f1f33; border: 1px solid #1a3450; border-radius: 8px; padding: 6px 12px; color: #e5efff; font-size: 0.85rem; font-family: inherit; outline: none; }
+        .day-entry .editable-fields .field-row .field-text-input:focus { border-color: #f9d77e; }
+        .day-entry .editable-fields .field-row .field-number-input { width: 100px; min-width: 80px; background: #0f1f33; border: 1px solid #1a3450; border-radius: 8px; padding: 6px 10px; color: #6fcf97; font-size: 0.85rem; font-family: inherit; text-align: right; outline: none; }
+        .day-entry .editable-fields .field-row .field-number-input:focus { border-color: #f9d77e; }
+        .day-entry .editable-fields .field-row .field-number-input::placeholder { color: #4a6a8a; font-size: 0.75rem; text-align: right; }
+        .day-entry .editable-fields .field-row .currency-symbol { color: #6a8aaa; font-size: 0.75rem; }
+        .day-entry .editable-fields .field-row .field-subtotal { color: #f9d77e; font-size: 0.78rem; font-weight: 500; margin-left: auto; min-width: 60px; text-align: right; }
+
+        .day-entry .editable-fields .field-actions { display: flex; gap: 10px; margin-top: 4px; justify-content: flex-end; }
         .day-entry .editable-fields .field-actions button { padding: 6px 22px; border-radius: 30px; font-size: 0.82rem; font-weight: 500; border: none; cursor: pointer; transition: 0.2s; font-family: inherit; }
         .day-entry .editable-fields .field-actions .save-btn { background: #f9d77e; color: #0a1628; }
         .day-entry .editable-fields .field-actions .save-btn:hover { background: #ffe28a; transform: scale(1.02); }
         .day-entry .editable-fields .field-actions .cancel-btn { background: #1a3450; color: #8ab4d6; }
         .day-entry .editable-fields .field-actions .cancel-btn:hover { background: #2a4a6a; }
+
         .day-entry .edit-toggle { background: transparent; border: none; color: #4a9eff; font-size: 0.85rem; cursor: pointer; padding: 2px 10px; border-radius: 30px; transition: 0.2s; font-family: inherit; }
         .day-entry .edit-toggle:hover { background: #142b44; color: #7ab8ff; }
+
         .day-entry .image-gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
         .day-entry .image-gallery img { max-width: 80px; max-height: 60px; border-radius: 6px; object-fit: cover; border: 1px solid #1a3450; cursor: pointer; transition: 0.2s; }
         .day-entry .image-gallery img:hover { transform: scale(1.05); border-color: #f9d77e55; }
+
         .day-entry.collapsed .sights, .day-entry.collapsed .info-row, .day-entry.collapsed .reminder-box,
         .day-entry.collapsed .editable-fields, .day-entry.collapsed .image-gallery { display: none; }
         .day-entry.collapsed { opacity: 0.6; padding: 10px 18px; }
         .day-entry.collapsed:hover { opacity: 0.9; }
         .day-entry.collapsed .edit-toggle { display: none; }
+
+        .cost-summary-panel {
+            background: #0d1f30;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            border: 2px solid #f9d77e44;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            align-items: center;
+        }
+        .cost-summary-panel .cost-item-summary { display: flex; flex-direction: column; gap: 2px; }
+        .cost-summary-panel .cost-item-summary .label { font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cost-summary-panel .cost-item-summary .value { font-size: 1.1rem; font-weight: 600; color: #f9d77e; }
+        .cost-summary-panel .cost-item-summary .value.green { color: #6fcf97; }
+        .cost-summary-panel .cost-item-summary .value.blue { color: #4a9eff; }
+        .cost-summary-panel .cost-item-summary .value.pink { color: #f9a8d4; }
+        .cost-summary-panel .cost-item-summary .value.orange { color: #f9a86a; }
+        .cost-summary-panel .cost-item-summary .value.purple { color: #b4a8f9; }
+        .cost-summary-panel .cost-item-summary .value.total { color: #fff; font-size: 1.3rem; }
+        .cost-summary-panel .divider { width: 1px; height: 36px; background: #1a3450; }
+        .cost-summary-panel .clear-cost-btn {
+            background: transparent;
+            border: 1px solid #e05a5a44;
+            color: #e05a5a;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            margin-left: auto;
+        }
+        .cost-summary-panel .clear-cost-btn:hover { background: #e05a5a22; border-color: #e05a5a; }
 
         .book-summary { background: #0d1f30; border-radius: 14px; padding: 14px 18px; margin-top: 16px; border: 1px solid #1a3450; }
         .book-summary .item { display: flex; align-items: baseline; gap: 8px; font-size: 0.9rem; padding: 4px 0; border-bottom: 1px solid #1a3450; flex-wrap: wrap; cursor: pointer; transition: 0.2s; }
@@ -214,9 +181,36 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-overlay .text { font-size: 1.1rem; opacity: 0.7; }
 
-        @media (max-width: 700px) { .calendar-grid { gap: 4px; } .day-cell { min-height: 50px; padding: 4px 2px; } .day-cell .city { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.65rem; } .day-entry { padding: 10px 14px; } .header h1 { font-size: 1.4rem; } .month-nav .month-title { font-size: 1.1rem; } .month-nav button { font-size: 0.85rem; padding: 3px 12px; } .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; } .search-section { flex-direction: column; align-items: stretch; } .currency-converter { flex-direction: column; align-items: stretch; } .currency-converter .converter-input { width: 100%; } .currency-converter .converter-input input { width: 100%; } }
-        @media (max-width: 480px) { .calendar-grid { gap: 3px; } .day-cell { min-height: 44px; border-radius: 6px; } .day-cell .date { font-size: 0.55rem; } .day-cell .day-label { font-size: 0.55rem; } .day-cell .city { display: none; } .day-cell .flag { display: none; } }
-        ::-webkit-scrollbar { width: 6px; background: #0a1628; } ::-webkit-scrollbar-thumb { background: #1a3450; border-radius: 10px; }
+        @media (max-width: 700px) {
+            .calendar-grid { gap: 4px; }
+            .day-cell { min-height: 50px; padding: 4px 2px; }
+            .day-cell .city { font-size: 0.55rem; }
+            .day-cell .day-label { font-size: 0.65rem; }
+            .day-entry { padding: 10px 14px; }
+            .header h1 { font-size: 1.4rem; }
+            .month-nav .month-title { font-size: 1.1rem; }
+            .month-nav button { font-size: 0.85rem; padding: 3px 12px; }
+            .day-entry .editable-fields .field-row { flex-direction: column; align-items: stretch; }
+            .day-entry .editable-fields .field-row .field-subtotal { margin-left: 0; text-align: left; }
+            .search-section { flex-direction: column; align-items: stretch; }
+            .currency-converter { flex-direction: column; align-items: stretch; }
+            .currency-converter .converter-input { width: 100%; }
+            .currency-converter .converter-input input { width: 100%; }
+            .cost-summary-panel { flex-direction: column; align-items: stretch; gap: 10px; }
+            .cost-summary-panel .divider { display: none; }
+            .cost-summary-panel .clear-cost-btn { margin-left: 0; }
+            .day-entry .editable-fields .field-row .field-number-input { width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .calendar-grid { gap: 3px; }
+            .day-cell { min-height: 44px; border-radius: 6px; }
+            .day-cell .date { font-size: 0.55rem; }
+            .day-cell .day-label { font-size: 0.55rem; }
+            .day-cell .city { display: none; }
+            .day-cell .flag { display: none; }
+        }
+        ::-webkit-scrollbar { width: 6px; background: #0a1628; }
+        ::-webkit-scrollbar-thumb { background: #1a3450; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -237,7 +231,6 @@
         </div>
     </div>
 
-    <!-- ===== 搜索框 ===== -->
     <div class="search-section">
         <div class="search-box">
             <i class="fas fa-search"></i>
@@ -272,6 +265,40 @@
 
     <div class="day-list" id="dayList"></div>
 
+    <!-- ===== 费用汇总面板 ===== -->
+    <div class="cost-summary-panel" id="costSummaryPanel">
+        <div class="cost-item-summary">
+            <span class="label">🏨 住宿</span>
+            <span class="value green" id="totalHotelCost">¥0</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-item-summary">
+            <span class="label">🚌 交通</span>
+            <span class="value blue" id="totalTransportCost">¥0</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-item-summary">
+            <span class="label">🎟️ 门票</span>
+            <span class="value pink" id="totalTicketCost">¥0</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-item-summary">
+            <span class="label">🍜 吃饭</span>
+            <span class="value orange" id="totalFoodCost">¥0</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-item-summary">
+            <span class="label">📦 其它</span>
+            <span class="value purple" id="totalOtherCost">¥0</span>
+        </div>
+        <div class="divider"></div>
+        <div class="cost-item-summary">
+            <span class="label">💰 总计</span>
+            <span class="value total" id="totalAllCost">¥0</span>
+        </div>
+        <button class="clear-cost-btn" onclick="clearAllCosts()">🗑️ 清空所有费用</button>
+    </div>
+
     <div class="book-summary" id="bookSummary"></div>
 </div>
 
@@ -291,22 +318,11 @@
     //  🌍 国家国旗映射
     // ================================================================
     const countryMap = {
-        '中国': '🇨🇳',
-        '哈萨克斯坦': '🇰🇿',
-        '乌兹别克斯坦': '🇺🇿',
-        '阿塞拜疆': '🇦🇿',
-        '格鲁吉亚': '🇬🇪',
-        '亚美尼亚': '🇦🇲',
-        '土耳其': '🇹🇷',
-        '波黑': '🇧🇦',
-        '黑山': '🇲🇪',
-        '塞尔维亚': '🇷🇸',
-        '奥地利': '🇦🇹',
-        '意大利': '🇮🇹',
-        '法国': '🇫🇷',
-        '西班牙': '🇪🇸',
-        '希腊': '🇬🇷',
-        '埃及': '🇪🇬'
+        '中国': '🇨🇳', '哈萨克斯坦': '🇰🇿', '乌兹别克斯坦': '🇺🇿',
+        '阿塞拜疆': '🇦🇿', '格鲁吉亚': '🇬🇪', '亚美尼亚': '🇦🇲',
+        '土耳其': '🇹🇷', '波黑': '🇧🇦', '黑山': '🇲🇪',
+        '塞尔维亚': '🇷🇸', '奥地利': '🇦🇹', '意大利': '🇮🇹',
+        '法国': '🇫🇷', '西班牙': '🇪🇸', '希腊': '🇬🇷', '埃及': '🇪🇬'
     };
 
     // ================================================================
@@ -331,7 +347,6 @@
         '埃及': { code: 'EGP', symbol: '£', name: '埃及镑' }
     };
 
-    // 获取所有需要查询的货币代码（去重）
     const allCurrencyCodes = [...new Set(Object.values(countryCurrencyMap).map(c => c.code))];
     const baseCurrency = 'CNY';
 
@@ -340,16 +355,13 @@
     let ratesLoading = false;
 
     // ================================================================
-    //  💱 获取实时汇率（Frankfurter API，缓存1小时）
+    //  💱 获取实时汇率
     // ================================================================
     async function fetchExchangeRates() {
-        // 如果缓存有效（1小时内），直接返回缓存
         if (exchangeRates && ratesLastUpdated && (Date.now() - ratesLastUpdated < 60 * 60 * 1000)) {
             return exchangeRates;
         }
-
         if (ratesLoading) {
-            // 等待已有请求完成
             await new Promise(resolve => {
                 const check = () => {
                     if (!ratesLoading) resolve();
@@ -359,7 +371,6 @@
             });
             return exchangeRates;
         }
-
         ratesLoading = true;
         try {
             const symbols = allCurrencyCodes.filter(c => c !== baseCurrency).join(',');
@@ -373,7 +384,6 @@
             return exchangeRates;
         } catch (err) {
             console.warn('获取实时汇率失败，使用备用汇率', err);
-            // 备用汇率（基于你攻略中的汇率）
             exchangeRates = {
                 'KZT': 140, 'UZS': 1840, 'AZN': 0.238, 'GEL': 0.385,
                 'AMD': 70, 'TRY': 4.76, 'BAM': 0.263, 'EUR': 0.128,
@@ -385,166 +395,6 @@
             ratesLoading = false;
         }
     }
-
-    // ================================================================
-    //  💱 汇率换算器组件（HTML生成）
-    // ================================================================
-    function generateCurrencyConverter(countryName) {
-        const currencyInfo = countryCurrencyMap[countryName];
-        if (!currencyInfo || currencyInfo.code === 'CNY') return '';
-        const code = currencyInfo.code;
-        const symbol = currencyInfo.symbol;
-        const name = currencyInfo.name;
-
-        return `
-            <div class="currency-converter" data-country="${countryName}" data-currency="${code}">
-                <span class="rate-display" id="rate_${countryName.replace(/\s/g,'_')}">🔄 加载汇率中...</span>
-                <div class="converter-input">
-                    <input type="number" placeholder="金额" class="conv-input" data-country="${countryName}" id="input_cny_${countryName.replace(/\s/g,'_')}" />
-                    <span class="currency-label">¥</span>
-                </div>
-                <span>≈</span>
-                <div class="converter-input">
-                    <span class="currency-label">${symbol}</span>
-                    <input type="number" placeholder="金额" class="conv-output" data-country="${countryName}" id="output_local_${countryName.replace(/\s/g,'_')}" readonly style="width:80px;background:transparent;border:none;color:#f9d77e;font-weight:500;outline:none;font-family:inherit;" />
-                </div>
-                <button class="swap-btn" onclick="swapConverter('${countryName}')" title="互换方向">⇄</button>
-                <span style="font-size:0.7rem;opacity:0.4;">${name}</span>
-            </div>
-        `;
-    }
-
-    // ================================================================
-    //  💱 汇率换算器交互逻辑
-    // ================================================================
-    let converterDirection = {}; // 记录每个国家的换算方向: 'cny2local' 或 'local2cny'
-
-    function setupConverter(countryName) {
-        const key = countryName.replace(/\s/g, '_');
-        const inputCny = document.getElementById(`input_cny_${key}`);
-        const outputLocal = document.getElementById(`output_local_${key}`);
-        if (!inputCny || !outputLocal) return;
-
-        const currencyInfo = countryCurrencyMap[countryName];
-        if (!currencyInfo) return;
-        const code = currencyInfo.code;
-
-        // 初始化方向
-        if (!converterDirection[countryName]) {
-            converterDirection[countryName] = 'cny2local';
-        }
-
-        // 获取当前汇率
-        const rate = exchangeRates ? exchangeRates[code] : null;
-        if (!rate) return;
-
-        // 更新汇率显示
-        const rateDisplay = document.getElementById(`rate_${key}`);
-        if (rateDisplay) {
-            rateDisplay.textContent = `1 ¥ = ${rate.toFixed(4)} ${code}`;
-        }
-
-        // 输入转换
-        inputCny.addEventListener('input', function() {
-            const val = parseFloat(this.value);
-            if (!isNaN(val) && val > 0) {
-                const result = val * rate;
-                outputLocal.value = result.toFixed(2);
-                converterDirection[countryName] = 'cny2local';
-            } else {
-                outputLocal.value = '';
-            }
-        });
-
-        // 输出框点击反向换算（也可以输入）
-        outputLocal.addEventListener('focus', function() {
-            // 如果当前是 CNY→Local 模式，点击时自动切换到 Local→CNY
-            if (converterDirection[countryName] === 'cny2local') {
-                // 清空输入，让用户输入本地货币
-                inputCny.value = '';
-                this.value = '';
-                converterDirection[countryName] = 'local2cny';
-                this.placeholder = '输入金额';
-                inputCny.placeholder = '换算结果';
-                // 交换样式提示
-                this.style.color = '#e5efff';
-                inputCny.style.color = '#f9d77e';
-                inputCny.readOnly = false;
-                this.readOnly = false;
-            }
-        });
-
-        outputLocal.addEventListener('input', function() {
-            const val = parseFloat(this.value);
-            if (!isNaN(val) && val > 0 && converterDirection[countryName] === 'local2cny') {
-                const result = val / rate;
-                inputCny.value = result.toFixed(2);
-            } else if (converterDirection[countryName] === 'cny2local') {
-                // 如果用户试图在输出框输入，切换到反向模式
-                const val2 = parseFloat(this.value);
-                if (!isNaN(val2) && val2 > 0) {
-                    converterDirection[countryName] = 'local2cny';
-                    inputCny.value = (val2 / rate).toFixed(2);
-                }
-            }
-        });
-
-        // 输入框点击恢复 CNY→Local 模式
-        inputCny.addEventListener('focus', function() {
-            if (converterDirection[countryName] === 'local2cny') {
-                converterDirection[countryName] = 'cny2local';
-                this.value = '';
-                outputLocal.value = '';
-                this.placeholder = '金额';
-                outputLocal.placeholder = '换算结果';
-                this.style.color = '#e5efff';
-                outputLocal.style.color = '#f9d77e';
-                this.readOnly = false;
-                outputLocal.readOnly = true;
-            }
-        });
-
-        // 设置初始占位
-        inputCny.placeholder = '金额';
-        outputLocal.placeholder = '换算结果';
-        outputLocal.readOnly = true;
-    }
-
-    function swapConverter(countryName) {
-        const key = countryName.replace(/\s/g, '_');
-        const inputCny = document.getElementById(`input_cny_${key}`);
-        const outputLocal = document.getElementById(`output_local_${key}`);
-        if (!inputCny || !outputLocal) return;
-
-        // 切换方向
-        if (converterDirection[countryName] === 'cny2local') {
-            converterDirection[countryName] = 'local2cny';
-            inputCny.value = '';
-            outputLocal.value = '';
-            inputCny.placeholder = '换算结果';
-            outputLocal.placeholder = '输入金额';
-            inputCny.style.color = '#f9d77e';
-            outputLocal.style.color = '#e5efff';
-            inputCny.readOnly = true;
-            outputLocal.readOnly = false;
-            outputLocal.focus();
-        } else {
-            converterDirection[countryName] = 'cny2local';
-            inputCny.value = '';
-            outputLocal.value = '';
-            inputCny.placeholder = '金额';
-            outputLocal.placeholder = '换算结果';
-            inputCny.style.color = '#e5efff';
-            outputLocal.style.color = '#f9d77e';
-            inputCny.readOnly = false;
-            outputLocal.readOnly = true;
-            inputCny.focus();
-        }
-    }
-
-    // 全局暴露函数
-    window.swapConverter = swapConverter;
-    window.setupConverter = setupConverter;
 
     // ================================================================
     //  全局状态
@@ -713,7 +563,14 @@
                 daily_note: '',
                 ticket_price: '',
                 transport_note: '',
-                image_urls: JSON.stringify([])
+                image_urls: JSON.stringify([]),
+                hotel_price: 0,
+                transport_price: 0,
+                ticket_price_num: 0,
+                food_price: 0,
+                food_note: '',
+                other_price: 0,
+                other_note: ''
             });
         }
         return data;
@@ -740,6 +597,222 @@
         '希腊': { currency: '欧元', apps: 'Ferryhopper · FREENOW', note: '雅典卫城建议提前1天线上购票；双岛游船票约90欧。' },
         '埃及': { currency: '埃及镑 · 1元≈4.5', apps: 'Uber · Google Maps', note: '开罗→锡瓦→亚历山大→卢克索→赫尔格达→沙姆→开罗；金字塔门票约100元。' }
     };
+
+    // ================================================================
+    //  🔍 搜索功能
+    // ================================================================
+    function isDayMatchingSearch(data, query) {
+        if (!query.trim()) return true;
+        const q = query.trim().toLowerCase();
+        const fields = [
+            data.city || '',
+            data.country || '',
+            data.hotel_name || '',
+            data.hotel_note || '',
+            data.transport_note || '',
+            data.ticket_price || '',
+            data.daily_note || '',
+            data.food_note || '',
+            data.other_note || ''
+        ];
+        let sightsArr = [];
+        try {
+            sightsArr = typeof data.sights === 'string' ? JSON.parse(data.sights) : (data.sights || []);
+        } catch(e) { sightsArr = []; }
+        const sightsText = sightsArr.join(' ');
+        fields.push(sightsText);
+        return fields.some(f => f.toLowerCase().includes(q));
+    }
+
+    function highlightText(text, query) {
+        if (!query.trim() || !text) return text;
+        const q = query.trim();
+        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    // ================================================================
+    //  💰 费用统计功能
+    // ================================================================
+    function getCosts() {
+        let hotelTotal = 0, transportTotal = 0, ticketTotal = 0, foodTotal = 0, otherTotal = 0;
+        tripData.forEach(d => {
+            hotelTotal += parseFloat(d.hotel_price) || 0;
+            transportTotal += parseFloat(d.transport_price) || 0;
+            ticketTotal += parseFloat(d.ticket_price_num) || 0;
+            foodTotal += parseFloat(d.food_price) || 0;
+            otherTotal += parseFloat(d.other_price) || 0;
+        });
+        return { hotelTotal, transportTotal, ticketTotal, foodTotal, otherTotal, allTotal: hotelTotal + transportTotal + ticketTotal + foodTotal + otherTotal };
+    }
+
+    function updateCostSummary() {
+        const costs = getCosts();
+        document.getElementById('totalHotelCost').textContent = `¥${costs.hotelTotal.toFixed(0)}`;
+        document.getElementById('totalTransportCost').textContent = `¥${costs.transportTotal.toFixed(0)}`;
+        document.getElementById('totalTicketCost').textContent = `¥${costs.ticketTotal.toFixed(0)}`;
+        document.getElementById('totalFoodCost').textContent = `¥${costs.foodTotal.toFixed(0)}`;
+        document.getElementById('totalOtherCost').textContent = `¥${costs.otherTotal.toFixed(0)}`;
+        document.getElementById('totalAllCost').textContent = `¥${costs.allTotal.toFixed(0)}`;
+    }
+
+    async function clearAllCosts() {
+        if (!confirm('确定要清空所有费用数据吗？此操作不可撤销！')) return;
+        for (const d of tripData) {
+            await saveToSupabase(d.day, 'hotel_price', 0);
+            await saveToSupabase(d.day, 'transport_price', 0);
+            await saveToSupabase(d.day, 'ticket_price_num', 0);
+            await saveToSupabase(d.day, 'food_price', 0);
+            await saveToSupabase(d.day, 'other_price', 0);
+        }
+        await loadFromSupabase();
+        renderDayList();
+        updateCostSummary();
+    }
+
+    // ================================================================
+    //  生成货币换算器
+    // ================================================================
+    function generateCurrencyConverter(countryName) {
+        const currencyInfo = countryCurrencyMap[countryName];
+        if (!currencyInfo || currencyInfo.code === 'CNY') return '';
+        const code = currencyInfo.code;
+        const symbol = currencyInfo.symbol;
+        const name = currencyInfo.name;
+
+        return `
+            <div class="currency-converter" data-country="${countryName}" data-currency="${code}">
+                <span class="rate-display" id="rate_${countryName.replace(/\s/g,'_')}">🔄 加载汇率中...</span>
+                <div class="converter-input">
+                    <input type="number" placeholder="金额" class="conv-input" data-country="${countryName}" id="input_cny_${countryName.replace(/\s/g,'_')}" />
+                    <span class="currency-label">¥</span>
+                </div>
+                <span>≈</span>
+                <div class="converter-input">
+                    <span class="currency-label">${symbol}</span>
+                    <input type="number" placeholder="金额" class="conv-output" data-country="${countryName}" id="output_local_${countryName.replace(/\s/g,'_')}" readonly style="width:80px;background:transparent;border:none;color:#f9d77e;font-weight:500;outline:none;font-family:inherit;" />
+                </div>
+                <button class="swap-btn" onclick="swapConverter('${countryName}')" title="互换方向">⇄</button>
+                <span style="font-size:0.7rem;opacity:0.4;">${name}</span>
+            </div>
+        `;
+    }
+
+    let converterDirection = {};
+
+    function setupConverter(countryName) {
+        const key = countryName.replace(/\s/g, '_');
+        const inputCny = document.getElementById(`input_cny_${key}`);
+        const outputLocal = document.getElementById(`output_local_${key}`);
+        if (!inputCny || !outputLocal) return;
+
+        const currencyInfo = countryCurrencyMap[countryName];
+        if (!currencyInfo) return;
+        const code = currencyInfo.code;
+
+        if (!converterDirection[countryName]) {
+            converterDirection[countryName] = 'cny2local';
+        }
+
+        const rate = exchangeRates ? exchangeRates[code] : null;
+        if (!rate) return;
+
+        const rateDisplay = document.getElementById(`rate_${key}`);
+        if (rateDisplay) {
+            rateDisplay.textContent = `1 ¥ = ${rate.toFixed(4)} ${code}`;
+        }
+
+        inputCny.oninput = function() {
+            const val = parseFloat(this.value);
+            if (!isNaN(val) && val > 0) {
+                const result = val * rate;
+                outputLocal.value = result.toFixed(2);
+                converterDirection[countryName] = 'cny2local';
+            } else {
+                outputLocal.value = '';
+            }
+        };
+
+        outputLocal.onfocus = function() {
+            if (converterDirection[countryName] === 'cny2local') {
+                inputCny.value = '';
+                this.value = '';
+                converterDirection[countryName] = 'local2cny';
+                this.placeholder = '输入金额';
+                inputCny.placeholder = '换算结果';
+                this.style.color = '#e5efff';
+                inputCny.style.color = '#f9d77e';
+                inputCny.readOnly = false;
+                this.readOnly = false;
+            }
+        };
+
+        outputLocal.oninput = function() {
+            const val = parseFloat(this.value);
+            if (!isNaN(val) && val > 0 && converterDirection[countryName] === 'local2cny') {
+                const result = val / rate;
+                inputCny.value = result.toFixed(2);
+            } else if (converterDirection[countryName] === 'cny2local') {
+                const val2 = parseFloat(this.value);
+                if (!isNaN(val2) && val2 > 0) {
+                    converterDirection[countryName] = 'local2cny';
+                    inputCny.value = (val2 / rate).toFixed(2);
+                }
+            }
+        };
+
+        inputCny.onfocus = function() {
+            if (converterDirection[countryName] === 'local2cny') {
+                converterDirection[countryName] = 'cny2local';
+                this.value = '';
+                outputLocal.value = '';
+                this.placeholder = '金额';
+                outputLocal.placeholder = '换算结果';
+                this.style.color = '#e5efff';
+                outputLocal.style.color = '#f9d77e';
+                this.readOnly = false;
+                outputLocal.readOnly = true;
+            }
+        };
+
+        inputCny.placeholder = '金额';
+        outputLocal.placeholder = '换算结果';
+        outputLocal.readOnly = true;
+    }
+
+    function swapConverter(countryName) {
+        const key = countryName.replace(/\s/g, '_');
+        const inputCny = document.getElementById(`input_cny_${key}`);
+        const outputLocal = document.getElementById(`output_local_${key}`);
+        if (!inputCny || !outputLocal) return;
+
+        if (converterDirection[countryName] === 'cny2local') {
+            converterDirection[countryName] = 'local2cny';
+            inputCny.value = '';
+            outputLocal.value = '';
+            inputCny.placeholder = '换算结果';
+            outputLocal.placeholder = '输入金额';
+            inputCny.style.color = '#f9d77e';
+            outputLocal.style.color = '#e5efff';
+            inputCny.readOnly = true;
+            outputLocal.readOnly = false;
+            outputLocal.focus();
+        } else {
+            converterDirection[countryName] = 'cny2local';
+            inputCny.value = '';
+            outputLocal.value = '';
+            inputCny.placeholder = '金额';
+            outputLocal.placeholder = '换算结果';
+            inputCny.style.color = '#e5efff';
+            outputLocal.style.color = '#f9d77e';
+            inputCny.readOnly = false;
+            outputLocal.readOnly = true;
+            inputCny.focus();
+        }
+    }
+
+    window.swapConverter = swapConverter;
+    window.setupConverter = setupConverter;
 
     // ================================================================
     //  渲染：日历
@@ -811,6 +884,8 @@
                     dot.className = 'dot';
                     const hasEdit = data.hotel_name || data.daily_note || data.ticket_price || data.transport_note || data.image_urls;
                     if (hasEdit) dot.classList.add('edit-dot');
+                    const hasCost = (parseFloat(data.hotel_price) > 0) || (parseFloat(data.transport_price) > 0) || (parseFloat(data.ticket_price_num) > 0) || (parseFloat(data.food_price) > 0) || (parseFloat(data.other_price) > 0);
+                    if (hasCost) dot.classList.add('has-cost-dot');
                     const todayDay = getTodayDay();
                     if (data.day === todayDay) dot.classList.add('today-dot');
                     cell.appendChild(dot);
@@ -826,38 +901,6 @@
             }
             grid.appendChild(cell);
         }
-    }
-
-    // ================================================================
-    //  🔍 搜索功能
-    // ================================================================
-    function isDayMatchingSearch(data, query) {
-        if (!query.trim()) return true;
-        const q = query.trim().toLowerCase();
-        const fields = [
-            data.city || '',
-            data.country || '',
-            data.hotel_name || '',
-            data.hotel_note || '',
-            data.transport_note || '',
-            data.ticket_price || '',
-            data.daily_note || ''
-        ];
-        let sightsArr = [];
-        try {
-            sightsArr = typeof data.sights === 'string' ? JSON.parse(data.sights) : (data.sights || []);
-        } catch(e) { sightsArr = []; }
-        const sightsText = sightsArr.join(' ');
-        fields.push(sightsText);
-
-        return fields.some(f => f.toLowerCase().includes(q));
-    }
-
-    function highlightText(text, query) {
-        if (!query.trim() || !text) return text;
-        const q = query.trim();
-        const regex = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        return text.replace(regex, '<span class="highlight">$1</span>');
     }
 
     // ================================================================
@@ -937,16 +980,20 @@
 
             const cityDisplay = searchQuery.trim() ? highlightText(data.city || '待定', searchQuery) : (data.city || '待定');
             const countryDisplay = searchQuery.trim() ? highlightText(data.country || '未知', searchQuery) : (data.country || '未知');
-            const hotelDisplay = searchQuery.trim() ? highlightText(data.hotel_name || '未填', searchQuery) : (data.hotel_name || '未填');
-            const transportDisplay = searchQuery.trim() ? highlightText(data.transport_note || '未填', searchQuery) : (data.transport_note || '未填');
-            const ticketDisplay = data.ticket_price ? (searchQuery.trim() ? highlightText(data.ticket_price, searchQuery) : data.ticket_price) : '';
             const dailyNoteDisplay = data.daily_note ? (searchQuery.trim() ? highlightText(data.daily_note, searchQuery) : data.daily_note) : '';
-            const hotelNoteDisplay = data.hotel_note ? (searchQuery.trim() ? highlightText(data.hotel_note, searchQuery) : data.hotel_note) : '';
 
             const sightsHtml = sightsArr.map(s => {
                 const display = searchQuery.trim() ? highlightText(s, searchQuery) : s;
                 return `<span>${display}</span>`;
             }).join('');
+
+            // 获取费用数据
+            const hotelPrice = parseFloat(data.hotel_price) || 0;
+            const transportPrice = parseFloat(data.transport_price) || 0;
+            const ticketPriceNum = parseFloat(data.ticket_price_num) || 0;
+            const foodPrice = parseFloat(data.food_price) || 0;
+            const otherPrice = parseFloat(data.other_price) || 0;
+            const dayTotal = hotelPrice + transportPrice + ticketPriceNum + foodPrice + otherPrice;
 
             entry.innerHTML = `
                 <div class="day-head">
@@ -957,43 +1004,69 @@
                 </div>
                 <div class="sights">${sightsHtml}</div>
                 <div class="info-row">
-                    <span><span class="label">🏨</span> ${hotelDisplay}</span>
-                    <span><span class="label">🚌</span> ${transportDisplay}</span>
-                    ${ticketDisplay ? `<span><span class="label">🎟️</span> ${ticketDisplay}</span>` : ''}
+                    <span><span class="label">🏨</span> ${data.hotel_name || '未填'}</span>
+                    <span><span class="label">🚌</span> ${data.transport_note || '未填'}</span>
+                    ${data.ticket_price ? `<span><span class="label">🎟️</span> ${data.ticket_price}</span>` : ''}
                 </div>
                 ${imageHtml}
                 ${dailyNoteDisplay ? `<div style="font-size:0.85rem;opacity:0.6;margin-top:4px;border-top:1px solid #1a3450;padding-top:4px;">📝 ${dailyNoteDisplay}</div>` : ''}
-                ${hotelNoteDisplay ? `<div style="font-size:0.8rem;opacity:0.5;margin-top:2px;">🏷️ ${hotelNoteDisplay}</div>` : ''}
+                
+                <!-- 编辑区（含费用输入） -->
                 <div class="editable-fields" id="editFields_${data.day}">
+                    <!-- 住宿 -->
                     <div class="field-row">
-                        <label>🏨 住宿名称</label>
-                        <input type="text" id="hotel_name_${data.day}" value="${data.hotel_name || ''}" placeholder="酒店名称" />
+                        <span class="field-label">🏨</span>
+                        <input type="text" class="field-text-input" id="hotel_name_${data.day}" value="${data.hotel_name || ''}" placeholder="酒店名称" />
+                        <input type="number" step="0.01" min="0" class="field-number-input" id="hotel_price_${data.day}" value="${hotelPrice || ''}" placeholder="费用" />
+                        <span class="currency-symbol">¥</span>
+                        <span class="field-subtotal" id="hotel_subtotal_${data.day}">¥${hotelPrice.toFixed(0)}</span>
                     </div>
+                    <!-- 交通 -->
                     <div class="field-row">
-                        <label>🏷️ 住宿备注</label>
-                        <input type="text" id="hotel_note_${data.day}" value="${data.hotel_note || ''}" placeholder="地址/电话/备注" />
+                        <span class="field-label">🚌</span>
+                        <input type="text" class="field-text-input" id="transport_note_${data.day}" value="${data.transport_note || ''}" placeholder="交通方式" />
+                        <input type="number" step="0.01" min="0" class="field-number-input" id="transport_price_${data.day}" value="${transportPrice || ''}" placeholder="费用" />
+                        <span class="currency-symbol">¥</span>
+                        <span class="field-subtotal" id="transport_subtotal_${data.day}">¥${transportPrice.toFixed(0)}</span>
                     </div>
+                    <!-- 门票 -->
                     <div class="field-row">
-                        <label>🎟️ 门票价格</label>
-                        <input type="text" id="ticket_price_${data.day}" value="${data.ticket_price || ''}" placeholder="门票/通票价格" />
+                        <span class="field-label">🎟️</span>
+                        <input type="text" class="field-text-input" id="ticket_price_${data.day}" value="${data.ticket_price || ''}" placeholder="景点门票" />
+                        <input type="number" step="0.01" min="0" class="field-number-input" id="ticket_price_num_${data.day}" value="${ticketPriceNum || ''}" placeholder="费用" />
+                        <span class="currency-symbol">¥</span>
+                        <span class="field-subtotal" id="ticket_subtotal_${data.day}">¥${ticketPriceNum.toFixed(0)}</span>
                     </div>
+                    <!-- 吃饭 -->
                     <div class="field-row">
-                        <label>🚌 交通方式</label>
-                        <input type="text" id="transport_note_${data.day}" value="${data.transport_note || ''}" placeholder="火车/大巴/飞机" />
+                        <span class="field-label">🍜</span>
+                        <input type="text" class="field-text-input" id="food_note_${data.day}" value="${data.food_note || ''}" placeholder="餐厅/美食" />
+                        <input type="number" step="0.01" min="0" class="field-number-input" id="food_price_${data.day}" value="${foodPrice || ''}" placeholder="费用" />
+                        <span class="currency-symbol">¥</span>
+                        <span class="field-subtotal" id="food_subtotal_${data.day}">¥${foodPrice.toFixed(0)}</span>
                     </div>
+                    <!-- 其它 -->
                     <div class="field-row">
-                        <label>📝 每日备注</label>
-                        <textarea id="daily_note_${data.day}" placeholder="写点旅行心得...">${data.daily_note || ''}</textarea>
+                        <span class="field-label">📦</span>
+                        <input type="text" class="field-text-input" id="other_note_${data.day}" value="${data.other_note || ''}" placeholder="其它备注" />
+                        <input type="number" step="0.01" min="0" class="field-number-input" id="other_price_${data.day}" value="${otherPrice || ''}" placeholder="费用" />
+                        <span class="currency-symbol">¥</span>
+                        <span class="field-subtotal" id="other_subtotal_${data.day}">¥${otherPrice.toFixed(0)}</span>
                     </div>
-                    <div class="field-row">
-                        <label>🖼️ 添加图片</label>
-                        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-                            <button class="img-upload-btn" onclick="triggerUpload(${data.day})">
-                                ➕ 选择图片
-                                <input type="file" id="fileInput_${data.day}" accept="image/*" multiple onchange="handleFileUpload(${data.day}, this)" />
-                            </button>
-                            <span style="font-size:0.7rem;opacity:0.5;">支持多选</span>
-                        </div>
+                    <!-- 每日备注 -->
+                    <div class="field-row" style="border-color:#1a3450;background:#0f1f33;">
+                        <span class="field-label">📝</span>
+                        <textarea id="daily_note_${data.day}" placeholder="写点旅行心得..." style="flex:1;min-width:120px;background:#0f1f33;border:1px solid #1a3450;border-radius:8px;padding:6px 12px;color:#e5efff;font-size:0.85rem;font-family:inherit;outline:none;min-height:44px;resize:vertical;">${data.daily_note || ''}</textarea>
+                    </div>
+                    <!-- 图片上传 -->
+                    <div class="field-row" style="border-color:#1a3450;background:#0f1f33;">
+                        <span class="field-label">🖼️</span>
+                        <button class="img-upload-btn" onclick="triggerUpload(${data.day})" style="background:#1a3450;border:1px dashed #3a6a8a;border-radius:30px;padding:4px 14px;font-size:0.78rem;color:#8ab4d6;cursor:pointer;transition:0.2s;font-family:inherit;">
+                            ➕ 选择图片
+                            <input type="file" id="fileInput_${data.day}" accept="image/*" multiple onchange="handleFileUpload(${data.day}, this)" style="display:none;" />
+                        </button>
+                        <span style="font-size:0.7rem;opacity:0.5;">支持多选</span>
+                        <span style="margin-left:auto;font-size:0.7rem;opacity:0.4;" id="imageCount_${data.day}">${images.length} 张</span>
                     </div>
                     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="imagePreview_${data.day}">
                         ${images.map(url => `<div style="position:relative;display:inline-block;"><img src="${url}" style="max-width:80px;max-height:60px;border-radius:6px;border:1px solid #1a3450;" /><button onclick="removeImage(${data.day}, '${url}')" style="position:absolute;top:-6px;right:-6px;background:#e05a5a;border:none;color:#fff;border-radius:50%;width:18px;height:18px;font-size:12px;cursor:pointer;line-height:18px;text-align:center;">×</button></div>`).join('')}
@@ -1011,9 +1084,43 @@
         if (selectedDay === null && !searchQuery.trim() && daysToShow.length > 0) {
             const hint = document.createElement('div');
             hint.style.cssText = 'text-align:center;opacity:0.4;font-size:0.85rem;padding:16px 0;border-top:1px solid #1a3450;margin-top:8px;';
-            hint.textContent = '💡 点击任意一天可展开查看详情 · 点击「编辑」可修改内容';
+            hint.textContent = '💡 点击任意一天可展开查看详情 · 点击「编辑」可修改内容 · 填入费用自动统计';
             container.appendChild(hint);
         }
+
+        // 绑定费用输入事件（实时保存）
+        document.querySelectorAll('.field-number-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const day = parseInt(this.id.split('_')[1]);
+                const field = this.id;
+                const val = parseFloat(this.value) || 0;
+                // 根据 id 判断是哪个字段
+                if (field.includes('hotel_price')) saveToSupabase(day, 'hotel_price', val);
+                else if (field.includes('transport_price')) saveToSupabase(day, 'transport_price', val);
+                else if (field.includes('ticket_price_num')) saveToSupabase(day, 'ticket_price_num', val);
+                else if (field.includes('food_price')) saveToSupabase(day, 'food_price', val);
+                else if (field.includes('other_price')) saveToSupabase(day, 'other_price', val);
+                // 更新小计
+                updateDaySubtotal(day);
+                updateCostSummary();
+                // 更新日历小绿点
+                buildCalendar();
+            });
+        });
+
+        // 绑定文字输入事件（实时保存备注）
+        document.querySelectorAll('.field-text-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const day = parseInt(this.id.split('_')[1]);
+                const field = this.id;
+                const val = this.value;
+                if (field.includes('hotel_name')) saveToSupabase(day, 'hotel_name', val);
+                else if (field.includes('transport_note')) saveToSupabase(day, 'transport_note', val);
+                else if (field.includes('ticket_price')) saveToSupabase(day, 'ticket_price', val);
+                else if (field.includes('food_note')) saveToSupabase(day, 'food_note', val);
+                else if (field.includes('other_note')) saveToSupabase(day, 'other_note', val);
+            });
+        });
 
         const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
         const reminderItems = tripData.filter(d => {
@@ -1022,7 +1129,6 @@
         });
         document.getElementById('reminderCount').textContent = `⏰ ${reminderItems.length} 提醒`;
 
-        // 汇率加载完成后，设置所有换算器
         if (exchangeRates) {
             document.querySelectorAll('.currency-converter').forEach(el => {
                 const country = el.dataset.country;
@@ -1031,6 +1137,31 @@
                 }
             });
         }
+
+        updateCostSummary();
+    }
+
+    function updateDaySubtotal(day) {
+        const data = getDayData(day);
+        if (!data) return;
+        const hotel = parseFloat(data.hotel_price) || 0;
+        const transport = parseFloat(data.transport_price) || 0;
+        const ticket = parseFloat(data.ticket_price_num) || 0;
+        const food = parseFloat(data.food_price) || 0;
+        const other = parseFloat(data.other_price) || 0;
+        const total = hotel + transport + ticket + food + other;
+
+        // 更新各小计
+        const hotelEl = document.getElementById(`hotel_subtotal_${day}`);
+        const transportEl = document.getElementById(`transport_subtotal_${day}`);
+        const ticketEl = document.getElementById(`ticket_subtotal_${day}`);
+        const foodEl = document.getElementById(`food_subtotal_${day}`);
+        const otherEl = document.getElementById(`other_subtotal_${day}`);
+        if (hotelEl) hotelEl.textContent = `¥${hotel.toFixed(0)}`;
+        if (transportEl) transportEl.textContent = `¥${transport.toFixed(0)}`;
+        if (ticketEl) ticketEl.textContent = `¥${ticket.toFixed(0)}`;
+        if (foodEl) foodEl.textContent = `¥${food.toFixed(0)}`;
+        if (otherEl) otherEl.textContent = `¥${other.toFixed(0)}`;
     }
 
     // ================================================================
@@ -1052,10 +1183,17 @@
         const data = getDayData(day);
         if (data) {
             document.getElementById(`hotel_name_${day}`).value = data.hotel_name || '';
-            document.getElementById(`hotel_note_${day}`).value = data.hotel_note || '';
-            document.getElementById(`ticket_price_${day}`).value = data.ticket_price || '';
             document.getElementById(`transport_note_${day}`).value = data.transport_note || '';
+            document.getElementById(`ticket_price_${day}`).value = data.ticket_price || '';
+            document.getElementById(`food_note_${day}`).value = data.food_note || '';
+            document.getElementById(`other_note_${day}`).value = data.other_note || '';
             document.getElementById(`daily_note_${day}`).value = data.daily_note || '';
+            // 金额
+            document.getElementById(`hotel_price_${day}`).value = data.hotel_price || '';
+            document.getElementById(`transport_price_${day}`).value = data.transport_price || '';
+            document.getElementById(`ticket_price_num_${day}`).value = data.ticket_price_num || '';
+            document.getElementById(`food_price_${day}`).value = data.food_price || '';
+            document.getElementById(`other_price_${day}`).value = data.other_price || '';
         }
     }
 
@@ -1063,17 +1201,32 @@
         const data = getDayData(day);
         if (!data) return;
 
+        // 文字字段
         const hotel_name = document.getElementById(`hotel_name_${day}`).value.trim();
-        const hotel_note = document.getElementById(`hotel_note_${day}`).value.trim();
-        const ticket_price = document.getElementById(`ticket_price_${day}`).value.trim();
         const transport_note = document.getElementById(`transport_note_${day}`).value.trim();
+        const ticket_price = document.getElementById(`ticket_price_${day}`).value.trim();
+        const food_note = document.getElementById(`food_note_${day}`).value.trim();
+        const other_note = document.getElementById(`other_note_${day}`).value.trim();
         const daily_note = document.getElementById(`daily_note_${day}`).value.trim();
 
+        // 金额字段
+        const hotel_price = parseFloat(document.getElementById(`hotel_price_${day}`).value) || 0;
+        const transport_price = parseFloat(document.getElementById(`transport_price_${day}`).value) || 0;
+        const ticket_price_num = parseFloat(document.getElementById(`ticket_price_num_${day}`).value) || 0;
+        const food_price = parseFloat(document.getElementById(`food_price_${day}`).value) || 0;
+        const other_price = parseFloat(document.getElementById(`other_price_${day}`).value) || 0;
+
         await saveToSupabase(day, 'hotel_name', hotel_name);
-        await saveToSupabase(day, 'hotel_note', hotel_note);
-        await saveToSupabase(day, 'ticket_price', ticket_price);
         await saveToSupabase(day, 'transport_note', transport_note);
+        await saveToSupabase(day, 'ticket_price', ticket_price);
+        await saveToSupabase(day, 'food_note', food_note);
+        await saveToSupabase(day, 'other_note', other_note);
         await saveToSupabase(day, 'daily_note', daily_note);
+        await saveToSupabase(day, 'hotel_price', hotel_price);
+        await saveToSupabase(day, 'transport_price', transport_price);
+        await saveToSupabase(day, 'ticket_price_num', ticket_price_num);
+        await saveToSupabase(day, 'food_price', food_price);
+        await saveToSupabase(day, 'other_price', other_price);
 
         const fields = document.getElementById(`editFields_${day}`);
         if (fields) fields.classList.remove('open');
@@ -1183,7 +1336,7 @@
     }
 
     // ================================================================
-    //  跳转
+    //  🔧 跳转函数
     // ================================================================
     function jumpToDay(day) {
         if (day < 1) day = 1;
@@ -1195,6 +1348,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('clearSearchBtn').classList.remove('visible');
         }
+
         const data = getDayData(day);
         if (data && data.date) {
             const parts = data.date.split('-');
@@ -1203,12 +1357,29 @@
                 currentMonth = parseInt(parts[1]) - 1;
             }
         }
+
         buildCalendar();
         renderDayList();
-        document.getElementById('dayList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        const list = document.getElementById('dayList');
+        list.scrollIntoView({ behavior: 'smooth', block: 'start' });
         document.getElementById('jumpInput').value = day;
+
+        setTimeout(() => {
+            const entries = list.querySelectorAll('.day-entry');
+            entries.forEach(el => {
+                el.style.borderColor = 'transparent';
+                if (parseInt(el.dataset.day) === day) {
+                    el.style.borderColor = '#f9d77e';
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }, 400);
     }
 
+    // ================================================================
+    //  显示全部
+    // ================================================================
     function showAllDays() {
         selectedDay = null;
         searchQuery = '';
@@ -1224,7 +1395,6 @@
     // ================================================================
     async function refreshAll() {
         await loadFromSupabase();
-        // 重新获取汇率
         await fetchExchangeRates();
         buildCalendar();
         renderDayList();
@@ -1320,30 +1490,24 @@
     window.triggerUpload = triggerUpload;
     window.handleFileUpload = handleFileUpload;
     window.removeImage = removeImage;
+    window.clearAllCosts = clearAllCosts;
 
     // ================================================================
     //  初始化
     // ================================================================
     async function init() {
-        // 加载行程数据
         await loadFromSupabase();
-
-        // 获取实时汇率
         await fetchExchangeRates();
-
-        // 设置搜索
         setupSearch();
-
-        // 渲染日历和行程列表
         buildCalendar();
         renderDayList();
         updateBookSummary();
+        updateCostSummary();
 
         console.log('🗓️ 环球旅行日历已加载 · 共70天');
         console.log('📅 Day1 = 2027-08-04 (周三)');
-        console.log('☁️ Cloudinary 预设: kst_upload_2026');
-        console.log('🌍 国家国旗映射已修正');
         console.log('💱 实时汇率已加载 (Frankfurter API)');
+        console.log('💰 费用统计功能已启用（住宿、交通、门票、吃饭、其它）');
     }
 
     init();
