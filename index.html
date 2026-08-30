@@ -20,17 +20,25 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .app-container {
             max-width: 480px;
+            width: 100%;
+            height: 96vh;
+            max-height: 820px;
             margin: 0 auto;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
             background: #0a1628;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            border: 1px solid #1e3a5a44;
         }
 
         /* ===== 页面滑动 ===== */
@@ -687,7 +695,7 @@
             font-size: 1rem;
         }
 
-        /* ===== 汇率转换 - 强制显示 ===== */
+        /* ===== 汇率转换 ===== */
         .exchange-widget {
             background: #0a1a2a;
             border: 1px solid #f9d77e44;
@@ -783,7 +791,6 @@
             background: #1a3450;
             border-color: #f9d77e55;
         }
-        /* 当国家是"待定"时隐藏汇率 */
         .exchange-widget.hidden {
             display: none !important;
         }
@@ -1374,6 +1381,12 @@
         }
 
         @media (max-width: 480px) {
+            .app-container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
             .page {
                 padding: 10px 10px 60px 10px;
             }
@@ -1811,7 +1824,6 @@
             if (page === 3) updateCostSummary();
             if (page === 4) updateReminderPage();
             if (page === 2 && currentDetailDateKey) {
-                // 重新显示当前行程
                 const data = getTripByDateKey(currentDetailDateKey);
                 if (data) showDayDetail(currentDetailDateKey);
             }
