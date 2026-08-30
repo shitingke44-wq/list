@@ -460,6 +460,26 @@
             gap: 12px 18px;
         }
         .exchange-widget .exchange-label { font-size: 0.75rem; color: #f9d77e; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .exchange-widget .direction-toggle {
+            background: #142b44;
+            border: 1px solid #1a3450;
+            color: #e5efff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .exchange-widget .direction-toggle:hover {
+            background: #1a3450;
+            border-color: #f9d77e55;
+        }
+        .exchange-widget .direction-toggle.active {
+            background: #f9d77e22;
+            border-color: #f9d77e;
+            color: #f9d77e;
+        }
         .exchange-widget .exchange-input-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .exchange-widget .exchange-input-group input {
             background: #0f1f33;
@@ -474,6 +494,7 @@
         .exchange-widget .exchange-input-group input:focus { outline: none; border-color: #f9d77e; }
         .exchange-widget .exchange-input-group .currency-code { color: #6a8aaa; font-size: 0.8rem; font-weight: 600; min-width: 28px; }
         .exchange-widget .exchange-result { color: #6fcf97; font-size: 0.95rem; font-weight: 600; margin-left: 4px; }
+        .exchange-widget .exchange-result .rate-info { color: #4a6a8a; font-size: 0.65rem; margin-left: 6px; }
         .exchange-widget .exchange-rate-info { color: #4a6a8a; font-size: 0.7rem; margin-left: 6px; }
         .exchange-widget .exchange-refresh {
             background: #142b44;
@@ -860,6 +881,7 @@
             .search-results-dropdown .result-item { flex-wrap: wrap; }
             .exchange-widget { flex-direction: column; align-items: stretch; gap: 8px; }
             .exchange-widget .exchange-refresh { margin-left: 0; align-self: flex-start; }
+            .exchange-widget .direction-toggle { align-self: flex-start; }
         }
         @media (max-width: 480px) {
             .calendar-grid { gap: 2px; }
@@ -957,12 +979,18 @@
 
                 <div class="exchange-widget" id="exchangeWidget">
                     <span class="exchange-label"><i class="fas fa-exchange-alt"></i> 实时汇率转换</span>
+                    <button class="direction-toggle active" id="directionToggle" onclick="toggleExchangeDirection()">
+                        <i class="fas fa-arrow-right"></i> CNY → 外币
+                    </button>
                     <div class="exchange-input-group">
                         <input type="number" id="exchangeInput" value="1" step="0.01" min="0" />
                         <span class="currency-code" id="fromCurrency">CNY</span>
                         <span style="color:#4a6a8a;">→</span>
                         <span class="currency-code" id="toCurrency">USD</span>
-                        <span class="exchange-result" id="exchangeResult">= 0.14</span>
+                        <span class="exchange-result" id="exchangeResult">
+                            = 0.14
+                            <span class="rate-info" id="rateInfo"></span>
+                        </span>
                     </div>
                     <span class="exchange-rate-info" id="exchangeRateInfo">1 CNY ≈ 0.14 USD</span>
                     <button class="exchange-refresh" onclick="refreshExchangeRate()"><i class="fas fa-sync"></i> 更新</button>
@@ -1247,6 +1275,9 @@
         let editingIsOutside = false;
         let formPhotos = [];
         let currentExchangeRate = null;
+        let exchangeDirection = 'cny_to_foreign'; // 'cny_to_foreign' 或 'foreign_to_cny'
+        let currentCountryName = null;
+        let currentForeignCurrency = null;
 
         // ================================================================
         //  工具函数
@@ -1255,7 +1286,7 @@
             const now = new Date();
             const diff = Math.floor((now - TRIP_START) / (1000 * 60 * 60 * 24));
             if (diff >= 0 && diff < TOTAL_DAYS) return diff + 1;
-            return null; // 不在行程范围内返回 null
+            return null;
         }
 
         function getDaysInMonth(year, month) {
@@ -1339,22 +1370,79 @@
             }
         }
 
+        // ================================================================
+        //  汇率换算（双向）
+        // ================================================================
+        function updateExchangeResult(val) {
+            const foreignCurrency = currentForeignCurrency;
+            if (!foreignCurrency) return;
+            
+            const cnyToForeign = currentExchangeRate;
+            const foreignToCny = 1 / cnyToForeign;
+            
+            let result, rateInfoText;
+            if (exchangeDirection === 'cny_to_foreign') {
+                result = val * cnyToForeign;
+                rateInfoText = `1 ${foreignCurrency} ≈ ${foreignToCny.toFixed(4)} CNY`;
+            } else {
+                result = val * foreignToCny;
+                rateInfoText = `1 CNY ≈ ${cnyToForeign.toFixed(4)} ${foreignCurrency}`;
+            }
+            
+            document.getElementById('exchangeResult').innerHTML = `= ${result.toFixed(2)} <span class="rate-info">${rateInfoText}</span>`;
+        }
+
+        function toggleExchangeDirection() {
+            if (exchangeDirection === 'cny_to_foreign') {
+                exchangeDirection = 'foreign_to_cny';
+            } else {
+                exchangeDirection = 'cny_to_foreign';
+            }
+            
+            if (currentCountryName) {
+                updateExchangeWidget(currentCountryName);
+            }
+        }
+
         async function updateExchangeWidget(countryName) {
             if (!countryName || countryName === '待定') {
                 document.getElementById('exchangeWidget').style.display = 'none';
                 return;
             }
-            const toCurrency = getCurrencyCode(countryName);
-            const rate = await fetchExchangeRate('CNY', toCurrency);
-            currentExchangeRate = rate;
-
-            document.getElementById('toCurrency').textContent = toCurrency;
-            document.getElementById('exchangeRateInfo').textContent = `1 CNY ≈ ${rate.toFixed(4)} ${toCurrency}`;
+            
+            currentCountryName = countryName;
+            const foreignCurrency = getCurrencyCode(countryName);
+            currentForeignCurrency = foreignCurrency;
+            
+            const cnyToForeign = await fetchExchangeRate('CNY', foreignCurrency);
+            const foreignToCny = 1 / cnyToForeign;
+            
+            currentExchangeRate = cnyToForeign;
+            
+            const fromEl = document.getElementById('fromCurrency');
+            const toEl = document.getElementById('toCurrency');
+            const rateInfo = document.getElementById('rateInfo');
+            const toggleBtn = document.getElementById('directionToggle');
+            
+            if (exchangeDirection === 'cny_to_foreign') {
+                fromEl.textContent = 'CNY';
+                toEl.textContent = foreignCurrency;
+                document.getElementById('exchangeRateInfo').textContent = `1 CNY ≈ ${cnyToForeign.toFixed(4)} ${foreignCurrency}`;
+                toggleBtn.innerHTML = `<i class="fas fa-arrow-right"></i> CNY → ${foreignCurrency}`;
+                rateInfo.textContent = `(1 ${foreignCurrency} ≈ ${foreignToCny.toFixed(4)} CNY)`;
+            } else {
+                fromEl.textContent = foreignCurrency;
+                toEl.textContent = 'CNY';
+                document.getElementById('exchangeRateInfo').textContent = `1 ${foreignCurrency} ≈ ${foreignToCny.toFixed(4)} CNY`;
+                toggleBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${foreignCurrency} → CNY`;
+                rateInfo.textContent = `(1 CNY ≈ ${cnyToForeign.toFixed(4)} ${foreignCurrency})`;
+            }
+            
             document.getElementById('exchangeWidget').style.display = 'flex';
-
+            
             const input = document.getElementById('exchangeInput');
             const val = parseFloat(input.value) || 0;
-            document.getElementById('exchangeResult').textContent = `= ${(val * rate).toFixed(2)}`;
+            updateExchangeResult(val);
         }
 
         function refreshExchangeRate() {
@@ -1588,11 +1676,10 @@
         }
 
         // ================================================================
-        //  保存到 Supabase（修复版）
+        //  保存到 Supabase
         // ================================================================
         async function saveToSupabase(day, field, value) {
             try {
-                // 1. 先检查数据是否存在
                 const checkRes = await fetch(`${SUPABASE_URL}trip_days?day=eq.${day}&select=id`, {
                     headers: {
                         'apikey': SUPABASE_KEY,
@@ -1607,7 +1694,6 @@
                 
                 const existing = await checkRes.json();
                 
-                // 2. 如果数据不存在，先插入
                 if (existing.length === 0) {
                     const date = getDateFromDay(day);
                     const dateKey = date.toISOString().split('T')[0];
@@ -1642,9 +1728,7 @@
                         if (text && text.trim()) {
                             result = JSON.parse(text);
                         }
-                    } catch (e) {
-                        // 响应为空或不是 JSON，忽略
-                    }
+                    } catch (e) {}
                     
                     const idx = tripData.findIndex(d => d.day === day);
                     if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result };
@@ -1652,7 +1736,6 @@
                     return true;
                 }
                 
-                // 3. 数据存在，执行更新
                 const id = existing[0].id;
                 const updateRes = await fetch(`${SUPABASE_URL}trip_days?id=eq.${id}`, {
                     method: 'PATCH',
@@ -1670,16 +1753,13 @@
                     return false;
                 }
                 
-                // 4. 尝试解析响应，如果为空则忽略
                 let result = {};
                 try {
                     const text = await updateRes.text();
                     if (text && text.trim()) {
                         result = JSON.parse(text);
                     }
-                } catch (e) {
-                    // 响应为空或不是 JSON，忽略
-                }
+                } catch (e) {}
                 
                 const idx = tripData.findIndex(d => d.day === day);
                 if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result };
@@ -1688,7 +1768,6 @@
                 
             } catch (err) {
                 console.error('保存失败:', err);
-                // 即使网络错误，也保存到 localStorage
                 const idx = tripData.findIndex(d => d.day === day);
                 if (idx !== -1) { 
                     tripData[idx][field] = value;
@@ -1699,7 +1778,7 @@
         }
 
         // ================================================================
-        //  保存独立行程（修复版）
+        //  保存独立行程
         // ================================================================
         async function saveOutsideTrip(dateKey, updates) {
             const existing = getTripByDateKey(dateKey);
@@ -1712,7 +1791,6 @@
 
             if (existing && existing.is_outside) {
                 try {
-                    // 先获取 id
                     const checkRes = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}&select=id`, {
                         headers: {
                             'apikey': SUPABASE_KEY,
@@ -1725,7 +1803,6 @@
                     }
                     const records = await checkRes.json();
                     if (records.length === 0) {
-                        // 如果不存在，转为创建
                         return await createOutsideTrip(dateKey, payload);
                     }
                     
@@ -2183,8 +2260,8 @@
             const exchangeInput = document.getElementById('exchangeInput');
             exchangeInput.oninput = function() {
                 const val = parseFloat(this.value) || 0;
-                if (currentExchangeRate) {
-                    document.getElementById('exchangeResult').textContent = `= ${(val * currentExchangeRate).toFixed(2)}`;
+                if (currentExchangeRate && currentForeignCurrency) {
+                    updateExchangeResult(val);
                 }
             };
 
@@ -2230,6 +2307,9 @@
             } else {
                 photoGallery.innerHTML = '<div style="color:#4a6a8a;font-size:0.8rem;padding:4px 0;">暂无照片，点击编辑添加</div>';
             }
+
+            // 重置方向为默认
+            exchangeDirection = 'cny_to_foreign';
 
             if (isOutside) {
                 editingDateKey = data.date_key;
@@ -2520,7 +2600,6 @@
                     }
                 } else {
                     if (day && !isNaN(day) && day >= 1 && day <= TOTAL_DAYS) {
-                        // 逐个保存字段
                         const fields = {
                             city: city,
                             country: country,
@@ -2986,6 +3065,8 @@
         window.openAddReminderModal = openAddReminderModal;
         window.closeReminderModal = closeReminderModal;
         window.saveReminder = saveReminder;
+        window.toggleExchangeDirection = toggleExchangeDirection;
+        window.updateExchangeResult = updateExchangeResult;
 
         // ================================================================
         //  初始化
@@ -3023,7 +3104,7 @@
             const countries = new Set(tripData.map(d => d.country).filter(c => c && c !== '待定' && c !== 'Day'));
             document.getElementById('totalCountriesDisplay').textContent = countries.size;
 
-            console.log('🗺️ 环球旅行日历已加载 · Day 1 = 2027年8月4日 · 支持独立行程');
+            console.log('🗺️ 环球旅行日历已加载 · Day 1 = 2027年8月4日 · 支持独立行程 · 双向汇率换算');
         }
 
         init();
