@@ -410,6 +410,14 @@
             color: #4a9eff;
             opacity: 0.6;
         }
+        .day-cell .outside-trip-badge {
+            font-size: 0.45rem;
+            background: #4a9eff33;
+            color: #4a9eff;
+            border-radius: 10px;
+            padding: 0 4px;
+            margin-top: 1px;
+        }
         @keyframes pulse {
             0% { opacity: 0.4; transform: scale(0.9); }
             50% { opacity: 1; transform: scale(1.2); }
@@ -448,6 +456,9 @@
         }
         .day-cell.has-trip {
             border-color: #f9d77e33;
+        }
+        .day-cell.has-outside-trip {
+            border-color: #4a9eff44;
         }
 
         .nav-row {
@@ -534,6 +545,14 @@
             background: #142b44;
             padding: 2px 14px;
             border-radius: 30px;
+        }
+        .day-detail .detail-header .trip-type-badge {
+            font-size: 0.7rem;
+            background: #4a9eff33;
+            color: #4a9eff;
+            padding: 2px 12px;
+            border-radius: 30px;
+            border: 1px solid #4a9eff44;
         }
 
         .day-detail .photo-gallery {
@@ -750,6 +769,14 @@
         }
         .day-detail .action-buttons .add-btn:hover {
             background: #ffe28a;
+        }
+        .day-detail .action-buttons .delete-btn {
+            background: #e05a5a44;
+            color: #e05a5a;
+            border: 1px solid #e05a5a44;
+        }
+        .day-detail .action-buttons .delete-btn:hover {
+            background: #e05a5a66;
         }
 
         /* ========== 弹窗 ========== */
@@ -1300,7 +1327,7 @@
     <div class="container">
         <!-- ========== 头部 ========== -->
         <div class="header">
-            <h1>🗺️ 环球旅行 <small>2027.8.4 – 10.12</small></h1>
+            <h1>🗺️ 环球旅行 <small>2027.8.4 – 2027.10.12 (Day 1-70)</small></h1>
             <div class="stats">
                 <span>📅 <span id="totalDaysDisplay">70</span> 天</span>
                 <span>🌍 <span id="totalCountriesDisplay">0</span> 国</span>
@@ -1365,6 +1392,7 @@
                 <span class="day-title" id="detailTitle">Day 1</span>
                 <span class="day-date" id="detailDate">2027-08-04</span>
                 <span class="day-country" id="detailCountry">🇨🇳 中国</span>
+                <span class="trip-type-badge" id="tripTypeBadge">📌 核心行程</span>
             </div>
             <div class="detail-body">
                 <div class="photo-gallery" id="detailPhotos"></div>
@@ -1390,6 +1418,7 @@
                 <div class="action-buttons">
                     <button class="edit-btn" onclick="editCurrentDay()">✏️ 编辑行程</button>
                     <button class="add-btn" onclick="addCostToCurrentDay()">💰 添加费用</button>
+                    <button class="delete-btn" onclick="deleteCurrentTrip()">🗑️ 删除行程</button>
                 </div>
             </div>
         </div>
@@ -1442,6 +1471,8 @@
         <div class="modal-box">
             <h2 id="modalTitle">✈️ 添加行程</h2>
             <input type="hidden" id="editDay" value="" />
+            <input type="hidden" id="editDateKey" value="" />
+            <input type="hidden" id="editIsOutside" value="false" />
             <div class="form-group">
                 <label>📅 日期</label>
                 <input type="date" id="tripDate" />
@@ -1532,46 +1563,200 @@
 
     <script>
         // ================================================================
-        //  配置
+        //  配置 - Day 1 = 2027年8月4日，共70天
         // ================================================================
         const TRIP_START = new Date(2027, 7, 4);
         const TOTAL_DAYS = 70;
+        const CALENDAR_START = new Date(2026, 0, 1);
+        const CALENDAR_END = new Date(2028, 11, 31);
+
         const CLOUD_NAME = 'e33jixhq';
         const UPLOAD_PRESET = 'my_website';
 
         // ================================================================
-        //  全球国家列表 (240+ 国家/地区) + 货币代码
+        //  全球国家列表 + 货币代码
         // ================================================================
         const COUNTRY_CURRENCY_MAP = {
-            "中国": "CNY", "日本": "JPY", "韩国": "KRW", "蒙古": "MNT", "朝鲜": "KPW", "越南": "VND", "老挝": "LAK", "柬埔寨": "KHR",
-            "泰国": "THB", "缅甸": "MMK", "马来西亚": "MYR", "新加坡": "SGD", "印度尼西亚": "IDR", "菲律宾": "PHP", "东帝汶": "USD", "文莱": "BND",
-            "印度": "INR", "巴基斯坦": "PKR", "孟加拉国": "BDT", "斯里兰卡": "LKR", "尼泊尔": "NPR", "不丹": "BTN", "马尔代夫": "MVR", "阿富汗": "AFN",
-            "伊朗": "IRR", "伊拉克": "IQD", "叙利亚": "SYP", "黎巴嫩": "LBP", "约旦": "JOD", "以色列": "ILS", "巴勒斯坦": "ILS", "沙特阿拉伯": "SAR",
-            "也门": "YER", "阿曼": "OMR", "阿联酋": "AED", "卡塔尔": "QAR", "巴林": "BHD", "科威特": "KWD", "土耳其": "TRY", "塞浦路斯": "EUR",
-            "格鲁吉亚": "GEL", "亚美尼亚": "AMD", "阿塞拜疆": "AZN", "哈萨克斯坦": "KZT", "乌兹别克斯坦": "UZS", "土库曼斯坦": "TMT", "吉尔吉斯斯坦": "KGS",
-            "塔吉克斯坦": "TJS", "俄罗斯": "RUB", "乌克兰": "UAH", "白俄罗斯": "BYN", "摩尔多瓦": "MDL", "立陶宛": "EUR", "拉脱维亚": "EUR",
-            "爱沙尼亚": "EUR", "波兰": "PLN", "捷克": "CZK", "斯洛伐克": "EUR", "匈牙利": "HUF", "罗马尼亚": "RON", "保加利亚": "BGN",
-            "希腊": "EUR", "阿尔巴尼亚": "ALL", "北马其顿": "MKD", "塞尔维亚": "RSD", "黑山": "EUR", "波黑": "BAM", "克罗地亚": "EUR",
-            "斯洛文尼亚": "EUR", "奥地利": "EUR", "瑞士": "CHF", "列支敦士登": "CHF", "德国": "EUR", "荷兰": "EUR", "比利时": "EUR",
-            "卢森堡": "EUR", "法国": "EUR", "摩纳哥": "EUR", "英国": "GBP", "爱尔兰": "EUR", "冰岛": "ISK", "挪威": "NOK", "瑞典": "SEK",
-            "芬兰": "EUR", "丹麦": "DKK", "意大利": "EUR", "梵蒂冈": "EUR", "圣马力诺": "EUR", "马耳他": "EUR", "西班牙": "EUR",
-            "葡萄牙": "EUR", "安道尔": "EUR", "摩洛哥": "MAD", "阿尔及利亚": "DZD", "突尼斯": "TND", "利比亚": "LYD", "埃及": "EGP",
-            "苏丹": "SDG", "南苏丹": "SSP", "埃塞俄比亚": "ETB", "厄立特里亚": "ERN", "吉布提": "DJF", "索马里": "SOS", "肯尼亚": "KES",
-            "乌干达": "UGX", "坦桑尼亚": "TZS", "卢旺达": "RWF", "布隆迪": "BIF", "刚果民主共和国": "CDF", "刚果共和国": "XAF", "加蓬": "XAF",
-            "赤道几内亚": "XAF", "喀麦隆": "XAF", "尼日利亚": "NGN", "贝宁": "XOF", "多哥": "XOF", "加纳": "GHS", "科特迪瓦": "XOF",
-            "利比里亚": "LRD", "塞拉利昂": "SLL", "几内亚": "GNF", "几内亚比绍": "XOF", "塞内加尔": "XOF", "冈比亚": "GMD", "马里": "XOF",
-            "布基纳法索": "XOF", "尼日尔": "XOF", "乍得": "XAF", "中非共和国": "XAF", "赞比亚": "ZMW", "津巴布韦": "ZWL", "马拉维": "MWK",
-            "莫桑比克": "MZN", "博茨瓦纳": "BWP", "纳米比亚": "NAD", "安哥拉": "AOA", "南非": "ZAR", "莱索托": "LSL", "斯威士兰": "SZL",
-            "马达加斯加": "MGA", "塞舌尔": "SCR", "毛里求斯": "MUR", "科摩罗": "KMF",
-            "澳大利亚": "AUD", "新西兰": "NZD", "巴布亚新几内亚": "PGK", "所罗门群岛": "SBD", "瓦努阿图": "VUV", "斐济": "FJD", "萨摩亚": "WST",
+            "中国": "CNY",
+            "日本": "JPY",
+            "韩国": "KRW",
+            "蒙古": "MNT",
+            "朝鲜": "KPW",
+            "越南": "VND",
+            "老挝": "LAK",
+            "柬埔寨": "KHR",
+            "泰国": "THB",
+            "缅甸": "MMK",
+            "马来西亚": "MYR",
+            "新加坡": "SGD",
+            "印度尼西亚": "IDR",
+            "菲律宾": "PHP",
+            "东帝汶": "USD",
+            "文莱": "BND",
+            "印度": "INR",
+            "巴基斯坦": "PKR",
+            "孟加拉国": "BDT",
+            "斯里兰卡": "LKR",
+            "尼泊尔": "NPR",
+            "不丹": "BTN",
+            "马尔代夫": "MVR",
+            "阿富汗": "AFN",
+            "伊朗": "IRR",
+            "伊拉克": "IQD",
+            "叙利亚": "SYP",
+            "黎巴嫩": "LBP",
+            "约旦": "JOD",
+            "以色列": "ILS",
+            "巴勒斯坦": "ILS",
+            "沙特阿拉伯": "SAR",
+            "也门": "YER",
+            "阿曼": "OMR",
+            "阿联酋": "AED",
+            "卡塔尔": "QAR",
+            "巴林": "BHD",
+            "科威特": "KWD",
+            "土耳其": "TRY",
+            "塞浦路斯": "EUR",
+            "格鲁吉亚": "GEL",
+            "亚美尼亚": "AMD",
+            "阿塞拜疆": "AZN",
+            "哈萨克斯坦": "KZT",
+            "乌兹别克斯坦": "UZS",
+            "土库曼斯坦": "TMT",
+            "吉尔吉斯斯坦": "KGS",
+            "塔吉克斯坦": "TJS",
+            "俄罗斯": "RUB",
+            "乌克兰": "UAH",
+            "白俄罗斯": "BYN",
+            "摩尔多瓦": "MDL",
+            "立陶宛": "EUR",
+            "拉脱维亚": "EUR",
+            "爱沙尼亚": "EUR",
+            "波兰": "PLN",
+            "捷克": "CZK",
+            "斯洛伐克": "EUR",
+            "匈牙利": "HUF",
+            "罗马尼亚": "RON",
+            "保加利亚": "BGN",
+            "希腊": "EUR",
+            "阿尔巴尼亚": "ALL",
+            "北马其顿": "MKD",
+            "塞尔维亚": "RSD",
+            "黑山": "EUR",
+            "波黑": "BAM",
+            "克罗地亚": "EUR",
+            "斯洛文尼亚": "EUR",
+            "奥地利": "EUR",
+            "瑞士": "CHF",
+            "列支敦士登": "CHF",
+            "德国": "EUR",
+            "荷兰": "EUR",
+            "比利时": "EUR",
+            "卢森堡": "EUR",
+            "法国": "EUR",
+            "摩纳哥": "EUR",
+            "英国": "GBP",
+            "爱尔兰": "EUR",
+            "冰岛": "ISK",
+            "挪威": "NOK",
+            "瑞典": "SEK",
+            "芬兰": "EUR",
+            "丹麦": "DKK",
+            "意大利": "EUR",
+            "梵蒂冈": "EUR",
+            "圣马力诺": "EUR",
+            "马耳他": "EUR",
+            "西班牙": "EUR",
+            "葡萄牙": "EUR",
+            "安道尔": "EUR",
+            "摩洛哥": "MAD",
+            "阿尔及利亚": "DZD",
+            "突尼斯": "TND",
+            "利比亚": "LYD",
+            "埃及": "EGP",
+            "苏丹": "SDG",
+            "南苏丹": "SSP",
+            "埃塞俄比亚": "ETB",
+            "厄立特里亚": "ERN",
+            "吉布提": "DJF",
+            "索马里": "SOS",
+            "肯尼亚": "KES",
+            "乌干达": "UGX",
+            "坦桑尼亚": "TZS",
+            "卢旺达": "RWF",
+            "布隆迪": "BIF",
+            "刚果民主共和国": "CDF",
+            "刚果共和国": "XAF",
+            "加蓬": "XAF",
+            "赤道几内亚": "XAF",
+            "喀麦隆": "XAF",
+            "尼日利亚": "NGN",
+            "贝宁": "XOF",
+            "多哥": "XOF",
+            "加纳": "GHS",
+            "科特迪瓦": "XOF",
+            "利比里亚": "LRD",
+            "塞拉利昂": "SLL",
+            "几内亚": "GNF",
+            "几内亚比绍": "XOF",
+            "塞内加尔": "XOF",
+            "冈比亚": "GMD",
+            "马里": "XOF",
+            "布基纳法索": "XOF",
+            "尼日尔": "XOF",
+            "乍得": "XAF",
+            "中非共和国": "XAF",
+            "赞比亚": "ZMW",
+            "津巴布韦": "ZWL",
+            "马拉维": "MWK",
+            "莫桑比克": "MZN",
+            "博茨瓦纳": "BWP",
+            "纳米比亚": "NAD",
+            "安哥拉": "AOA",
+            "南非": "ZAR",
+            "莱索托": "LSL",
+            "斯威士兰": "SZL",
+            "马达加斯加": "MGA",
+            "塞舌尔": "SCR",
+            "毛里求斯": "MUR",
+            "科摩罗": "KMF",
+            "澳大利亚": "AUD",
+            "新西兰": "NZD",
+            "巴布亚新几内亚": "PGK",
+            "所罗门群岛": "SBD",
+            "瓦努阿图": "VUV",
+            "斐济": "FJD",
+            "萨摩亚": "WST",
             "汤加": "TOP",
-            "加拿大": "CAD", "美国": "USD", "墨西哥": "MXN", "危地马拉": "GTQ", "伯利兹": "BZD", "洪都拉斯": "HNL", "萨尔瓦多": "USD",
-            "尼加拉瓜": "NIO", "哥斯达黎加": "CRC", "巴拿马": "PAB", "古巴": "CUP", "牙买加": "JMD", "海地": "HTG", "多米尼加共和国": "DOP",
-            "波多黎各": "USD", "巴哈马": "BSD", "特立尼达和多巴哥": "TTD",
-            "哥伦比亚": "COP", "委内瑞拉": "VES", "圭亚那": "GYD", "苏里南": "SRD", "厄瓜多尔": "USD", "秘鲁": "PEN", "玻利维亚": "BOB",
-            "巴拉圭": "PYG", "乌拉圭": "UYU", "阿根廷": "ARS", "智利": "CLP", "巴西": "BRL",
-            "阿拉伯联合酋长国": "AED", "卡塔尔": "QAR", "阿曼": "OMR", "巴林": "BHD", "科威特": "KWD", "黎巴嫩": "LBP",
-            "约旦": "JOD", "叙利亚": "SYP", "伊拉克": "IQD", "以色列": "ILS", "巴勒斯坦": "ILS", "也门": "YER"
+            "加拿大": "CAD",
+            "美国": "USD",
+            "墨西哥": "MXN",
+            "危地马拉": "GTQ",
+            "伯利兹": "BZD",
+            "洪都拉斯": "HNL",
+            "萨尔瓦多": "USD",
+            "尼加拉瓜": "NIO",
+            "哥斯达黎加": "CRC",
+            "巴拿马": "PAB",
+            "古巴": "CUP",
+            "牙买加": "JMD",
+            "海地": "HTG",
+            "多米尼加共和国": "DOP",
+            "波多黎各": "USD",
+            "巴哈马": "BSD",
+            "特立尼达和多巴哥": "TTD",
+            "哥伦比亚": "COP",
+            "委内瑞拉": "VES",
+            "圭亚那": "GYD",
+            "苏里南": "SRD",
+            "厄瓜多尔": "USD",
+            "秘鲁": "PEN",
+            "玻利维亚": "BOB",
+            "巴拉圭": "PYG",
+            "乌拉圭": "UYU",
+            "阿根廷": "ARS",
+            "智利": "CLP",
+            "巴西": "BRL"
         };
 
         const COUNTRIES = Object.keys(COUNTRY_CURRENCY_MAP).map(name => ({
@@ -1582,35 +1767,186 @@
 
         function getFlagEmoji(country) {
             const map = {
-                "中国": "🇨🇳", "日本": "🇯🇵", "韩国": "🇰🇷", "蒙古": "🇲🇳", "朝鲜": "🇰🇵", "越南": "🇻🇳", "老挝": "🇱🇦", "柬埔寨": "🇰🇭",
-                "泰国": "🇹🇭", "缅甸": "🇲🇲", "马来西亚": "🇲🇾", "新加坡": "🇸🇬", "印度尼西亚": "🇮🇩", "菲律宾": "🇵🇭", "东帝汶": "🇹🇱", "文莱": "🇧🇳",
-                "印度": "🇮🇳", "巴基斯坦": "🇵🇰", "孟加拉国": "🇧🇩", "斯里兰卡": "🇱🇰", "尼泊尔": "🇳🇵", "不丹": "🇧🇹", "马尔代夫": "🇲🇻", "阿富汗": "🇦🇫",
-                "伊朗": "🇮🇷", "伊拉克": "🇮🇶", "叙利亚": "🇸🇾", "黎巴嫩": "🇱🇧", "约旦": "🇯🇴", "以色列": "🇮🇱", "巴勒斯坦": "🇵🇸", "沙特阿拉伯": "🇸🇦",
-                "也门": "🇾🇪", "阿曼": "🇴🇲", "阿联酋": "🇦🇪", "卡塔尔": "🇶🇦", "巴林": "🇧🇭", "科威特": "🇰🇼", "土耳其": "🇹🇷", "塞浦路斯": "🇨🇾",
-                "格鲁吉亚": "🇬🇪", "亚美尼亚": "🇦🇲", "阿塞拜疆": "🇦🇿", "哈萨克斯坦": "🇰🇿", "乌兹别克斯坦": "🇺🇿", "土库曼斯坦": "🇹🇲", "吉尔吉斯斯坦": "🇰🇬",
-                "塔吉克斯坦": "🇹🇯", "俄罗斯": "🇷🇺", "乌克兰": "🇺🇦", "白俄罗斯": "🇧🇾", "摩尔多瓦": "🇲🇩", "立陶宛": "🇱🇹", "拉脱维亚": "🇱🇻",
-                "爱沙尼亚": "🇪🇪", "波兰": "🇵🇱", "捷克": "🇨🇿", "斯洛伐克": "🇸🇰", "匈牙利": "🇭🇺", "罗马尼亚": "🇷🇴", "保加利亚": "🇧🇬",
-                "希腊": "🇬🇷", "阿尔巴尼亚": "🇦🇱", "北马其顿": "🇲🇰", "塞尔维亚": "🇷🇸", "黑山": "🇲🇪", "波黑": "🇧🇦", "克罗地亚": "🇭🇷",
-                "斯洛文尼亚": "🇸🇮", "奥地利": "🇦🇹", "瑞士": "🇨🇭", "列支敦士登": "🇱🇮", "德国": "🇩🇪", "荷兰": "🇳🇱", "比利时": "🇧🇪",
-                "卢森堡": "🇱🇺", "法国": "🇫🇷", "摩纳哥": "🇲🇨", "英国": "🇬🇧", "爱尔兰": "🇮🇪", "冰岛": "🇮🇸", "挪威": "🇳🇴", "瑞典": "🇸🇪",
-                "芬兰": "🇫🇮", "丹麦": "🇩🇰", "意大利": "🇮🇹", "梵蒂冈": "🇻🇦", "圣马力诺": "🇸🇲", "马耳他": "🇲🇹", "西班牙": "🇪🇸",
-                "葡萄牙": "🇵🇹", "安道尔": "🇦🇩", "摩洛哥": "🇲🇦", "阿尔及利亚": "🇩🇿", "突尼斯": "🇹🇳", "利比亚": "🇱🇾", "埃及": "🇪🇬",
-                "苏丹": "🇸🇩", "南苏丹": "🇸🇸", "埃塞俄比亚": "🇪🇹", "厄立特里亚": "🇪🇷", "吉布提": "🇩🇯", "索马里": "🇸🇴", "肯尼亚": "🇰🇪",
-                "乌干达": "🇺🇬", "坦桑尼亚": "🇹🇿", "卢旺达": "🇷🇼", "布隆迪": "🇧🇮", "刚果民主共和国": "🇨🇩", "刚果共和国": "🇨🇬", "加蓬": "🇬🇦",
-                "赤道几内亚": "🇬🇶", "喀麦隆": "🇨🇲", "尼日利亚": "🇳🇬", "贝宁": "🇧🇯", "多哥": "🇹🇬", "加纳": "🇬🇭", "科特迪瓦": "🇨🇮",
-                "利比里亚": "🇱🇷", "塞拉利昂": "🇸🇱", "几内亚": "🇬🇳", "几内亚比绍": "🇬🇼", "塞内加尔": "🇸🇳", "冈比亚": "🇬🇲", "马里": "🇲🇱",
-                "布基纳法索": "🇧🇫", "尼日尔": "🇳🇪", "乍得": "🇹🇩", "中非共和国": "🇨🇫", "赞比亚": "🇿🇲", "津巴布韦": "🇿🇼", "马拉维": "🇲🇼",
-                "莫桑比克": "🇲🇿", "博茨瓦纳": "🇧🇼", "纳米比亚": "🇳🇦", "安哥拉": "🇦🇴", "南非": "🇿🇦", "莱索托": "🇱🇸", "斯威士兰": "🇸🇿",
-                "马达加斯加": "🇲🇬", "塞舌尔": "🇸🇨", "毛里求斯": "🇲🇺", "科摩罗": "🇰🇲",
-                "澳大利亚": "🇦🇺", "新西兰": "🇳🇿", "巴布亚新几内亚": "🇵🇬", "所罗门群岛": "🇸🇧", "瓦努阿图": "🇻🇺", "斐济": "🇫🇯", "萨摩亚": "🇼🇸",
+                "中国": "🇨🇳",
+                "日本": "🇯🇵",
+                "韩国": "🇰🇷",
+                "蒙古": "🇲🇳",
+                "朝鲜": "🇰🇵",
+                "越南": "🇻🇳",
+                "老挝": "🇱🇦",
+                "柬埔寨": "🇰🇭",
+                "泰国": "🇹🇭",
+                "缅甸": "🇲🇲",
+                "马来西亚": "🇲🇾",
+                "新加坡": "🇸🇬",
+                "印度尼西亚": "🇮🇩",
+                "菲律宾": "🇵🇭",
+                "东帝汶": "🇹🇱",
+                "文莱": "🇧🇳",
+                "印度": "🇮🇳",
+                "巴基斯坦": "🇵🇰",
+                "孟加拉国": "🇧🇩",
+                "斯里兰卡": "🇱🇰",
+                "尼泊尔": "🇳🇵",
+                "不丹": "🇧🇹",
+                "马尔代夫": "🇲🇻",
+                "阿富汗": "🇦🇫",
+                "伊朗": "🇮🇷",
+                "伊拉克": "🇮🇶",
+                "叙利亚": "🇸🇾",
+                "黎巴嫩": "🇱🇧",
+                "约旦": "🇯🇴",
+                "以色列": "🇮🇱",
+                "巴勒斯坦": "🇵🇸",
+                "沙特阿拉伯": "🇸🇦",
+                "也门": "🇾🇪",
+                "阿曼": "🇴🇲",
+                "阿联酋": "🇦🇪",
+                "卡塔尔": "🇶🇦",
+                "巴林": "🇧🇭",
+                "科威特": "🇰🇼",
+                "土耳其": "🇹🇷",
+                "塞浦路斯": "🇨🇾",
+                "格鲁吉亚": "🇬🇪",
+                "亚美尼亚": "🇦🇲",
+                "阿塞拜疆": "🇦🇿",
+                "哈萨克斯坦": "🇰🇿",
+                "乌兹别克斯坦": "🇺🇿",
+                "土库曼斯坦": "🇹🇲",
+                "吉尔吉斯斯坦": "🇰🇬",
+                "塔吉克斯坦": "🇹🇯",
+                "俄罗斯": "🇷🇺",
+                "乌克兰": "🇺🇦",
+                "白俄罗斯": "🇧🇾",
+                "摩尔多瓦": "🇲🇩",
+                "立陶宛": "🇱🇹",
+                "拉脱维亚": "🇱🇻",
+                "爱沙尼亚": "🇪🇪",
+                "波兰": "🇵🇱",
+                "捷克": "🇨🇿",
+                "斯洛伐克": "🇸🇰",
+                "匈牙利": "🇭🇺",
+                "罗马尼亚": "🇷🇴",
+                "保加利亚": "🇧🇬",
+                "希腊": "🇬🇷",
+                "阿尔巴尼亚": "🇦🇱",
+                "北马其顿": "🇲🇰",
+                "塞尔维亚": "🇷🇸",
+                "黑山": "🇲🇪",
+                "波黑": "🇧🇦",
+                "克罗地亚": "🇭🇷",
+                "斯洛文尼亚": "🇸🇮",
+                "奥地利": "🇦🇹",
+                "瑞士": "🇨🇭",
+                "列支敦士登": "🇱🇮",
+                "德国": "🇩🇪",
+                "荷兰": "🇳🇱",
+                "比利时": "🇧🇪",
+                "卢森堡": "🇱🇺",
+                "法国": "🇫🇷",
+                "摩纳哥": "🇲🇨",
+                "英国": "🇬🇧",
+                "爱尔兰": "🇮🇪",
+                "冰岛": "🇮🇸",
+                "挪威": "🇳🇴",
+                "瑞典": "🇸🇪",
+                "芬兰": "🇫🇮",
+                "丹麦": "🇩🇰",
+                "意大利": "🇮🇹",
+                "梵蒂冈": "🇻🇦",
+                "圣马力诺": "🇸🇲",
+                "马耳他": "🇲🇹",
+                "西班牙": "🇪🇸",
+                "葡萄牙": "🇵🇹",
+                "安道尔": "🇦🇩",
+                "摩洛哥": "🇲🇦",
+                "阿尔及利亚": "🇩🇿",
+                "突尼斯": "🇹🇳",
+                "利比亚": "🇱🇾",
+                "埃及": "🇪🇬",
+                "苏丹": "🇸🇩",
+                "南苏丹": "🇸🇸",
+                "埃塞俄比亚": "🇪🇹",
+                "厄立特里亚": "🇪🇷",
+                "吉布提": "🇩🇯",
+                "索马里": "🇸🇴",
+                "肯尼亚": "🇰🇪",
+                "乌干达": "🇺🇬",
+                "坦桑尼亚": "🇹🇿",
+                "卢旺达": "🇷🇼",
+                "布隆迪": "🇧🇮",
+                "刚果民主共和国": "🇨🇩",
+                "刚果共和国": "🇨🇬",
+                "加蓬": "🇬🇦",
+                "赤道几内亚": "🇬🇶",
+                "喀麦隆": "🇨🇲",
+                "尼日利亚": "🇳🇬",
+                "贝宁": "🇧🇯",
+                "多哥": "🇹🇬",
+                "加纳": "🇬🇭",
+                "科特迪瓦": "🇨🇮",
+                "利比里亚": "🇱🇷",
+                "塞拉利昂": "🇸🇱",
+                "几内亚": "🇬🇳",
+                "几内亚比绍": "🇬🇼",
+                "塞内加尔": "🇸🇳",
+                "冈比亚": "🇬🇲",
+                "马里": "🇲🇱",
+                "布基纳法索": "🇧🇫",
+                "尼日尔": "🇳🇪",
+                "乍得": "🇹🇩",
+                "中非共和国": "🇨🇫",
+                "赞比亚": "🇿🇲",
+                "津巴布韦": "🇿🇼",
+                "马拉维": "🇲🇼",
+                "莫桑比克": "🇲🇿",
+                "博茨瓦纳": "🇧🇼",
+                "纳米比亚": "🇳🇦",
+                "安哥拉": "🇦🇴",
+                "南非": "🇿🇦",
+                "莱索托": "🇱🇸",
+                "斯威士兰": "🇸🇿",
+                "马达加斯加": "🇲🇬",
+                "塞舌尔": "🇸🇨",
+                "毛里求斯": "🇲🇺",
+                "科摩罗": "🇰🇲",
+                "澳大利亚": "🇦🇺",
+                "新西兰": "🇳🇿",
+                "巴布亚新几内亚": "🇵🇬",
+                "所罗门群岛": "🇸🇧",
+                "瓦努阿图": "🇻🇺",
+                "斐济": "🇫🇯",
+                "萨摩亚": "🇼🇸",
                 "汤加": "🇹🇴",
-                "加拿大": "🇨🇦", "美国": "🇺🇸", "墨西哥": "🇲🇽", "危地马拉": "🇬🇹", "伯利兹": "🇧🇿", "洪都拉斯": "🇭🇳", "萨尔瓦多": "🇸🇻",
-                "尼加拉瓜": "🇳🇮", "哥斯达黎加": "🇨🇷", "巴拿马": "🇵🇦", "古巴": "🇨🇺", "牙买加": "🇯🇲", "海地": "🇭🇹", "多米尼加共和国": "🇩🇴",
-                "波多黎各": "🇵🇷", "巴哈马": "🇧🇸", "特立尼达和多巴哥": "🇹🇹",
-                "哥伦比亚": "🇨🇴", "委内瑞拉": "🇻🇪", "圭亚那": "🇬🇾", "苏里南": "🇸🇷", "厄瓜多尔": "🇪🇨", "秘鲁": "🇵🇪", "玻利维亚": "🇧🇴",
-                "巴拉圭": "🇵🇾", "乌拉圭": "🇺🇾", "阿根廷": "🇦🇷", "智利": "🇨🇱", "巴西": "🇧🇷",
-                "阿拉伯联合酋长国": "🇦🇪", "卡塔尔": "🇶🇦", "阿曼": "🇴🇲", "巴林": "🇧🇭", "科威特": "🇰🇼", "黎巴嫩": "🇱🇧",
-                "约旦": "🇯🇴", "叙利亚": "🇸🇾", "伊拉克": "🇮🇶", "以色列": "🇮🇱", "巴勒斯坦": "🇵🇸", "也门": "🇾🇪"
+                "加拿大": "🇨🇦",
+                "美国": "🇺🇸",
+                "墨西哥": "🇲🇽",
+                "危地马拉": "🇬🇹",
+                "伯利兹": "🇧🇿",
+                "洪都拉斯": "🇭🇳",
+                "萨尔瓦多": "🇸🇻",
+                "尼加拉瓜": "🇳🇮",
+                "哥斯达黎加": "🇨🇷",
+                "巴拿马": "🇵🇦",
+                "古巴": "🇨🇺",
+                "牙买加": "🇯🇲",
+                "海地": "🇭🇹",
+                "多米尼加共和国": "🇩🇴",
+                "波多黎各": "🇵🇷",
+                "巴哈马": "🇧🇸",
+                "特立尼达和多巴哥": "🇹🇹",
+                "哥伦比亚": "🇨🇴",
+                "委内瑞拉": "🇻🇪",
+                "圭亚那": "🇬🇾",
+                "苏里南": "🇸🇷",
+                "厄瓜多尔": "🇪🇨",
+                "秘鲁": "🇵🇪",
+                "玻利维亚": "🇧🇴",
+                "巴拉圭": "🇵🇾",
+                "乌拉圭": "🇺🇾",
+                "阿根廷": "🇦🇷",
+                "智利": "🇨🇱",
+                "巴西": "🇧🇷"
             };
             return map[country] || '🌍';
         }
@@ -1629,11 +1965,11 @@
         let currentMonth = 7;
         let currentYear = 2027;
         let editingDay = null;
+        let editingDateKey = null;
+        let editingIsOutside = false;
         let formPhotos = [];
         let lastSearchTerm = '';
         let currentExchangeRate = null;
-        let currentFromCurrency = 'CNY';
-        let currentToCurrency = 'USD';
 
         // ================================================================
         //  工具函数
@@ -1662,8 +1998,16 @@
             return date;
         }
 
+        function getDateKey(year, month, date) {
+            return `${year}-${String(month+1).padStart(2,'0')}-${String(date).padStart(2,'0')}`;
+        }
+
         function getDayData(dayNum) {
             return tripData.find(d => d.day === dayNum);
+        }
+
+        function getTripByDateKey(dateKey) {
+            return tripData.find(d => d.date_key === dateKey);
         }
 
         function getCountryInfo(name) {
@@ -1692,8 +2036,13 @@
             return diff >= 0 && diff < TOTAL_DAYS;
         }
 
+        function isDateInCalendarRange(year, month, date) {
+            const target = new Date(year, month, date);
+            return target >= CALENDAR_START && target <= CALENDAR_END;
+        }
+
         // ================================================================
-        //  汇率获取 (使用免费API，带备用逻辑)
+        //  汇率获取
         // ================================================================
         async function fetchExchangeRate(from, to) {
             try {
@@ -1707,31 +2056,34 @@
                 throw new Error('货币对不支持');
             } catch (err) {
                 console.warn('汇率API获取失败，使用备用汇率', err);
-                // 备用静态汇率 (仅供演示)
                 const fallbackRates = {
-                    'CNY': { 'USD': 0.14, 'EUR': 0.13, 'JPY': 20.5, 'GBP': 0.11, 'KRW': 185, 'KZT': 65, 'RUB': 12, 'TRY': 4.5 },
-                    'USD': { 'CNY': 7.15, 'EUR': 0.92, 'JPY': 146, 'GBP': 0.79, 'KRW': 1320, 'KZT': 460, 'RUB': 85, 'TRY': 28.5 },
-                    'EUR': { 'CNY': 7.8, 'USD': 1.09, 'JPY': 159, 'GBP': 0.86, 'KRW': 1430, 'KZT': 500, 'RUB': 92, 'TRY': 31 },
+                    'CNY': { 'USD': 0.14, 'EUR': 0.13, 'JPY': 20.5, 'GBP': 0.11, 'KRW': 185, 'KZT': 65, 'RUB': 12, 'TRY': 4.5,
+                        'ISK': 19.5, 'THB': 5.0, 'SGD': 0.19, 'MYR': 0.65, 'VND': 3550, 'INR': 11.8, 'AED': 0.51, 'SAR': 0.52 },
+                    'USD': { 'CNY': 7.15, 'EUR': 0.92, 'JPY': 146, 'GBP': 0.79, 'KRW': 1320, 'KZT': 460, 'RUB': 85, 'TRY': 28.5,
+                        'ISK': 139, 'THB': 35, 'SGD': 1.35, 'MYR': 4.6, 'VND': 24800, 'INR': 82, 'AED': 3.67, 'SAR': 3.75 },
+                    'EUR': { 'CNY': 7.8, 'USD': 1.09, 'JPY': 159, 'GBP': 0.86, 'KRW': 1430, 'KZT': 500, 'RUB': 92, 'TRY': 31,
+                        'ISK': 151, 'THB': 38, 'SGD': 1.47, 'MYR': 5.0, 'VND': 27000, 'INR': 89, 'AED': 4.0, 'SAR': 4.1 }
                 };
                 if (fallbackRates[from] && fallbackRates[from][to]) {
                     return fallbackRates[from][to];
                 }
-                return 0.14; // 默认
+                return 0.14;
             }
         }
 
         async function updateExchangeWidget(countryName) {
+            if (!countryName || countryName === '待定') {
+                document.getElementById('exchangeWidget').style.display = 'none';
+                return;
+            }
             const toCurrency = getCurrencyCode(countryName);
-            currentToCurrency = toCurrency;
-            currentFromCurrency = 'CNY';
-
             const rate = await fetchExchangeRate('CNY', toCurrency);
             currentExchangeRate = rate;
 
             document.getElementById('toCurrency').textContent = toCurrency;
             document.getElementById('exchangeRateInfo').textContent = `1 CNY ≈ ${rate.toFixed(4)} ${toCurrency}`;
+            document.getElementById('exchangeWidget').style.display = 'flex';
 
-            // 触发转换
             const input = document.getElementById('exchangeInput');
             const val = parseFloat(input.value) || 0;
             document.getElementById('exchangeResult').textContent = `= ${(val * rate).toFixed(2)}`;
@@ -1740,7 +2092,7 @@
         function refreshExchangeRate() {
             const countryEl = document.getElementById('detailCountry');
             const countryText = countryEl.textContent.trim();
-            const countryName = countryText.replace(/[🇨🇳🇯🇵🇰🇷🇺🇸🇪🇺🇬🇧🇦🇺🇨🇦🇸🇬🇲🇾🇹🇭🇻🇳🇮🇳🇷🇺🇹🇷🇰🇿🇺🇿🇦🇪🇸🇦🇿🇦🇪🇬🇧🇷🇦🇷🇨🇱🇲🇽]/g, '').trim();
+            const countryName = countryText.replace(/[🇨🇳🇯🇵🇰🇷🇺🇸🇪🇺🇬🇧🇦🇺🇨🇦🇸🇬🇲🇾🇹🇭🇻🇳🇮🇳🇷🇺🇹🇷🇰🇿🇺🇿🇦🇪🇸🇦🇿🇦🇪🇬🇧🇷🇦🇷🇨🇱🇲🇽🇮🇸]/g, '').trim();
             if (countryName) {
                 updateExchangeWidget(countryName);
             }
@@ -1820,7 +2172,7 @@
 
             const results = [];
             tripData.forEach(d => {
-                if (d.city === `Day ${d.day}`) return;
+                if (d.city === `Day ${d.day}` && !d.is_outside) return;
                 let sightsArr = [];
                 try { sightsArr = typeof d.sights === 'string' ? JSON.parse(d.sights) : (d.sights || []); } catch (e) {}
 
@@ -1836,7 +2188,9 @@
                         country: d.country,
                         sights: sightsArr,
                         note: d.daily_note,
-                        date: d.date
+                        date: d.date,
+                        is_outside: d.is_outside,
+                        date_key: d.date_key
                     });
                 }
             });
@@ -1852,11 +2206,13 @@
             let html = '';
             results.forEach(r => {
                 const dateObj = new Date(r.date);
-                const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getDate()).padStart(2,'0')}`;
+                const dateStr =
+                    `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getDate()).padStart(2,'0')}`;
                 const sightsDisplay = r.sights.length > 0 ? r.sights.slice(0, 3).join(' · ') : '';
+                const badge = r.is_outside ? '📌 独立' : `Day ${r.day}`;
                 html += `
-                    <div class="result-item" onclick="jumpToDay(${r.day})">
-                        <span class="result-day">Day ${r.day}</span>
+                    <div class="result-item" onclick="jumpToDate('${r.date_key}')">
+                        <span class="result-day">${badge}</span>
                         <div class="result-info">
                             <span class="result-city">${r.city}</span>
                             <span class="result-country">${getCountryFlag(r.country)} ${r.country}</span>
@@ -1923,9 +2279,11 @@
                     tripData = [];
                     for (let i = 1; i <= TOTAL_DAYS; i++) {
                         const date = getDateFromDay(i);
+                        const dateKey = date.toISOString().split('T')[0];
                         tripData.push({
                             day: i,
-                            date: date.toISOString().split('T')[0],
+                            date: dateKey,
+                            date_key: dateKey,
                             city: `Day ${i}`,
                             country: '待定',
                             sights: JSON.stringify(['待补充']),
@@ -1941,10 +2299,19 @@
                             food_price: 0,
                             food_note: '',
                             other_price: 0,
-                            other_note: ''
+                            other_note: '',
+                            is_outside: false
                         });
                     }
                 }
+                // 确保所有数据都有 date_key
+                tripData.forEach(d => {
+                    if (!d.date_key) {
+                        const date = new Date(d.date);
+                        d.date_key = date.toISOString().split('T')[0];
+                    }
+                    if (d.is_outside === undefined) d.is_outside = false;
+                });
             } catch (err) {
                 console.warn('加载失败', err);
                 const cached = localStorage.getItem('tripData_cache');
@@ -1982,45 +2349,6 @@
                     localStorage.setItem('tripData_cache', JSON.stringify(tripData)); }
                 return false;
             }
-        }
-
-        async function createNewTrip(day, data) {
-            const date = getDateFromDay(day);
-            const newData = {
-                day: day,
-                date: date.toISOString().split('T')[0],
-                city: data.city || `Day ${day}`,
-                country: data.country || '待定',
-                sights: JSON.stringify(data.sights ? data.sights.split(',').map(s => s.trim()) : ['待补充']),
-                hotel_name: data.hotel_name || '',
-                hotel_note: '',
-                daily_note: data.daily_note || '',
-                ticket_price: '',
-                transport_note: '',
-                image_urls: JSON.stringify(data.image_urls || []),
-                hotel_price: parseFloat(data.hotel_price) || 0,
-                transport_price: parseFloat(data.transport_price) || 0,
-                ticket_price_num: parseFloat(data.ticket_price) || 0,
-                food_price: parseFloat(data.food_price) || 0,
-                food_note: '',
-                other_price: parseFloat(data.other_price) || 0,
-                other_note: ''
-            };
-            try {
-                const res = await fetch(`${SUPABASE_URL}trip_days`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newData)
-                });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                tripData.push(newData);
-                localStorage.setItem('tripData_cache', JSON.stringify(tripData));
-                return true;
-            } catch (e) { console.warn(e); return false; }
         }
 
         // ================================================================
@@ -2077,85 +2405,125 @@
                 const cell = document.createElement('div');
                 const dayNum = getDayNumberForDate(currentYear, currentMonth, d);
                 const inRange = isInTripRange(currentYear, currentMonth, d);
+                const dateKey = getDateKey(currentYear, currentMonth, d);
+                const inCalendar = isDateInCalendarRange(currentYear, currentMonth, d);
 
                 cell.className = 'day-cell';
 
-                if (inRange && dayNum !== null) {
-                    const data = getDayData(dayNum);
+                if (!inCalendar) {
+                    cell.classList.add('empty');
                     const dateEl = document.createElement('div');
                     dateEl.className = 'date';
                     dateEl.textContent = `${currentMonth+1}/${d}`;
                     cell.appendChild(dateEl);
+                    grid.appendChild(cell);
+                    continue;
+                }
 
-                    if (data && data.city && data.city !== `Day ${dayNum}`) {
-                        const dayLabel = document.createElement('div');
-                        dayLabel.className = 'day-label';
-                        dayLabel.textContent = `Day${data.day}`;
-                        cell.appendChild(dayLabel);
+                const data = inRange ? getDayData(dayNum) : null;
+                const outsideTrip = getTripByDateKey(dateKey);
 
-                        const cityEl = document.createElement('div');
-                        cityEl.className = 'city';
-                        cityEl.textContent = data.city && data.city.length > 8 ? data.city.slice(0, 8) + '…' : (data.city ||
-                        '');
-                        cell.appendChild(cityEl);
+                const dateEl = document.createElement('div');
+                dateEl.className = 'date';
+                dateEl.textContent = `${currentMonth+1}/${d}`;
+                cell.appendChild(dateEl);
 
-                        const flagEl = document.createElement('div');
-                        flagEl.className = 'flag';
-                        flagEl.textContent = getCountryFlag(data.country) || '🌍';
-                        cell.appendChild(flagEl);
+                if (inRange && dayNum !== null && data && data.city && data.city !== `Day ${dayNum}`) {
+                    // 核心行程
+                    const dayLabel = document.createElement('div');
+                    dayLabel.className = 'day-label';
+                    dayLabel.textContent = `Day${data.day}`;
+                    cell.appendChild(dayLabel);
 
-                        const dot = document.createElement('div');
-                        dot.className = 'dot';
-                        const hasCost = (parseFloat(data.hotel_price) > 0) || (parseFloat(data.transport_price) > 0) ||
-                            (parseFloat(data.ticket_price_num) > 0) || (parseFloat(data.food_price) > 0) ||
-                            (parseFloat(data.other_price) > 0);
-                        if (hasCost) dot.classList.add('has-cost-dot');
-                        const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
-                        const hasReminder = reminderKeywords.some(kw => (data.daily_note || '').includes(kw));
-                        if (hasReminder) dot.classList.add('reminder-dot');
-                        if (dayNum === getTodayDay()) dot.classList.add('today-dot');
-                        cell.appendChild(dot);
+                    const cityEl = document.createElement('div');
+                    cityEl.className = 'city';
+                    cityEl.textContent = data.city && data.city.length > 8 ? data.city.slice(0, 8) + '…' : (data.city || '');
+                    cell.appendChild(cityEl);
 
-                        let photoUrls = [];
-                        try { photoUrls = JSON.parse(data.image_urls || '[]'); } catch (e) {}
-                        if (photoUrls.length > 0) {
-                            const photoInd = document.createElement('div');
-                            photoInd.className = 'photo-indicator';
-                            photoInd.textContent = `📷 ${photoUrls.length}`;
-                            cell.appendChild(photoInd);
-                        }
+                    const flagEl = document.createElement('div');
+                    flagEl.className = 'flag';
+                    flagEl.textContent = getCountryFlag(data.country) || '🌍';
+                    cell.appendChild(flagEl);
 
-                        if (dayNum === getTodayDay()) cell.classList.add('today');
-                        if (dayNum === currentDay) cell.classList.add('selected');
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    const hasCost = (parseFloat(data.hotel_price) > 0) || (parseFloat(data.transport_price) > 0) ||
+                        (parseFloat(data.ticket_price_num) > 0) || (parseFloat(data.food_price) > 0) ||
+                        (parseFloat(data.other_price) > 0);
+                    if (hasCost) dot.classList.add('has-cost-dot');
+                    const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
+                    const hasReminder = reminderKeywords.some(kw => (data.daily_note || '').includes(kw));
+                    if (hasReminder) dot.classList.add('reminder-dot');
+                    if (dayNum === getTodayDay()) dot.classList.add('today-dot');
+                    cell.appendChild(dot);
 
-                        cell.dataset.day = dayNum;
-                        cell.addEventListener('click', () => { jumpToDay(dayNum); });
-                        cell.classList.add('has-trip');
-                    } else {
-                        cell.classList.add('no-data');
-                        const addHint = document.createElement('div');
-                        addHint.className = 'add-hint';
-                        addHint.textContent = '+ 添加';
-                        cell.appendChild(addHint);
-                        cell.dataset.day = dayNum;
-                        cell.addEventListener('click', () => { openTripModal(dayNum); });
+                    let photoUrls = [];
+                    try { photoUrls = JSON.parse(data.image_urls || '[]'); } catch (e) {}
+                    if (photoUrls.length > 0) {
+                        const photoInd = document.createElement('div');
+                        photoInd.className = 'photo-indicator';
+                        photoInd.textContent = `📷 ${photoUrls.length}`;
+                        cell.appendChild(photoInd);
                     }
+
+                    if (dayNum === getTodayDay()) cell.classList.add('today');
+                    if (dayNum === currentDay) cell.classList.add('selected');
+
+                    cell.dataset.day = dayNum;
+                    cell.dataset.dateKey = dateKey;
+                    cell.addEventListener('click', () => { jumpToDate(dateKey); });
+                    cell.classList.add('has-trip');
+                } else if (outsideTrip && outsideTrip.is_outside) {
+                    // 独立行程
+                    const badge = document.createElement('div');
+                    badge.className = 'outside-trip-badge';
+                    badge.textContent = '📌';
+                    cell.appendChild(badge);
+
+                    const cityEl = document.createElement('div');
+                    cityEl.className = 'city';
+                    cityEl.textContent = outsideTrip.city && outsideTrip.city.length > 8 ? outsideTrip.city.slice(0, 8) +
+                        '…' : (outsideTrip.city || '');
+                    cell.appendChild(cityEl);
+
+                    const flagEl = document.createElement('div');
+                    flagEl.className = 'flag';
+                    flagEl.textContent = getCountryFlag(outsideTrip.country) || '🌍';
+                    cell.appendChild(flagEl);
+
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    const hasCost = (parseFloat(outsideTrip.hotel_price) > 0) || (parseFloat(outsideTrip.transport_price) >
+                        0) ||
+                        (parseFloat(outsideTrip.ticket_price_num) > 0) || (parseFloat(outsideTrip.food_price) > 0) ||
+                        (parseFloat(outsideTrip.other_price) > 0);
+                    if (hasCost) dot.classList.add('has-cost-dot');
+                    cell.appendChild(dot);
+
+                    let photoUrls = [];
+                    try { photoUrls = JSON.parse(outsideTrip.image_urls || '[]'); } catch (e) {}
+                    if (photoUrls.length > 0) {
+                        const photoInd = document.createElement('div');
+                        photoInd.className = 'photo-indicator';
+                        photoInd.textContent = `📷 ${photoUrls.length}`;
+                        cell.appendChild(photoInd);
+                    }
+
+                    cell.dataset.day = 'outside';
+                    cell.dataset.dateKey = dateKey;
+                    cell.addEventListener('click', () => { jumpToDate(dateKey); });
+                    cell.classList.add('has-outside-trip');
                 } else {
+                    // 空日期 - 可添加独立行程
                     cell.classList.add('no-data');
-                    const dateEl = document.createElement('div');
-                    dateEl.className = 'date';
-                    dateEl.textContent = `${currentMonth+1}/${d}`;
-                    cell.appendChild(dateEl);
                     const addHint = document.createElement('div');
                     addHint.className = 'add-hint';
                     addHint.textContent = '+ 添加';
                     cell.appendChild(addHint);
                     cell.dataset.day = 'outside';
-                    cell.dataset.dateKey =
-                    `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                    cell.dataset.dateKey = dateKey;
                     cell.addEventListener('click', function() {
-                        const dateKey = this.dataset.dateKey;
-                        openOutsideTripModal(dateKey);
+                        openOutsideTripModal(this.dataset.dateKey);
                     });
                 }
                 grid.appendChild(cell);
@@ -2175,39 +2543,80 @@
             currentMonth = date.getMonth();
 
             buildCalendar();
-            showDayDetail(day);
+            const dateKey = date.toISOString().split('T')[0];
+            showDayDetail(dateKey);
 
             document.getElementById('jumpInput').value = day;
 
             const cells = document.querySelectorAll('.day-cell');
             cells.forEach(cell => {
                 cell.classList.remove('selected');
-                if (parseInt(cell.dataset.day) === day) {
+                if (cell.dataset.dateKey === dateKey) {
                     cell.classList.add('selected');
                 }
             });
 
             document.getElementById('searchResultsDropdown').classList.remove('active');
+            document.getElementById('dayDetail').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
+        function jumpToDate(dateKey) {
+            const trip = getTripByDateKey(dateKey);
+            const parts = dateKey.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const date = parseInt(parts[2]);
+
+            currentYear = year;
+            currentMonth = month;
+            buildCalendar();
+
+            const cells = document.querySelectorAll('.day-cell');
+            cells.forEach(cell => {
+                cell.classList.remove('selected');
+                if (cell.dataset.dateKey === dateKey) {
+                    cell.classList.add('selected');
+                }
+            });
+
+            showDayDetail(dateKey);
+
+            document.getElementById('searchResultsDropdown').classList.remove('active');
             document.getElementById('dayDetail').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         // ================================================================
-        //  显示行程详情
+        //  显示行程详情（统一使用 dateKey）
         // ================================================================
-        function showDayDetail(day) {
-            const data = getDayData(day);
+        function showDayDetail(dateKey) {
+            let data = getTripByDateKey(dateKey);
+            let isOutside = false;
+
+            // 如果没有找到，尝试从核心行程中找
+            if (!data) {
+                const parts = dateKey.split('-');
+                const year = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                const date = parseInt(parts[2]);
+                const dayNum = getDayNumberForDate(year, month, date);
+                if (dayNum !== null) {
+                    data = getDayData(dayNum);
+                }
+            }
+
             const detail = document.getElementById('dayDetail');
             const empty = document.getElementById('emptyState');
 
-            if (!data || data.city === `Day ${day}`) {
+            if (!data || (data.city === `Day ${data.day}` && !data.is_outside)) {
                 detail.classList.remove('active');
                 empty.style.display = 'block';
+                const dateObj = new Date(dateKey);
+                const dateStr = formatDateDisplay(dateObj);
                 empty.innerHTML = `
                     <div class="big-icon">📅</div>
-                    <div>Day ${day} 暂无行程</div>
+                    <div>${dateStr} 暂无行程</div>
                     <div style="font-size:0.8rem;opacity:0.5;margin-top:4px;">
-                        <button onclick="openTripModal(${day})" style="background:#4a9eff;border:none;color:#fff;padding:6px 20px;border-radius:30px;cursor:pointer;font-size:0.8rem;">➕ 添加行程</button>
+                        <button onclick="openOutsideTripModal('${dateKey}')" style="background:#4a9eff;border:none;color:#fff;padding:6px 20px;border-radius:30px;cursor:pointer;font-size:0.8rem;">➕ 添加独立行程</button>
                     </div>
                 `;
                 return;
@@ -2216,20 +2625,37 @@
             empty.style.display = 'none';
             detail.classList.add('active');
 
-            const date = getDateFromDay(day);
-            document.getElementById('detailTitle').textContent = `Day ${data.day}`;
-            document.getElementById('detailDate').textContent = formatDateDisplay(date);
-            document.getElementById('detailCountry').textContent = `${getCountryFlag(data.country) || '🌍'} ${data.country || '待定'}`;
+            isOutside = data.is_outside || false;
+
+            const dateObj = new Date(data.date);
+            document.getElementById('detailDate').textContent = formatDateDisplay(dateObj);
+
+            const titleEl = document.getElementById('detailTitle');
+            const badgeEl = document.getElementById('tripTypeBadge');
+            if (isOutside) {
+                titleEl.textContent = `📌 独立行程`;
+                badgeEl.textContent = '📌 独立行程';
+                badgeEl.style.background = '#4a9eff33';
+                badgeEl.style.color = '#4a9eff';
+                badgeEl.style.border = '1px solid #4a9eff44';
+            } else {
+                titleEl.textContent = `Day ${data.day}`;
+                badgeEl.textContent = '📌 核心行程 (Day ' + data.day + ')';
+                badgeEl.style.background = '#f9d77e22';
+                badgeEl.style.color = '#f9d77e';
+                badgeEl.style.border = '1px solid #f9d77e44';
+            }
+
+            document.getElementById('detailCountry').textContent =
+                `${getCountryFlag(data.country) || '🌍'} ${data.country || '待定'}`;
 
             // 更新汇率转换器
             if (data.country && data.country !== '待定') {
                 updateExchangeWidget(data.country);
-                document.getElementById('exchangeWidget').style.display = 'flex';
             } else {
                 document.getElementById('exchangeWidget').style.display = 'none';
             }
 
-            // 绑定汇率输入实时转换
             const exchangeInput = document.getElementById('exchangeInput');
             exchangeInput.oninput = function() {
                 const val = parseFloat(this.value) || 0;
@@ -2274,7 +2700,7 @@
                 photoGallery.innerHTML = photoUrls.map((url, idx) => `
                     <div class="photo-thumb">
                         <img src="${url}" alt="行程照片 ${idx+1}" onclick="window.open('${url}','_blank')" />
-                        <button class="remove-photo" onclick="removePhotoFromDay(${data.day}, ${idx})">×</button>
+                        <button class="remove-photo" onclick="removePhotoFromTrip('${data.date_key}', ${idx})">×</button>
                     </div>
                 `).join('');
             } else {
@@ -2282,7 +2708,16 @@
                     '<div style="color:#4a6a8a;font-size:0.8rem;padding:4px 0;">暂无照片，点击编辑添加</div>';
             }
 
-            editingDay = day;
+            // 保存当前编辑信息
+            if (isOutside) {
+                editingDateKey = data.date_key;
+                editingIsOutside = true;
+                editingDay = null;
+            } else {
+                editingDay = data.day;
+                editingIsOutside = false;
+                editingDateKey = null;
+            }
         }
 
         // ================================================================
@@ -2389,16 +2824,119 @@
             renderFormPhotos();
         }
 
-        async function removePhotoFromDay(day, index) {
-            const data = getDayData(day);
+        async function removePhotoFromTrip(dateKey, index) {
+            const data = getTripByDateKey(dateKey);
             if (!data) return;
             let photoUrls = [];
             try { photoUrls = JSON.parse(data.image_urls || '[]'); } catch (e) {}
             if (index >= 0 && index < photoUrls.length) {
                 photoUrls.splice(index, 1);
-                await saveToSupabase(day, 'image_urls', JSON.stringify(photoUrls));
+                if (data.is_outside) {
+                    await saveOutsideTrip(data.date_key, { image_urls: JSON.stringify(photoUrls) });
+                } else {
+                    await saveToSupabase(data.day, 'image_urls', JSON.stringify(photoUrls));
+                }
                 refreshAll();
-                jumpToDay(day);
+                jumpToDate(dateKey);
+            }
+        }
+
+        // ================================================================
+        //  保存独立行程（核心修复）
+        // ================================================================
+        async function saveOutsideTrip(dateKey, updates) {
+            const existing = getTripByDateKey(dateKey);
+
+            // 确保 updates 中有必要的字段
+            const payload = {
+                ...updates,
+                date_key: dateKey,
+                date: dateKey,
+                updated_at: new Date().toISOString()
+            };
+
+            // 如果已有独立行程，更新
+            if (existing && existing.is_outside) {
+                try {
+                    const res = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error(`HTTP ${res.status}: ${errText}`);
+                    }
+                    const result = await res.json();
+                    const idx = tripData.findIndex(d => d.date_key === dateKey);
+                    if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result[0] };
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                    return true;
+                } catch (err) {
+                    console.error('更新独立行程失败:', err);
+                    throw err;
+                }
+            } else {
+                // 创建新的独立行程
+                // 需要构造一个完整的数据对象
+                const newData = {
+                    day: 9999 + Math.floor(Math.random() * 10000),
+                    date: dateKey,
+                    date_key: dateKey,
+                    city: updates.city || '新行程',
+                    country: updates.country || '中国',
+                    sights: updates.sights || JSON.stringify(['待补充']),
+                    hotel_name: updates.hotel_name || '',
+                    hotel_note: updates.hotel_note || '',
+                    daily_note: updates.daily_note || '',
+                    ticket_price: updates.ticket_price || '',
+                    transport_note: updates.transport_note || '',
+                    image_urls: updates.image_urls || '[]',
+                    hotel_price: parseFloat(updates.hotel_price) || 0,
+                    transport_price: parseFloat(updates.transport_price) || 0,
+                    ticket_price_num: parseFloat(updates.ticket_price_num) || 0,
+                    food_price: parseFloat(updates.food_price) || 0,
+                    food_note: updates.food_note || '',
+                    other_price: parseFloat(updates.other_price) || 0,
+                    other_note: updates.other_note || '',
+                    is_outside: true
+                };
+
+                try {
+                    const res = await fetch(`${SUPABASE_URL}trip_days`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newData)
+                    });
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error(`HTTP ${res.status}: ${errText}`);
+                    }
+                    const result = await res.json();
+                    // 合并结果
+                    const savedData = { ...newData, ...result };
+                    // 检查是否已存在（避免重复）
+                    const existingIdx = tripData.findIndex(d => d.date_key === dateKey);
+                    if (existingIdx !== -1) {
+                        tripData[existingIdx] = savedData;
+                    } else {
+                        tripData.push(savedData);
+                    }
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                    return true;
+                } catch (err) {
+                    console.error('创建独立行程失败:', err);
+                    throw err;
+                }
             }
         }
 
@@ -2413,8 +2951,10 @@
             placeholderCount = 0;
 
             if (data && data.city !== `Day ${day}`) {
-                title.textContent = '✏️ 编辑行程';
+                title.textContent = '✏️ 编辑核心行程 (Day ' + day + ')';
                 document.getElementById('editDay').value = day;
+                document.getElementById('editDateKey').value = data.date_key;
+                document.getElementById('editIsOutside').value = 'false';
                 const date = getDateFromDay(day);
                 document.getElementById('tripDate').value = date.toISOString().split('T')[0];
                 document.getElementById('tripCity').value = data.city || '';
@@ -2431,8 +2971,10 @@
                 document.getElementById('tripOtherPrice').value = data.other_price || '';
                 try { formPhotos = JSON.parse(data.image_urls || '[]'); } catch (e) { formPhotos = []; }
             } else {
-                title.textContent = '✈️ 添加行程';
+                title.textContent = '✈️ 添加核心行程 (Day ' + day + ')';
                 document.getElementById('editDay').value = day;
+                document.getElementById('editDateKey').value = '';
+                document.getElementById('editIsOutside').value = 'false';
                 const date = getDateFromDay(day);
                 document.getElementById('tripDate').value = date.toISOString().split('T')[0];
                 document.getElementById('tripCity').value = '';
@@ -2454,21 +2996,49 @@
         }
 
         function openOutsideTripModal(dateKey) {
+            const data = getTripByDateKey(dateKey);
             const modal = document.getElementById('tripModal');
-            document.getElementById('modalTitle').textContent = '📅 添加外部行程';
-            document.getElementById('editDay').value = '';
-            document.getElementById('tripDate').value = dateKey;
-            document.getElementById('tripCity').value = '';
-            document.getElementById('tripCountry').value = '中国';
-            document.getElementById('countrySearchInput').value = '中国';
-            document.getElementById('tripSights').value = '';
-            document.getElementById('tripNote').value = '';
-            document.getElementById('tripHotelPrice').value = '';
-            document.getElementById('tripTransportPrice').value = '';
-            document.getElementById('tripTicketPrice').value = '';
-            document.getElementById('tripFoodPrice').value = '';
-            document.getElementById('tripOtherPrice').value = '';
+            const title = document.getElementById('modalTitle');
             formPhotos = [];
+            placeholderCount = 0;
+
+            if (data && data.is_outside) {
+                title.textContent = '✏️ 编辑独立行程';
+                document.getElementById('editDay').value = '';
+                document.getElementById('editDateKey').value = dateKey;
+                document.getElementById('editIsOutside').value = 'true';
+                document.getElementById('tripDate').value = dateKey;
+                document.getElementById('tripCity').value = data.city || '';
+                document.getElementById('tripCountry').value = data.country || '中国';
+                document.getElementById('countrySearchInput').value = data.country || '中国';
+                document.getElementById('tripSights').value = (() => {
+                    try { return JSON.parse(data.sights || '[]').join(', '); } catch (e) { return ''; }
+                })();
+                document.getElementById('tripNote').value = data.daily_note || '';
+                document.getElementById('tripHotelPrice').value = data.hotel_price || '';
+                document.getElementById('tripTransportPrice').value = data.transport_price || '';
+                document.getElementById('tripTicketPrice').value = data.ticket_price_num || '';
+                document.getElementById('tripFoodPrice').value = data.food_price || '';
+                document.getElementById('tripOtherPrice').value = data.other_price || '';
+                try { formPhotos = JSON.parse(data.image_urls || '[]'); } catch (e) { formPhotos = []; }
+            } else {
+                title.textContent = '📅 添加独立行程';
+                document.getElementById('editDay').value = '';
+                document.getElementById('editDateKey').value = dateKey;
+                document.getElementById('editIsOutside').value = 'true';
+                document.getElementById('tripDate').value = dateKey;
+                document.getElementById('tripCity').value = '';
+                document.getElementById('tripCountry').value = '中国';
+                document.getElementById('countrySearchInput').value = '中国';
+                document.getElementById('tripSights').value = '';
+                document.getElementById('tripNote').value = '';
+                document.getElementById('tripHotelPrice').value = '';
+                document.getElementById('tripTransportPrice').value = '';
+                document.getElementById('tripTicketPrice').value = '';
+                document.getElementById('tripFoodPrice').value = '';
+                document.getElementById('tripOtherPrice').value = '';
+                formPhotos = [];
+            }
             renderFormPhotos();
             document.getElementById('uploadStatus').textContent = '';
             modal.classList.add('active');
@@ -2478,11 +3048,18 @@
         function closeTripModal() {
             document.getElementById('tripModal').classList.remove('active');
             editingDay = null;
+            editingDateKey = null;
+            editingIsOutside = false;
             formPhotos = [];
         }
 
+        // ================================================================
+        //  保存行程（核心修复）
+        // ================================================================
         async function saveTrip() {
-            const day = parseInt(document.getElementById('editDay').value);
+            const day = parseInt(document.getElementById('editDay').value) || null;
+            const dateKey = document.getElementById('editDateKey').value;
+            const isOutside = document.getElementById('editIsOutside').value === 'true';
             const dateStr = document.getElementById('tripDate').value;
             const city = document.getElementById('tripCity').value.trim() || '新行程';
             const country = document.getElementById('tripCountry').value || '中国';
@@ -2494,54 +3071,169 @@
             const foodPrice = parseFloat(document.getElementById('tripFoodPrice').value) || 0;
             const otherPrice = parseFloat(document.getElementById('tripOtherPrice').value) || 0;
 
-            if (!day || isNaN(day)) {
-                alert('请选择有效的日期');
+            if (!dateStr) {
+                alert('请选择日期');
                 return;
             }
 
-            const existing = getDayData(day);
-            if (existing && existing.city !== `Day ${day}`) {
-                await saveToSupabase(day, 'city', city);
-                await saveToSupabase(day, 'country', country);
-                await saveToSupabase(day, 'sights', JSON.stringify(sights.split(',').map(s => s.trim())));
-                await saveToSupabase(day, 'daily_note', note);
-                await saveToSupabase(day, 'hotel_price', hotelPrice);
-                await saveToSupabase(day, 'transport_price', transportPrice);
-                await saveToSupabase(day, 'ticket_price_num', ticketPrice);
-                await saveToSupabase(day, 'food_price', foodPrice);
-                await saveToSupabase(day, 'other_price', otherPrice);
-                if (formPhotos.length > 0) {
-                    await saveToSupabase(day, 'image_urls', JSON.stringify(formPhotos));
-                }
-            } else {
-                await createNewTrip(day, {
-                    city,
-                    country,
-                    sights,
-                    daily_note: note,
-                    hotel_price: hotelPrice,
-                    transport_price: transportPrice,
-                    ticket_price: ticketPrice,
-                    food_price: foodPrice,
-                    other_price: otherPrice,
-                    image_urls: formPhotos
-                });
-            }
+            const updates = {
+                city: city,
+                country: country,
+                sights: JSON.stringify(sights.split(',').map(s => s.trim())),
+                daily_note: note,
+                hotel_price: hotelPrice,
+                transport_price: transportPrice,
+                ticket_price_num: ticketPrice,
+                food_price: foodPrice,
+                other_price: otherPrice,
+                image_urls: JSON.stringify(formPhotos),
+                date_key: dateStr,
+                date: dateStr
+            };
 
-            closeTripModal();
-            refreshAll();
-            jumpToDay(day);
+            try {
+                if (isOutside) {
+                    // 独立行程：使用 saveOutsideTrip
+                    await saveOutsideTrip(dateStr, updates);
+                } else {
+                    // 核心行程：Day 1-70
+                    if (day && !isNaN(day) && day >= 1 && day <= TOTAL_DAYS) {
+                        const existing = getDayData(day);
+                        if (existing && existing.city !== `Day ${day}`) {
+                            // 更新已有核心行程
+                            await saveToSupabase(day, 'city', city);
+                            await saveToSupabase(day, 'country', country);
+                            await saveToSupabase(day, 'sights', JSON.stringify(sights.split(',').map(s => s.trim())));
+                            await saveToSupabase(day, 'daily_note', note);
+                            await saveToSupabase(day, 'hotel_price', hotelPrice);
+                            await saveToSupabase(day, 'transport_price', transportPrice);
+                            await saveToSupabase(day, 'ticket_price_num', ticketPrice);
+                            await saveToSupabase(day, 'food_price', foodPrice);
+                            await saveToSupabase(day, 'other_price', otherPrice);
+                            if (formPhotos.length > 0) {
+                                await saveToSupabase(day, 'image_urls', JSON.stringify(formPhotos));
+                            }
+                        } else {
+                            // 创建新的核心行程
+                            const date = getDateFromDay(day);
+                            const newData = {
+                                day: day,
+                                date: date.toISOString().split('T')[0],
+                                date_key: date.toISOString().split('T')[0],
+                                city: city,
+                                country: country,
+                                sights: JSON.stringify(sights.split(',').map(s => s.trim())),
+                                hotel_name: '',
+                                hotel_note: '',
+                                daily_note: note,
+                                ticket_price: '',
+                                transport_note: '',
+                                image_urls: JSON.stringify(formPhotos),
+                                hotel_price: hotelPrice,
+                                transport_price: transportPrice,
+                                ticket_price_num: ticketPrice,
+                                food_price: foodPrice,
+                                food_note: '',
+                                other_price: otherPrice,
+                                other_note: '',
+                                is_outside: false
+                            };
+                            try {
+                                const res = await fetch(`${SUPABASE_URL}trip_days`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'apikey': SUPABASE_KEY,
+                                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(newData)
+                                });
+                                if (!res.ok) {
+                                    const errText = await res.text();
+                                    throw new Error(`HTTP ${res.status}: ${errText}`);
+                                }
+                                const result = await res.json();
+                                const existingIdx = tripData.findIndex(d => d.day === day);
+                                if (existingIdx !== -1) {
+                                    tripData[existingIdx] = { ...newData, ...result };
+                                } else {
+                                    tripData.push({ ...newData, ...result });
+                                }
+                                localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                            } catch (err) {
+                                console.error('创建核心行程失败:', err);
+                                alert('创建行程失败: ' + err.message);
+                                return;
+                            }
+                        }
+                    } else {
+                        alert('请选择有效的核心行程日期 (Day 1-70)');
+                        return;
+                    }
+                }
+
+                closeTripModal();
+                await refreshAll();
+                jumpToDate(dateStr);
+
+            } catch (err) {
+                console.error('保存行程失败:', err);
+                alert('保存失败: ' + err.message);
+            }
         }
 
         function editCurrentDay() {
-            if (editingDay) {
+            if (editingDay !== null) {
                 openTripModal(editingDay);
+            } else if (editingDateKey) {
+                openOutsideTripModal(editingDateKey);
             }
         }
 
         function addCostToCurrentDay() {
-            if (editingDay) {
-                openTripModal(editingDay);
+            editCurrentDay();
+        }
+
+        async function deleteCurrentTrip() {
+            const isOutside = editingIsOutside;
+            const dateKey = editingDateKey;
+            const day = editingDay;
+
+            if (isOutside && dateKey) {
+                if (!confirm(`确定要删除 ${dateKey} 的独立行程吗？`)) return;
+                try {
+                    const res = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    tripData = tripData.filter(d => d.date_key !== dateKey);
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                    await refreshAll();
+                    jumpToDay(getTodayDay());
+                } catch (err) {
+                    console.error('删除失败', err);
+                    alert('删除失败，请重试');
+                }
+            } else if (day) {
+                if (!confirm(`确定要删除 Day ${day} 的行程吗？`)) return;
+                const date = getDateFromDay(day);
+                const dateKey2 = date.toISOString().split('T')[0];
+                await saveToSupabase(day, 'city', `Day ${day}`);
+                await saveToSupabase(day, 'country', '待定');
+                await saveToSupabase(day, 'sights', JSON.stringify(['待补充']));
+                await saveToSupabase(day, 'daily_note', '');
+                await saveToSupabase(day, 'hotel_price', 0);
+                await saveToSupabase(day, 'transport_price', 0);
+                await saveToSupabase(day, 'ticket_price_num', 0);
+                await saveToSupabase(day, 'food_price', 0);
+                await saveToSupabase(day, 'other_price', 0);
+                await saveToSupabase(day, 'image_urls', JSON.stringify([]));
+                await refreshAll();
+                jumpToDay(day);
             }
         }
 
@@ -2558,7 +3250,7 @@
                 if (!d.date) return true;
                 if (fromDate && d.date < fromDate) return false;
                 if (toDate && d.date > toDate) return false;
-                if (d.city === `Day ${d.day}`) return false;
+                if (d.city === `Day ${d.day}` && !d.is_outside) return false;
                 return true;
             });
             filtered.forEach(d => {
@@ -2597,14 +3289,19 @@
         async function clearAllCosts() {
             if (!confirm('确定要清空所有费用数据吗？')) return;
             for (const d of tripData) {
-                await saveToSupabase(d.day, 'hotel_price', 0);
-                await saveToSupabase(d.day, 'transport_price', 0);
-                await saveToSupabase(d.day, 'ticket_price_num', 0);
-                await saveToSupabase(d.day, 'food_price', 0);
-                await saveToSupabase(d.day, 'other_price', 0);
+                if (d.is_outside) {
+                    await saveOutsideTrip(d.date_key, { hotel_price: 0, transport_price: 0, ticket_price_num: 0,
+                        food_price: 0, other_price: 0 });
+                } else {
+                    await saveToSupabase(d.day, 'hotel_price', 0);
+                    await saveToSupabase(d.day, 'transport_price', 0);
+                    await saveToSupabase(d.day, 'ticket_price_num', 0);
+                    await saveToSupabase(d.day, 'food_price', 0);
+                    await saveToSupabase(d.day, 'other_price', 0);
+                }
             }
             await loadFromSupabase();
-            refreshAll();
+            await refreshAll();
         }
 
         // ================================================================
@@ -2629,14 +3326,15 @@
                     displayText = displayText.replace(kw, `<strong style="color:#f9d77e;">${kw}</strong>`);
                 });
                 if (displayText.length > 50) displayText = displayText.slice(0, 50) + '…';
+                const label = d.is_outside ? '📌 独立' : `Day ${d.day}`;
                 html += `
-                    <div class="item" onclick="jumpToDay(${d.day})">
+                    <div class="item" onclick="jumpToDate('${d.date_key}')">
                         <div class="left-part">
-                            <span class="label">Day ${d.day}</span>
+                            <span class="label">${label}</span>
                             <span class="date-tag">${d.date || ''}</span>
                             <span class="detail">${displayText}</span>
                         </div>
-                        <button class="delete-reminder-btn" onclick="event.stopPropagation();deleteReminder(${d.day})" title="删除提醒">
+                        <button class="delete-reminder-btn" onclick="event.stopPropagation();deleteReminder('${d.date_key}')" title="删除提醒">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -2646,9 +3344,9 @@
             document.getElementById('reminderCount').textContent = `⏰ ${reminders.length} 提醒`;
         }
 
-        async function deleteReminder(day) {
-            if (!confirm(`确定删除 Day ${day} 的预约/购票提醒吗？`)) return;
-            const data = getDayData(day);
+        async function deleteReminder(dateKey) {
+            if (!confirm(`确定删除 ${dateKey} 的预约/购票提醒吗？`)) return;
+            const data = getTripByDateKey(dateKey);
             if (!data) return;
             const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
             let note = data.daily_note || '';
@@ -2656,9 +3354,13 @@
                 note = note.replace(new RegExp(kw, 'g'), '');
             });
             note = note.replace(/\s+/g, ' ').trim();
-            await saveToSupabase(day, 'daily_note', note);
-            refreshAll();
-            jumpToDay(day);
+            if (data.is_outside) {
+                await saveOutsideTrip(dateKey, { daily_note: note });
+            } else {
+                await saveToSupabase(data.day, 'daily_note', note);
+            }
+            await refreshAll();
+            jumpToDate(dateKey);
         }
 
         // ================================================================
@@ -2685,7 +3387,13 @@
             if (currentYear > 2028) { currentYear = 2028;
                 currentMonth = 11; }
             buildCalendar();
-            jumpToDay(getTodayDay());
+            const todayDay = getTodayDay();
+            if (todayDay >= 1 && todayDay <= TOTAL_DAYS) {
+                jumpToDay(todayDay);
+            } else {
+                const todayStr = today.toISOString().split('T')[0];
+                jumpToDate(todayStr);
+            }
         }
 
         function scrollToReminders() {
@@ -2717,8 +3425,12 @@
         async function refreshAll() {
             await loadFromSupabase();
             buildCalendar();
-            if (currentDay) {
-                showDayDetail(currentDay);
+            if (editingDateKey) {
+                jumpToDate(editingDateKey);
+            } else if (currentDay) {
+                jumpToDay(currentDay);
+            } else {
+                jumpToDay(1);
             }
             updateCostSummary();
             updateBookSummary();
@@ -2730,14 +3442,17 @@
 
         // 暴露全局函数
         window.jumpToDay = jumpToDay;
+        window.jumpToDate = jumpToDate;
         window.changeMonth = changeMonth;
         window.goToTodayMonth = goToTodayMonth;
         window.refreshAll = refreshAll;
         window.openTripModal = openTripModal;
+        window.openOutsideTripModal = openOutsideTripModal;
         window.closeTripModal = closeTripModal;
         window.saveTrip = saveTrip;
         window.editCurrentDay = editCurrentDay;
         window.addCostToCurrentDay = addCostToCurrentDay;
+        window.deleteCurrentTrip = deleteCurrentTrip;
         window.applyCostFilter = applyCostFilter;
         window.resetCostFilter = resetCostFilter;
         window.clearAllCosts = clearAllCosts;
@@ -2745,7 +3460,7 @@
         window.scrollToCostPanel = scrollToCostPanel;
         window.getTodayDay = getTodayDay;
         window.removeFormPhoto = removeFormPhoto;
-        window.removePhotoFromDay = removePhotoFromDay;
+        window.removePhotoFromTrip = removePhotoFromTrip;
         window.deleteReminder = deleteReminder;
         window.performSearch = performSearch;
         window.clearSearch = clearSearch;
@@ -2774,7 +3489,8 @@
             if (todayDay >= 1 && todayDay <= TOTAL_DAYS) {
                 jumpToDay(todayDay);
             } else {
-                jumpToDay(1);
+                const todayStr = today.toISOString().split('T')[0];
+                jumpToDate(todayStr);
             }
 
             updateCostSummary();
@@ -2783,7 +3499,7 @@
             const countries = new Set(tripData.map(d => d.country).filter(c => c && c !== '待定' && c !== 'Day'));
             document.getElementById('totalCountriesDisplay').textContent = countries.size;
 
-            console.log('🗺️ 环球旅行日历已加载 · 汇率转换功能已启用');
+            console.log('🗺️ 环球旅行日历已加载 · Day 1 = 2027年8月4日 · 支持独立行程');
         }
 
         init();
