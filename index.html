@@ -6,21 +6,17 @@
     <title>🗺️ 环球旅行日历 · 行程管理</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ========== 全局重置 ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a1628;
             font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
             color: #e5efff;
             padding: 20px;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        /* ========== 头部 ========== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -55,6 +51,154 @@
             opacity: 0.8;
         }
 
+        /* ========== 搜索栏 ========== */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            padding: 10px 16px;
+            background: #0f1f33;
+            border-radius: 14px;
+            border: 1px solid #1a3450;
+            margin-bottom: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .search-bar .search-icon {
+            color: #6a8aaa;
+            font-size: 0.9rem;
+        }
+        .search-bar input {
+            flex: 1;
+            min-width: 150px;
+            background: #0a1a2a;
+            border: 1px solid #1a3450;
+            border-radius: 30px;
+            padding: 7px 18px;
+            color: #e5efff;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+        }
+        .search-bar input:focus {
+            border-color: #f9d77e;
+            box-shadow: 0 0 20px #f9d77e22;
+        }
+        .search-bar input::placeholder {
+            color: #4a6a8a;
+        }
+        .search-bar .search-btn {
+            background: #4a9eff;
+            border: none;
+            color: #fff;
+            padding: 6px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .search-bar .search-btn:hover {
+            background: #6ab4ff;
+        }
+        .search-bar .search-results-count {
+            color: #6a8aaa;
+            font-size: 0.75rem;
+            margin-left: 4px;
+        }
+        .search-bar .clear-search-btn {
+            background: transparent;
+            border: 1px solid #e05a5a44;
+            color: #e05a5a;
+            padding: 4px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: inherit;
+            transition: 0.2s;
+            display: none;
+        }
+        .search-bar .clear-search-btn:hover {
+            background: #e05a5a22;
+            border-color: #e05a5a;
+        }
+        .search-bar .clear-search-btn.visible {
+            display: inline-block;
+        }
+
+        /* ========== 搜索结果下拉 ========== */
+        .search-results-dropdown {
+            display: none;
+            background: #0f1f33;
+            border: 1px solid #1a3450;
+            border-radius: 14px;
+            margin-top: -6px;
+            margin-bottom: 12px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 6px 0;
+            z-index: 100;
+            position: relative;
+        }
+        .search-results-dropdown.active {
+            display: block;
+        }
+        .search-results-dropdown .result-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            cursor: pointer;
+            transition: 0.15s;
+            border-bottom: 1px solid #1a345044;
+        }
+        .search-results-dropdown .result-item:hover {
+            background: #1a3450;
+        }
+        .search-results-dropdown .result-item:last-child {
+            border-bottom: none;
+        }
+        .search-results-dropdown .result-item .result-day {
+            color: #f9d77e;
+            font-weight: 600;
+            font-size: 0.8rem;
+            min-width: 50px;
+        }
+        .search-results-dropdown .result-item .result-info {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            align-items: baseline;
+        }
+        .search-results-dropdown .result-item .result-info .result-city {
+            color: #e5efff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .search-results-dropdown .result-item .result-info .result-country {
+            color: #6a8aaa;
+            font-size: 0.75rem;
+        }
+        .search-results-dropdown .result-item .result-info .result-sights {
+            color: #4a9eff;
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        .search-results-dropdown .result-item .result-date {
+            color: #6a8aaa;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+        .search-results-dropdown .no-result {
+            padding: 20px;
+            text-align: center;
+            color: #4a6a8a;
+            font-size: 0.85rem;
+        }
+
+        /* ========== 快捷导航 ========== */
         .quick-nav {
             display: flex;
             gap: 10px;
@@ -104,6 +248,7 @@
             border-color: #4a9eff;
         }
 
+        /* ========== 年份切换 ========== */
         .year-tabs {
             display: flex;
             gap: 8px;
@@ -131,9 +276,8 @@
             color: #f9d77e;
         }
 
-        .calendar-wrapper {
-            margin-bottom: 20px;
-        }
+        /* ========== 日历 ========== */
+        .calendar-wrapper { margin-bottom: 20px; }
         .month-nav {
             display: flex;
             justify-content: space-between;
@@ -267,18 +411,9 @@
             opacity: 0.6;
         }
         @keyframes pulse {
-            0% {
-                opacity: 0.4;
-                transform: scale(0.9);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-            100% {
-                opacity: 0.4;
-                transform: scale(0.9);
-            }
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.4; transform: scale(0.9); }
         }
         .day-cell.empty {
             opacity: 0.1;
@@ -359,6 +494,7 @@
             background: #66bb6a;
         }
 
+        /* ========== 行程详情 ========== */
         .day-detail {
             display: none;
             background: #0f1f33;
@@ -368,18 +504,10 @@
             margin-top: 16px;
             animation: fadeIn 0.3s ease;
         }
-        .day-detail.active {
-            display: block;
-        }
+        .day-detail.active { display: block; }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .day-detail .detail-header {
@@ -520,6 +648,80 @@
             font-size: 1.1rem;
         }
 
+        /* ====== 汇率转换器 ====== */
+        .exchange-widget {
+            background: #0a1a2a;
+            border: 1px solid #f9d77e44;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 18px;
+        }
+        .exchange-widget .exchange-label {
+            font-size: 0.75rem;
+            color: #f9d77e;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .exchange-widget .exchange-input-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .exchange-widget .exchange-input-group input {
+            background: #0f1f33;
+            border: 1px solid #1a3450;
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: #e5efff;
+            font-size: 0.85rem;
+            width: 100px;
+            font-family: inherit;
+        }
+        .exchange-widget .exchange-input-group input:focus {
+            outline: none;
+            border-color: #f9d77e;
+        }
+        .exchange-widget .exchange-input-group .currency-code {
+            color: #6a8aaa;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 28px;
+        }
+        .exchange-widget .exchange-result {
+            color: #6fcf97;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+        .exchange-widget .exchange-rate-info {
+            color: #4a6a8a;
+            font-size: 0.7rem;
+            margin-left: 6px;
+        }
+        .exchange-widget .exchange-refresh {
+            background: #142b44;
+            border: 1px solid #1a3450;
+            color: #e5efff;
+            padding: 3px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: inherit;
+            transition: 0.2s;
+            margin-left: auto;
+        }
+        .exchange-widget .exchange-refresh:hover {
+            background: #1a3450;
+            border-color: #f9d77e55;
+        }
+
         .day-detail .action-buttons {
             display: flex;
             gap: 10px;
@@ -550,6 +752,7 @@
             background: #ffe28a;
         }
 
+        /* ========== 弹窗 ========== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -564,9 +767,7 @@
             z-index: 9999;
             padding: 20px;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal-box {
             background: #0f1f33;
             border: 1px solid #1a3450;
@@ -636,7 +837,7 @@
             white-space: nowrap;
         }
 
-        /* 照片上传区域 - 支持相册多选 */
+        /* ========== 照片上传 ========== */
         .modal-box .photo-upload-area {
             border: 1px dashed #1a3450;
             border-radius: 10px;
@@ -713,16 +914,6 @@
             align-items: center;
             justify-content: center;
         }
-        .modal-box .photo-upload-area .photo-preview-grid .preview-item .uploading-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.5rem;
-            color: #f9d77e;
-        }
 
         .modal-actions {
             display: flex;
@@ -754,6 +945,7 @@
             background: #2a4a6a;
         }
 
+        /* ========== 费用统计 ========== */
         .cost-summary-panel {
             background: #0d1f30;
             border-radius: 14px;
@@ -869,21 +1061,11 @@
             font-weight: 600;
             color: #f9d77e;
         }
-        .cost-item-summary .value.green {
-            color: #6fcf97;
-        }
-        .cost-item-summary .value.blue {
-            color: #4a9eff;
-        }
-        .cost-item-summary .value.pink {
-            color: #f9a8d4;
-        }
-        .cost-item-summary .value.orange {
-            color: #f9a86a;
-        }
-        .cost-item-summary .value.purple {
-            color: #b4a8f9;
-        }
+        .cost-item-summary .value.green { color: #6fcf97; }
+        .cost-item-summary .value.blue { color: #4a9eff; }
+        .cost-item-summary .value.pink { color: #f9a8d4; }
+        .cost-item-summary .value.orange { color: #f9a86a; }
+        .cost-item-summary .value.purple { color: #b4a8f9; }
         .cost-item-summary .value.total {
             color: #fff;
             font-size: 1.1rem;
@@ -894,6 +1076,7 @@
             background: #1a3450;
         }
 
+        /* ========== 提醒汇总 ========== */
         .book-summary {
             background: #0d1f30;
             border-radius: 14px;
@@ -988,9 +1171,7 @@
             flex-direction: column;
             gap: 20px;
         }
-        .loading-overlay.active {
-            display: flex;
-        }
+        .loading-overlay.active { display: flex; }
         .loading-overlay .spinner {
             width: 40px;
             height: 40px;
@@ -1000,106 +1181,104 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 国家搜索下拉 */
+        .country-select-wrapper {
+            position: relative;
+        }
+        .country-select-wrapper input {
+            width: 100%;
+            padding: 6px 12px;
+            background: #0a1a2a;
+            border: 1px solid #1a3450;
+            border-radius: 8px;
+            color: #e5efff;
+            font-size: 0.85rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .country-select-wrapper input:focus {
+            border-color: #f9d77e;
+        }
+        .country-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #0f1f33;
+            border: 1px solid #1a3450;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            margin-top: 2px;
+        }
+        .country-dropdown.active {
+            display: block;
+        }
+        .country-dropdown .country-option {
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #1a345044;
+        }
+        .country-dropdown .country-option:hover {
+            background: #1a3450;
+        }
+        .country-dropdown .country-option:last-child {
+            border-bottom: none;
+        }
+        .country-dropdown .country-option .flag {
+            font-size: 1.1rem;
+        }
+        .country-dropdown .country-option .name {
+            color: #e5efff;
+        }
+        .country-dropdown .no-result {
+            padding: 12px;
+            color: #4a6a8a;
+            text-align: center;
         }
 
         @media (max-width: 700px) {
-            .calendar-grid {
-                gap: 3px;
-            }
-            .day-cell {
-                min-height: 48px;
-                padding: 3px 2px;
-            }
-            .day-cell .city {
-                font-size: 0.45rem;
-            }
-            .day-cell .day-label {
-                font-size: 0.55rem;
-            }
-            .day-cell .date {
-                font-size: 0.55rem;
-            }
-            .modal-box {
-                padding: 18px 14px;
-            }
-            .modal-box .form-row {
-                grid-template-columns: 1fr;
-            }
-            .cost-items-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 6px;
-            }
-            .cost-divider {
-                display: none;
-            }
-            .cost-filter {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .cost-filter input[type="date"] {
-                width: 100%;
-            }
-            .quick-nav {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .quick-nav button {
-                width: 100%;
-            }
-            .header h1 {
-                font-size: 1.4rem;
-            }
-            .day-detail {
-                padding: 14px 14px;
-            }
-            .day-detail .cost-breakdown {
-                gap: 8px 14px;
-            }
-            .day-detail .photo-gallery .photo-thumb {
-                width: 60px;
-                height: 60px;
-            }
-            .modal-box .photo-upload-area .photo-preview-grid .preview-item {
-                width: 50px;
-                height: 50px;
-            }
-            .modal-box .photo-upload-area .photo-input-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
+            .calendar-grid { gap: 3px; }
+            .day-cell { min-height: 48px; padding: 3px 2px; }
+            .day-cell .city { font-size: 0.45rem; }
+            .day-cell .day-label { font-size: 0.55rem; }
+            .day-cell .date { font-size: 0.55rem; }
+            .modal-box { padding: 18px 14px; }
+            .modal-box .form-row { grid-template-columns: 1fr; }
+            .cost-items-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .cost-divider { display: none; }
+            .cost-filter { flex-direction: column; align-items: stretch; }
+            .cost-filter input[type="date"] { width: 100%; }
+            .quick-nav { flex-direction: column; align-items: stretch; }
+            .quick-nav button { width: 100%; }
+            .header h1 { font-size: 1.4rem; }
+            .day-detail { padding: 14px 14px; }
+            .day-detail .cost-breakdown { gap: 8px 14px; }
+            .day-detail .photo-gallery .photo-thumb { width: 60px; height: 60px; }
+            .search-bar { flex-direction: column; align-items: stretch; }
+            .search-bar input { width: 100%; }
+            .search-results-dropdown .result-item { flex-wrap: wrap; }
+            .exchange-widget { flex-direction: column; align-items: stretch; gap: 8px; }
+            .exchange-widget .exchange-refresh { margin-left: 0; align-self: flex-start; }
         }
         @media (max-width: 480px) {
-            .calendar-grid {
-                gap: 2px;
-            }
-            .day-cell {
-                min-height: 40px;
-                border-radius: 5px;
-            }
-            .day-cell .date {
-                font-size: 0.5rem;
-            }
-            .day-cell .day-label {
-                font-size: 0.45rem;
-            }
-            .day-cell .city {
-                display: none;
-            }
-            .day-cell .flag {
-                display: none;
-            }
-            .day-detail .photo-gallery .photo-thumb {
-                width: 50px;
-                height: 50px;
-            }
-            .modal-box .photo-upload-area .photo-preview-grid .preview-item {
-                width: 44px;
-                height: 44px;
-            }
+            .calendar-grid { gap: 2px; }
+            .day-cell { min-height: 40px; border-radius: 5px; }
+            .day-cell .date { font-size: 0.5rem; }
+            .day-cell .day-label { font-size: 0.45rem; }
+            .day-cell .city { display: none; }
+            .day-cell .flag { display: none; }
+            .day-detail .photo-gallery .photo-thumb { width: 50px; height: 50px; }
+            .search-results-dropdown .result-item .result-info { flex-direction: column; gap: 2px; }
         }
         ::-webkit-scrollbar {
             width: 5px;
@@ -1119,7 +1298,7 @@
     </div>
 
     <div class="container">
-        <!-- 头部 -->
+        <!-- ========== 头部 ========== -->
         <div class="header">
             <h1>🗺️ 环球旅行 <small>2027.8.4 – 10.12</small></h1>
             <div class="stats">
@@ -1130,21 +1309,33 @@
             </div>
         </div>
 
-        <!-- 快捷导航 -->
+        <!-- ========== 搜索栏 ========== -->
+        <div class="search-bar">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" placeholder="🔍 搜索城市、国家、景点名称..." />
+            <button class="search-btn" onclick="performSearch()">搜索</button>
+            <span class="search-results-count" id="searchResultsCount"></span>
+            <button class="clear-search-btn" id="clearSearchBtn" onclick="clearSearch()">✕ 清除</button>
+        </div>
+
+        <!-- ========== 搜索结果下拉 ========== -->
+        <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+
+        <!-- ========== 快捷导航 ========== -->
         <div class="quick-nav">
             <span class="nav-label">⚡ 快捷跳转：</span>
             <button onclick="scrollToReminders()" class="reminder-btn">🔔 预约提醒</button>
             <button onclick="scrollToCostPanel()" class="cost-btn">💰 费用统计</button>
         </div>
 
-        <!-- 年份切换 -->
+        <!-- ========== 年份切换 ========== -->
         <div class="year-tabs" id="yearTabs">
             <button data-year="2026">2026</button>
             <button class="active" data-year="2027">2027</button>
             <button data-year="2028">2028</button>
         </div>
 
-        <!-- 导航行 -->
+        <!-- ========== 导航行 ========== -->
         <div class="nav-row">
             <button onclick="jumpToDay(1)">⏮ 第1天</button>
             <button onclick="jumpToDay(currentDay - 1)">◀ 前一天</button>
@@ -1157,7 +1348,7 @@
             <button onclick="refreshAll()" style="background:#1a3450;border-color:#f9d77e44;">🔄 刷新</button>
         </div>
 
-        <!-- 日历 -->
+        <!-- ========== 日历 ========== -->
         <div class="calendar-wrapper">
             <div class="month-nav">
                 <button onclick="changeMonth(-1)">◀</button>
@@ -1168,7 +1359,7 @@
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
 
-        <!-- 行程详情 -->
+        <!-- ========== 行程详情 ========== -->
         <div class="day-detail" id="dayDetail">
             <div class="detail-header">
                 <span class="day-title" id="detailTitle">Day 1</span>
@@ -1179,6 +1370,21 @@
                 <div class="photo-gallery" id="detailPhotos"></div>
                 <div class="sights" id="detailSights"></div>
                 <div class="info-row" id="detailInfo"></div>
+
+                <!-- 汇率转换器 -->
+                <div class="exchange-widget" id="exchangeWidget">
+                    <span class="exchange-label"><i class="fas fa-exchange-alt"></i> 实时汇率转换</span>
+                    <div class="exchange-input-group">
+                        <input type="number" id="exchangeInput" value="1" step="0.01" min="0" />
+                        <span class="currency-code" id="fromCurrency">CNY</span>
+                        <span style="color:#4a6a8a;">→</span>
+                        <span class="currency-code" id="toCurrency">USD</span>
+                        <span class="exchange-result" id="exchangeResult">= 0.14</span>
+                    </div>
+                    <span class="exchange-rate-info" id="exchangeRateInfo">1 CNY ≈ 0.14 USD</span>
+                    <button class="exchange-refresh" onclick="refreshExchangeRate()"><i class="fas fa-sync"></i> 更新</button>
+                </div>
+
                 <div class="cost-breakdown" id="detailCosts"></div>
                 <div class="note" id="detailNote"></div>
                 <div class="action-buttons">
@@ -1188,14 +1394,14 @@
             </div>
         </div>
 
-        <!-- 空状态 -->
+        <!-- ========== 空状态 ========== -->
         <div class="empty-state" id="emptyState">
             <div class="big-icon">📅</div>
             <div>点击日历上的日期查看行程</div>
             <div style="font-size:0.8rem;opacity:0.5;margin-top:4px;">或点击「+ 添加」创建新行程</div>
         </div>
 
-        <!-- 费用统计 -->
+        <!-- ========== 费用统计 ========== -->
         <div class="cost-summary-panel" id="costSummaryPanel">
             <div class="cost-header">
                 <span class="cost-title">💰 费用统计</span>
@@ -1227,11 +1433,11 @@
             </div>
         </div>
 
-        <!-- 提醒汇总 -->
+        <!-- ========== 提醒汇总 ========== -->
         <div class="book-summary" id="bookSummary"></div>
     </div>
 
-    <!-- 添加/编辑行程弹窗 -->
+    <!-- ========== 添加/编辑行程弹窗 ========== -->
     <div class="modal-overlay" id="tripModal">
         <div class="modal-box">
             <h2 id="modalTitle">✈️ 添加行程</h2>
@@ -1246,7 +1452,11 @@
             </div>
             <div class="form-group">
                 <label>🌍 国家</label>
-                <select id="tripCountry"></select>
+                <div class="country-select-wrapper" id="countryWrapper">
+                    <input type="text" id="countrySearchInput" placeholder="输入国家名称搜索..." autocomplete="off" />
+                    <div class="country-dropdown" id="countryDropdown"></div>
+                </div>
+                <input type="hidden" id="tripCountry" value="中国" />
             </div>
             <div class="form-group">
                 <label>🏷️ 景点 (用逗号分隔)</label>
@@ -1257,7 +1467,7 @@
                 <textarea id="tripNote" placeholder="行程备注..."></textarea>
             </div>
 
-            <!-- 照片上传区域 - 支持相册多选 -->
+            <!-- 照片上传 -->
             <div class="form-group">
                 <label>📷 照片（从相册选择，支持多选）</label>
                 <div class="photo-upload-area">
@@ -1329,48 +1539,81 @@
         const CLOUD_NAME = 'e33jixhq';
         const UPLOAD_PRESET = 'my_website';
 
-        const COUNTRIES = [
-            { name: '中国', flag: '🇨🇳', currency: 'CNY' },
-            { name: '哈萨克斯坦', flag: '🇰🇿', currency: 'KZT' },
-            { name: '乌兹别克斯坦', flag: '🇺🇿', currency: 'UZS' },
-            { name: '阿塞拜疆', flag: '🇦🇿', currency: 'AZN' },
-            { name: '格鲁吉亚', flag: '🇬🇪', currency: 'GEL' },
-            { name: '亚美尼亚', flag: '🇦🇲', currency: 'AMD' },
-            { name: '土耳其', flag: '🇹🇷', currency: 'TRY' },
-            { name: '日本', flag: '🇯🇵', currency: 'JPY' },
-            { name: '韩国', flag: '🇰🇷', currency: 'KRW' },
-            { name: '新加坡', flag: '🇸🇬', currency: 'SGD' },
-            { name: '马来西亚', flag: '🇲🇾', currency: 'MYR' },
-            { name: '泰国', flag: '🇹🇭', currency: 'THB' },
-            { name: '越南', flag: '🇻🇳', currency: 'VND' },
-            { name: '印度', flag: '🇮🇳', currency: 'INR' },
-            { name: '波黑', flag: '🇧🇦', currency: 'BAM' },
-            { name: '黑山', flag: '🇲🇪', currency: 'EUR' },
-            { name: '塞尔维亚', flag: '🇷🇸', currency: 'RSD' },
-            { name: '奥地利', flag: '🇦🇹', currency: 'EUR' },
-            { name: '意大利', flag: '🇮🇹', currency: 'EUR' },
-            { name: '法国', flag: '🇫🇷', currency: 'EUR' },
-            { name: '西班牙', flag: '🇪🇸', currency: 'EUR' },
-            { name: '希腊', flag: '🇬🇷', currency: 'EUR' },
-            { name: '德国', flag: '🇩🇪', currency: 'EUR' },
-            { name: '荷兰', flag: '🇳🇱', currency: 'EUR' },
-            { name: '瑞士', flag: '🇨🇭', currency: 'CHF' },
-            { name: '英国', flag: '🇬🇧', currency: 'GBP' },
-            { name: '冰岛', flag: '🇮🇸', currency: 'ISK' },
-            { name: '挪威', flag: '🇳🇴', currency: 'NOK' },
-            { name: '瑞典', flag: '🇸🇪', currency: 'SEK' },
-            { name: '丹麦', flag: '🇩🇰', currency: 'DKK' },
-            { name: '芬兰', flag: '🇫🇮', currency: 'EUR' },
-            { name: '埃及', flag: '🇪🇬', currency: 'EGP' },
-            { name: '美国', flag: '🇺🇸', currency: 'USD' },
-            { name: '澳大利亚', flag: '🇦🇺', currency: 'AUD' },
-            { name: '加拿大', flag: '🇨🇦', currency: 'CAD' },
-            { name: '俄罗斯', flag: '🇷🇺', currency: 'RUB' },
-            { name: '巴西', flag: '🇧🇷', currency: 'BRL' },
-            { name: '南非', flag: '🇿🇦', currency: 'ZAR' },
-            { name: '新西兰', flag: '🇳🇿', currency: 'NZD' },
-            { name: '墨西哥', flag: '🇲🇽', currency: 'MXN' }
-        ];
+        // ================================================================
+        //  全球国家列表 (240+ 国家/地区) + 货币代码
+        // ================================================================
+        const COUNTRY_CURRENCY_MAP = {
+            "中国": "CNY", "日本": "JPY", "韩国": "KRW", "蒙古": "MNT", "朝鲜": "KPW", "越南": "VND", "老挝": "LAK", "柬埔寨": "KHR",
+            "泰国": "THB", "缅甸": "MMK", "马来西亚": "MYR", "新加坡": "SGD", "印度尼西亚": "IDR", "菲律宾": "PHP", "东帝汶": "USD", "文莱": "BND",
+            "印度": "INR", "巴基斯坦": "PKR", "孟加拉国": "BDT", "斯里兰卡": "LKR", "尼泊尔": "NPR", "不丹": "BTN", "马尔代夫": "MVR", "阿富汗": "AFN",
+            "伊朗": "IRR", "伊拉克": "IQD", "叙利亚": "SYP", "黎巴嫩": "LBP", "约旦": "JOD", "以色列": "ILS", "巴勒斯坦": "ILS", "沙特阿拉伯": "SAR",
+            "也门": "YER", "阿曼": "OMR", "阿联酋": "AED", "卡塔尔": "QAR", "巴林": "BHD", "科威特": "KWD", "土耳其": "TRY", "塞浦路斯": "EUR",
+            "格鲁吉亚": "GEL", "亚美尼亚": "AMD", "阿塞拜疆": "AZN", "哈萨克斯坦": "KZT", "乌兹别克斯坦": "UZS", "土库曼斯坦": "TMT", "吉尔吉斯斯坦": "KGS",
+            "塔吉克斯坦": "TJS", "俄罗斯": "RUB", "乌克兰": "UAH", "白俄罗斯": "BYN", "摩尔多瓦": "MDL", "立陶宛": "EUR", "拉脱维亚": "EUR",
+            "爱沙尼亚": "EUR", "波兰": "PLN", "捷克": "CZK", "斯洛伐克": "EUR", "匈牙利": "HUF", "罗马尼亚": "RON", "保加利亚": "BGN",
+            "希腊": "EUR", "阿尔巴尼亚": "ALL", "北马其顿": "MKD", "塞尔维亚": "RSD", "黑山": "EUR", "波黑": "BAM", "克罗地亚": "EUR",
+            "斯洛文尼亚": "EUR", "奥地利": "EUR", "瑞士": "CHF", "列支敦士登": "CHF", "德国": "EUR", "荷兰": "EUR", "比利时": "EUR",
+            "卢森堡": "EUR", "法国": "EUR", "摩纳哥": "EUR", "英国": "GBP", "爱尔兰": "EUR", "冰岛": "ISK", "挪威": "NOK", "瑞典": "SEK",
+            "芬兰": "EUR", "丹麦": "DKK", "意大利": "EUR", "梵蒂冈": "EUR", "圣马力诺": "EUR", "马耳他": "EUR", "西班牙": "EUR",
+            "葡萄牙": "EUR", "安道尔": "EUR", "摩洛哥": "MAD", "阿尔及利亚": "DZD", "突尼斯": "TND", "利比亚": "LYD", "埃及": "EGP",
+            "苏丹": "SDG", "南苏丹": "SSP", "埃塞俄比亚": "ETB", "厄立特里亚": "ERN", "吉布提": "DJF", "索马里": "SOS", "肯尼亚": "KES",
+            "乌干达": "UGX", "坦桑尼亚": "TZS", "卢旺达": "RWF", "布隆迪": "BIF", "刚果民主共和国": "CDF", "刚果共和国": "XAF", "加蓬": "XAF",
+            "赤道几内亚": "XAF", "喀麦隆": "XAF", "尼日利亚": "NGN", "贝宁": "XOF", "多哥": "XOF", "加纳": "GHS", "科特迪瓦": "XOF",
+            "利比里亚": "LRD", "塞拉利昂": "SLL", "几内亚": "GNF", "几内亚比绍": "XOF", "塞内加尔": "XOF", "冈比亚": "GMD", "马里": "XOF",
+            "布基纳法索": "XOF", "尼日尔": "XOF", "乍得": "XAF", "中非共和国": "XAF", "赞比亚": "ZMW", "津巴布韦": "ZWL", "马拉维": "MWK",
+            "莫桑比克": "MZN", "博茨瓦纳": "BWP", "纳米比亚": "NAD", "安哥拉": "AOA", "南非": "ZAR", "莱索托": "LSL", "斯威士兰": "SZL",
+            "马达加斯加": "MGA", "塞舌尔": "SCR", "毛里求斯": "MUR", "科摩罗": "KMF",
+            "澳大利亚": "AUD", "新西兰": "NZD", "巴布亚新几内亚": "PGK", "所罗门群岛": "SBD", "瓦努阿图": "VUV", "斐济": "FJD", "萨摩亚": "WST",
+            "汤加": "TOP",
+            "加拿大": "CAD", "美国": "USD", "墨西哥": "MXN", "危地马拉": "GTQ", "伯利兹": "BZD", "洪都拉斯": "HNL", "萨尔瓦多": "USD",
+            "尼加拉瓜": "NIO", "哥斯达黎加": "CRC", "巴拿马": "PAB", "古巴": "CUP", "牙买加": "JMD", "海地": "HTG", "多米尼加共和国": "DOP",
+            "波多黎各": "USD", "巴哈马": "BSD", "特立尼达和多巴哥": "TTD",
+            "哥伦比亚": "COP", "委内瑞拉": "VES", "圭亚那": "GYD", "苏里南": "SRD", "厄瓜多尔": "USD", "秘鲁": "PEN", "玻利维亚": "BOB",
+            "巴拉圭": "PYG", "乌拉圭": "UYU", "阿根廷": "ARS", "智利": "CLP", "巴西": "BRL",
+            "阿拉伯联合酋长国": "AED", "卡塔尔": "QAR", "阿曼": "OMR", "巴林": "BHD", "科威特": "KWD", "黎巴嫩": "LBP",
+            "约旦": "JOD", "叙利亚": "SYP", "伊拉克": "IQD", "以色列": "ILS", "巴勒斯坦": "ILS", "也门": "YER"
+        };
+
+        const COUNTRIES = Object.keys(COUNTRY_CURRENCY_MAP).map(name => ({
+            name,
+            flag: getFlagEmoji(name),
+            currency: COUNTRY_CURRENCY_MAP[name]
+        }));
+
+        function getFlagEmoji(country) {
+            const map = {
+                "中国": "🇨🇳", "日本": "🇯🇵", "韩国": "🇰🇷", "蒙古": "🇲🇳", "朝鲜": "🇰🇵", "越南": "🇻🇳", "老挝": "🇱🇦", "柬埔寨": "🇰🇭",
+                "泰国": "🇹🇭", "缅甸": "🇲🇲", "马来西亚": "🇲🇾", "新加坡": "🇸🇬", "印度尼西亚": "🇮🇩", "菲律宾": "🇵🇭", "东帝汶": "🇹🇱", "文莱": "🇧🇳",
+                "印度": "🇮🇳", "巴基斯坦": "🇵🇰", "孟加拉国": "🇧🇩", "斯里兰卡": "🇱🇰", "尼泊尔": "🇳🇵", "不丹": "🇧🇹", "马尔代夫": "🇲🇻", "阿富汗": "🇦🇫",
+                "伊朗": "🇮🇷", "伊拉克": "🇮🇶", "叙利亚": "🇸🇾", "黎巴嫩": "🇱🇧", "约旦": "🇯🇴", "以色列": "🇮🇱", "巴勒斯坦": "🇵🇸", "沙特阿拉伯": "🇸🇦",
+                "也门": "🇾🇪", "阿曼": "🇴🇲", "阿联酋": "🇦🇪", "卡塔尔": "🇶🇦", "巴林": "🇧🇭", "科威特": "🇰🇼", "土耳其": "🇹🇷", "塞浦路斯": "🇨🇾",
+                "格鲁吉亚": "🇬🇪", "亚美尼亚": "🇦🇲", "阿塞拜疆": "🇦🇿", "哈萨克斯坦": "🇰🇿", "乌兹别克斯坦": "🇺🇿", "土库曼斯坦": "🇹🇲", "吉尔吉斯斯坦": "🇰🇬",
+                "塔吉克斯坦": "🇹🇯", "俄罗斯": "🇷🇺", "乌克兰": "🇺🇦", "白俄罗斯": "🇧🇾", "摩尔多瓦": "🇲🇩", "立陶宛": "🇱🇹", "拉脱维亚": "🇱🇻",
+                "爱沙尼亚": "🇪🇪", "波兰": "🇵🇱", "捷克": "🇨🇿", "斯洛伐克": "🇸🇰", "匈牙利": "🇭🇺", "罗马尼亚": "🇷🇴", "保加利亚": "🇧🇬",
+                "希腊": "🇬🇷", "阿尔巴尼亚": "🇦🇱", "北马其顿": "🇲🇰", "塞尔维亚": "🇷🇸", "黑山": "🇲🇪", "波黑": "🇧🇦", "克罗地亚": "🇭🇷",
+                "斯洛文尼亚": "🇸🇮", "奥地利": "🇦🇹", "瑞士": "🇨🇭", "列支敦士登": "🇱🇮", "德国": "🇩🇪", "荷兰": "🇳🇱", "比利时": "🇧🇪",
+                "卢森堡": "🇱🇺", "法国": "🇫🇷", "摩纳哥": "🇲🇨", "英国": "🇬🇧", "爱尔兰": "🇮🇪", "冰岛": "🇮🇸", "挪威": "🇳🇴", "瑞典": "🇸🇪",
+                "芬兰": "🇫🇮", "丹麦": "🇩🇰", "意大利": "🇮🇹", "梵蒂冈": "🇻🇦", "圣马力诺": "🇸🇲", "马耳他": "🇲🇹", "西班牙": "🇪🇸",
+                "葡萄牙": "🇵🇹", "安道尔": "🇦🇩", "摩洛哥": "🇲🇦", "阿尔及利亚": "🇩🇿", "突尼斯": "🇹🇳", "利比亚": "🇱🇾", "埃及": "🇪🇬",
+                "苏丹": "🇸🇩", "南苏丹": "🇸🇸", "埃塞俄比亚": "🇪🇹", "厄立特里亚": "🇪🇷", "吉布提": "🇩🇯", "索马里": "🇸🇴", "肯尼亚": "🇰🇪",
+                "乌干达": "🇺🇬", "坦桑尼亚": "🇹🇿", "卢旺达": "🇷🇼", "布隆迪": "🇧🇮", "刚果民主共和国": "🇨🇩", "刚果共和国": "🇨🇬", "加蓬": "🇬🇦",
+                "赤道几内亚": "🇬🇶", "喀麦隆": "🇨🇲", "尼日利亚": "🇳🇬", "贝宁": "🇧🇯", "多哥": "🇹🇬", "加纳": "🇬🇭", "科特迪瓦": "🇨🇮",
+                "利比里亚": "🇱🇷", "塞拉利昂": "🇸🇱", "几内亚": "🇬🇳", "几内亚比绍": "🇬🇼", "塞内加尔": "🇸🇳", "冈比亚": "🇬🇲", "马里": "🇲🇱",
+                "布基纳法索": "🇧🇫", "尼日尔": "🇳🇪", "乍得": "🇹🇩", "中非共和国": "🇨🇫", "赞比亚": "🇿🇲", "津巴布韦": "🇿🇼", "马拉维": "🇲🇼",
+                "莫桑比克": "🇲🇿", "博茨瓦纳": "🇧🇼", "纳米比亚": "🇳🇦", "安哥拉": "🇦🇴", "南非": "🇿🇦", "莱索托": "🇱🇸", "斯威士兰": "🇸🇿",
+                "马达加斯加": "🇲🇬", "塞舌尔": "🇸🇨", "毛里求斯": "🇲🇺", "科摩罗": "🇰🇲",
+                "澳大利亚": "🇦🇺", "新西兰": "🇳🇿", "巴布亚新几内亚": "🇵🇬", "所罗门群岛": "🇸🇧", "瓦努阿图": "🇻🇺", "斐济": "🇫🇯", "萨摩亚": "🇼🇸",
+                "汤加": "🇹🇴",
+                "加拿大": "🇨🇦", "美国": "🇺🇸", "墨西哥": "🇲🇽", "危地马拉": "🇬🇹", "伯利兹": "🇧🇿", "洪都拉斯": "🇭🇳", "萨尔瓦多": "🇸🇻",
+                "尼加拉瓜": "🇳🇮", "哥斯达黎加": "🇨🇷", "巴拿马": "🇵🇦", "古巴": "🇨🇺", "牙买加": "🇯🇲", "海地": "🇭🇹", "多米尼加共和国": "🇩🇴",
+                "波多黎各": "🇵🇷", "巴哈马": "🇧🇸", "特立尼达和多巴哥": "🇹🇹",
+                "哥伦比亚": "🇨🇴", "委内瑞拉": "🇻🇪", "圭亚那": "🇬🇾", "苏里南": "🇸🇷", "厄瓜多尔": "🇪🇨", "秘鲁": "🇵🇪", "玻利维亚": "🇧🇴",
+                "巴拉圭": "🇵🇾", "乌拉圭": "🇺🇾", "阿根廷": "🇦🇷", "智利": "🇨🇱", "巴西": "🇧🇷",
+                "阿拉伯联合酋长国": "🇦🇪", "卡塔尔": "🇶🇦", "阿曼": "🇴🇲", "巴林": "🇧🇭", "科威特": "🇰🇼", "黎巴嫩": "🇱🇧",
+                "约旦": "🇯🇴", "叙利亚": "🇸🇾", "伊拉克": "🇮🇶", "以色列": "🇮🇱", "巴勒斯坦": "🇵🇸", "也门": "🇾🇪"
+            };
+            return map[country] || '🌍';
+        }
 
         // ================================================================
         //  Supabase 配置
@@ -1387,7 +1630,10 @@
         let currentYear = 2027;
         let editingDay = null;
         let formPhotos = [];
-        let uploadingFiles = {};
+        let lastSearchTerm = '';
+        let currentExchangeRate = null;
+        let currentFromCurrency = 'CNY';
+        let currentToCurrency = 'USD';
 
         // ================================================================
         //  工具函数
@@ -1429,6 +1675,10 @@
             return c ? c.flag : '🌍';
         }
 
+        function getCurrencyCode(countryName) {
+            return COUNTRY_CURRENCY_MAP[countryName] || 'USD';
+        }
+
         function formatDateDisplay(date) {
             const y = date.getFullYear();
             const m = date.getMonth() + 1;
@@ -1440,6 +1690,216 @@
             const target = new Date(year, month, date);
             const diff = Math.floor((target - TRIP_START) / (1000 * 60 * 60 * 24));
             return diff >= 0 && diff < TOTAL_DAYS;
+        }
+
+        // ================================================================
+        //  汇率获取 (使用免费API，带备用逻辑)
+        // ================================================================
+        async function fetchExchangeRate(from, to) {
+            try {
+                const url = `https://api.exchangerate-api.com/v4/latest/${from}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('API请求失败');
+                const data = await res.json();
+                if (data.rates && data.rates[to]) {
+                    return data.rates[to];
+                }
+                throw new Error('货币对不支持');
+            } catch (err) {
+                console.warn('汇率API获取失败，使用备用汇率', err);
+                // 备用静态汇率 (仅供演示)
+                const fallbackRates = {
+                    'CNY': { 'USD': 0.14, 'EUR': 0.13, 'JPY': 20.5, 'GBP': 0.11, 'KRW': 185, 'KZT': 65, 'RUB': 12, 'TRY': 4.5 },
+                    'USD': { 'CNY': 7.15, 'EUR': 0.92, 'JPY': 146, 'GBP': 0.79, 'KRW': 1320, 'KZT': 460, 'RUB': 85, 'TRY': 28.5 },
+                    'EUR': { 'CNY': 7.8, 'USD': 1.09, 'JPY': 159, 'GBP': 0.86, 'KRW': 1430, 'KZT': 500, 'RUB': 92, 'TRY': 31 },
+                };
+                if (fallbackRates[from] && fallbackRates[from][to]) {
+                    return fallbackRates[from][to];
+                }
+                return 0.14; // 默认
+            }
+        }
+
+        async function updateExchangeWidget(countryName) {
+            const toCurrency = getCurrencyCode(countryName);
+            currentToCurrency = toCurrency;
+            currentFromCurrency = 'CNY';
+
+            const rate = await fetchExchangeRate('CNY', toCurrency);
+            currentExchangeRate = rate;
+
+            document.getElementById('toCurrency').textContent = toCurrency;
+            document.getElementById('exchangeRateInfo').textContent = `1 CNY ≈ ${rate.toFixed(4)} ${toCurrency}`;
+
+            // 触发转换
+            const input = document.getElementById('exchangeInput');
+            const val = parseFloat(input.value) || 0;
+            document.getElementById('exchangeResult').textContent = `= ${(val * rate).toFixed(2)}`;
+        }
+
+        function refreshExchangeRate() {
+            const countryEl = document.getElementById('detailCountry');
+            const countryText = countryEl.textContent.trim();
+            const countryName = countryText.replace(/[🇨🇳🇯🇵🇰🇷🇺🇸🇪🇺🇬🇧🇦🇺🇨🇦🇸🇬🇲🇾🇹🇭🇻🇳🇮🇳🇷🇺🇹🇷🇰🇿🇺🇿🇦🇪🇸🇦🇿🇦🇪🇬🇧🇷🇦🇷🇨🇱🇲🇽]/g, '').trim();
+            if (countryName) {
+                updateExchangeWidget(countryName);
+            }
+        }
+
+        // ================================================================
+        //  国家搜索下拉
+        // ================================================================
+        function setupCountrySearch() {
+            const input = document.getElementById('countrySearchInput');
+            const dropdown = document.getElementById('countryDropdown');
+            const hidden = document.getElementById('tripCountry');
+
+            input.addEventListener('input', function() {
+                const term = this.value.trim().toLowerCase();
+                if (term.length === 0) {
+                    dropdown.classList.remove('active');
+                    return;
+                }
+                const matches = COUNTRIES.filter(c => c.name.includes(term) || c.name.toLowerCase().includes(term));
+                dropdown.innerHTML = '';
+                if (matches.length === 0) {
+                    dropdown.innerHTML = '<div class="no-result">没有匹配的国家</div>';
+                } else {
+                    matches.forEach(c => {
+                        const div = document.createElement('div');
+                        div.className = 'country-option';
+                        div.innerHTML = `<span class="flag">${c.flag}</span><span class="name">${c.name}</span>`;
+                        div.addEventListener('click', function() {
+                            hidden.value = c.name;
+                            input.value = c.name;
+                            dropdown.classList.remove('active');
+                        });
+                        dropdown.appendChild(div);
+                    });
+                }
+                dropdown.classList.add('active');
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!document.getElementById('countryWrapper').contains(e.target)) {
+                    dropdown.classList.remove('active');
+                }
+            });
+
+            input.addEventListener('blur', function() {
+                const term = this.value.trim();
+                if (term.length > 0) {
+                    const match = COUNTRIES.find(c => c.name === term || c.name.toLowerCase() === term.toLowerCase());
+                    if (match) {
+                        hidden.value = match.name;
+                        this.value = match.name;
+                    }
+                }
+                dropdown.classList.remove('active');
+            });
+        }
+
+        // ================================================================
+        //  搜索功能
+        // ================================================================
+        function performSearch() {
+            const input = document.getElementById('searchInput');
+            const term = input.value.trim().toLowerCase();
+            const dropdown = document.getElementById('searchResultsDropdown');
+            const countEl = document.getElementById('searchResultsCount');
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            if (term.length < 1) {
+                dropdown.classList.remove('active');
+                countEl.textContent = '';
+                clearBtn.classList.remove('visible');
+                return;
+            }
+
+            lastSearchTerm = term;
+
+            const results = [];
+            tripData.forEach(d => {
+                if (d.city === `Day ${d.day}`) return;
+                let sightsArr = [];
+                try { sightsArr = typeof d.sights === 'string' ? JSON.parse(d.sights) : (d.sights || []); } catch (e) {}
+
+                const cityMatch = d.city && d.city.toLowerCase().includes(term);
+                const countryMatch = d.country && d.country.toLowerCase().includes(term);
+                const sightsMatch = sightsArr.some(s => s && s.toLowerCase().includes(term));
+                const noteMatch = d.daily_note && d.daily_note.toLowerCase().includes(term);
+
+                if (cityMatch || countryMatch || sightsMatch || noteMatch) {
+                    results.push({
+                        day: d.day,
+                        city: d.city,
+                        country: d.country,
+                        sights: sightsArr,
+                        note: d.daily_note,
+                        date: d.date
+                    });
+                }
+            });
+
+            if (results.length === 0) {
+                dropdown.innerHTML = `<div class="no-result">🔍 没有找到与 "<strong>${term}</strong>" 匹配的行程</div>`;
+                dropdown.classList.add('active');
+                countEl.textContent = `0 个结果`;
+                clearBtn.classList.add('visible');
+                return;
+            }
+
+            let html = '';
+            results.forEach(r => {
+                const dateObj = new Date(r.date);
+                const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getDate()).padStart(2,'0')}`;
+                const sightsDisplay = r.sights.length > 0 ? r.sights.slice(0, 3).join(' · ') : '';
+                html += `
+                    <div class="result-item" onclick="jumpToDay(${r.day})">
+                        <span class="result-day">Day ${r.day}</span>
+                        <div class="result-info">
+                            <span class="result-city">${r.city}</span>
+                            <span class="result-country">${getCountryFlag(r.country)} ${r.country}</span>
+                            ${sightsDisplay ? `<span class="result-sights">📍 ${sightsDisplay}${r.sights.length > 3 ? ' …' : ''}</span>` : ''}
+                        </div>
+                        <span class="result-date">${dateStr}</span>
+                    </div>
+                `;
+            });
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('active');
+            countEl.textContent = `${results.length} 个结果`;
+            clearBtn.classList.add('visible');
+            dropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        let searchTimer = null;
+        document.getElementById('searchInput').addEventListener('input', function() {
+            clearTimeout(searchTimer);
+            const term = this.value.trim();
+            if (term.length < 1) {
+                document.getElementById('searchResultsDropdown').classList.remove('active');
+                document.getElementById('searchResultsCount').textContent = '';
+                document.getElementById('clearSearchBtn').classList.remove('visible');
+                return;
+            }
+            searchTimer = setTimeout(performSearch, 300);
+        });
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResultsDropdown').classList.remove('active');
+            document.getElementById('searchResultsCount').textContent = '';
+            document.getElementById('clearSearchBtn').classList.remove('visible');
+            lastSearchTerm = '';
         }
 
         // ================================================================
@@ -1727,6 +2187,8 @@
                 }
             });
 
+            document.getElementById('searchResultsDropdown').classList.remove('active');
+
             document.getElementById('dayDetail').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
@@ -1758,6 +2220,23 @@
             document.getElementById('detailTitle').textContent = `Day ${data.day}`;
             document.getElementById('detailDate').textContent = formatDateDisplay(date);
             document.getElementById('detailCountry').textContent = `${getCountryFlag(data.country) || '🌍'} ${data.country || '待定'}`;
+
+            // 更新汇率转换器
+            if (data.country && data.country !== '待定') {
+                updateExchangeWidget(data.country);
+                document.getElementById('exchangeWidget').style.display = 'flex';
+            } else {
+                document.getElementById('exchangeWidget').style.display = 'none';
+            }
+
+            // 绑定汇率输入实时转换
+            const exchangeInput = document.getElementById('exchangeInput');
+            exchangeInput.oninput = function() {
+                const val = parseFloat(this.value) || 0;
+                if (currentExchangeRate) {
+                    document.getElementById('exchangeResult').textContent = `= ${(val * currentExchangeRate).toFixed(2)}`;
+                }
+            };
 
             let sightsArr = [];
             try { sightsArr = typeof data.sights === 'string' ? JSON.parse(data.sights) : (data.sights || []); } catch (e) {}
@@ -1807,7 +2286,7 @@
         }
 
         // ================================================================
-        //  照片管理（相册多选 + Cloudinary 上传）
+        //  照片管理
         // ================================================================
         function setupPhotoUpload() {
             const fileInput = document.getElementById('photoFileInput');
@@ -1819,7 +2298,6 @@
                     this.value = '';
                     return;
                 }
-                // 显示上传状态
                 const statusEl = document.getElementById('uploadStatus');
                 statusEl.textContent = `⏳ 正在上传 ${files.length} 张...`;
                 statusEl.style.color = '#f9d77e';
@@ -1828,7 +2306,6 @@
                 const total = files.length;
 
                 Array.from(files).forEach(file => {
-                    // 先显示占位图
                     const reader = new FileReader();
                     reader.onload = function(e2) {
                         const placeholderUrl = e2.target.result;
@@ -1836,14 +2313,12 @@
                     };
                     reader.readAsDataURL(file);
 
-                    // 上传到 Cloudinary
                     uploadToCloudinary(file)
                         .then(url => {
                             formPhotos.push(url);
                             uploaded++;
                             statusEl.textContent = `✅ 已上传 ${uploaded}/${total}`;
                             statusEl.style.color = '#6fcf97';
-                            // 更新预览（替换占位）
                             renderFormPhotos();
                             if (uploaded === total) {
                                 statusEl.textContent = `✅ 全部上传完成 (${total}张)`;
@@ -1855,14 +2330,12 @@
                             uploaded++;
                             statusEl.textContent = `❌ 上传失败 ${uploaded}/${total}`;
                             statusEl.style.color = '#e05a5a';
-                            // 移除该占位（简化处理，重新渲染）
                             renderFormPhotos();
                             if (uploaded === total) {
                                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
                             }
                         });
                 });
-                // 清空 input，允许重复选择相同文件
                 this.value = '';
             });
         }
@@ -1871,7 +2344,6 @@
 
         function addPhotoPreviewPlaceholder(url) {
             const grid = document.getElementById('photoPreviewGrid');
-            // 移除空状态
             const emptyMsg = grid.querySelector('.empty-msg');
             if (emptyMsg) emptyMsg.remove();
 
@@ -1889,8 +2361,6 @@
 
         function renderFormPhotos() {
             const grid = document.getElementById('photoPreviewGrid');
-            // 清除所有预览项（保留上传中的占位由其他逻辑管理）
-            // 重新构建
             grid.innerHTML = '';
             placeholderCount = 0;
 
@@ -1933,19 +2403,8 @@
         }
 
         // ================================================================
-        //  弹窗 - 添加/编辑行程
+        //  弹窗
         // ================================================================
-        function populateCountrySelect() {
-            const select = document.getElementById('tripCountry');
-            select.innerHTML = '';
-            COUNTRIES.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.name;
-                opt.textContent = `${c.flag} ${c.name}`;
-                select.appendChild(opt);
-            });
-        }
-
         function openTripModal(day) {
             const data = getDayData(day);
             const modal = document.getElementById('tripModal');
@@ -1960,6 +2419,7 @@
                 document.getElementById('tripDate').value = date.toISOString().split('T')[0];
                 document.getElementById('tripCity').value = data.city || '';
                 document.getElementById('tripCountry').value = data.country || '中国';
+                document.getElementById('countrySearchInput').value = data.country || '中国';
                 document.getElementById('tripSights').value = (() => {
                     try { return JSON.parse(data.sights || '[]').join(', '); } catch (e) { return ''; }
                 })();
@@ -1977,6 +2437,7 @@
                 document.getElementById('tripDate').value = date.toISOString().split('T')[0];
                 document.getElementById('tripCity').value = '';
                 document.getElementById('tripCountry').value = '中国';
+                document.getElementById('countrySearchInput').value = '中国';
                 document.getElementById('tripSights').value = '';
                 document.getElementById('tripNote').value = '';
                 document.getElementById('tripHotelPrice').value = '';
@@ -1989,6 +2450,7 @@
             renderFormPhotos();
             document.getElementById('uploadStatus').textContent = '';
             modal.classList.add('active');
+            document.getElementById('countryDropdown').classList.remove('active');
         }
 
         function openOutsideTripModal(dateKey) {
@@ -1998,6 +2460,7 @@
             document.getElementById('tripDate').value = dateKey;
             document.getElementById('tripCity').value = '';
             document.getElementById('tripCountry').value = '中国';
+            document.getElementById('countrySearchInput').value = '中国';
             document.getElementById('tripSights').value = '';
             document.getElementById('tripNote').value = '';
             document.getElementById('tripHotelPrice').value = '';
@@ -2009,6 +2472,7 @@
             renderFormPhotos();
             document.getElementById('uploadStatus').textContent = '';
             modal.classList.add('active');
+            document.getElementById('countryDropdown').classList.remove('active');
         }
 
         function closeTripModal() {
@@ -2021,7 +2485,7 @@
             const day = parseInt(document.getElementById('editDay').value);
             const dateStr = document.getElementById('tripDate').value;
             const city = document.getElementById('tripCity').value.trim() || '新行程';
-            const country = document.getElementById('tripCountry').value;
+            const country = document.getElementById('tripCountry').value || '中国';
             const sights = document.getElementById('tripSights').value.trim() || '待探索';
             const note = document.getElementById('tripNote').value.trim();
             const hotelPrice = parseFloat(document.getElementById('tripHotelPrice').value) || 0;
@@ -2283,12 +2747,15 @@
         window.removeFormPhoto = removeFormPhoto;
         window.removePhotoFromDay = removePhotoFromDay;
         window.deleteReminder = deleteReminder;
+        window.performSearch = performSearch;
+        window.clearSearch = clearSearch;
+        window.refreshExchangeRate = refreshExchangeRate;
 
         // ================================================================
         //  初始化
         // ================================================================
         async function init() {
-            populateCountrySelect();
+            setupCountrySearch();
             await loadFromSupabase();
             setupYearTabs();
             setupPhotoUpload();
@@ -2316,8 +2783,7 @@
             const countries = new Set(tripData.map(d => d.country).filter(c => c && c !== '待定' && c !== 'Day'));
             document.getElementById('totalCountriesDisplay').textContent = countries.size;
 
-            console.log('🗺️ 环球旅行日历已加载 · 支持相册多选上传照片');
-            console.log('☁️ Cloudinary 已配置:', CLOUD_NAME);
+            console.log('🗺️ 环球旅行日历已加载 · 汇率转换功能已启用');
         }
 
         init();
