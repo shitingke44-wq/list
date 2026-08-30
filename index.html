@@ -6,7 +6,6 @@
     <title>🗺️ 环球旅行日历 · 行程管理</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ========== 全局重置 ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0a1628;
@@ -16,7 +15,6 @@
         }
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* ========== 头部 ========== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -51,7 +49,6 @@
             opacity: 0.8;
         }
 
-        /* ========== 搜索栏 ========== */
         .search-bar {
             display: flex;
             gap: 10px;
@@ -63,10 +60,7 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .search-bar .search-icon {
-            color: #6a8aaa;
-            font-size: 0.9rem;
-        }
+        .search-bar .search-icon { color: #6a8aaa; font-size: 0.9rem; }
         .search-bar input {
             flex: 1;
             min-width: 150px;
@@ -80,13 +74,8 @@
             outline: none;
             transition: 0.2s;
         }
-        .search-bar input:focus {
-            border-color: #f9d77e;
-            box-shadow: 0 0 20px #f9d77e22;
-        }
-        .search-bar input::placeholder {
-            color: #4a6a8a;
-        }
+        .search-bar input:focus { border-color: #f9d77e; box-shadow: 0 0 20px #f9d77e22; }
+        .search-bar input::placeholder { color: #4a6a8a; }
         .search-bar .search-btn {
             background: #4a9eff;
             border: none;
@@ -99,14 +88,8 @@
             transition: 0.2s;
             white-space: nowrap;
         }
-        .search-bar .search-btn:hover {
-            background: #6ab4ff;
-        }
-        .search-bar .search-results-count {
-            color: #6a8aaa;
-            font-size: 0.75rem;
-            margin-left: 4px;
-        }
+        .search-bar .search-btn:hover { background: #6ab4ff; }
+        .search-bar .search-results-count { color: #6a8aaa; font-size: 0.75rem; margin-left: 4px; }
         .search-bar .clear-search-btn {
             background: transparent;
             border: 1px solid #e05a5a44;
@@ -119,15 +102,9 @@
             transition: 0.2s;
             display: none;
         }
-        .search-bar .clear-search-btn:hover {
-            background: #e05a5a22;
-            border-color: #e05a5a;
-        }
-        .search-bar .clear-search-btn.visible {
-            display: inline-block;
-        }
+        .search-bar .clear-search-btn:hover { background: #e05a5a22; border-color: #e05a5a; }
+        .search-bar .clear-search-btn.visible { display: inline-block; }
 
-        /* ========== 搜索结果下拉 ========== */
         .search-results-dropdown {
             display: none;
             background: #0f1f33;
@@ -141,9 +118,7 @@
             z-index: 100;
             position: relative;
         }
-        .search-results-dropdown.active {
-            display: block;
-        }
+        .search-results-dropdown.active { display: block; }
         .search-results-dropdown .result-item {
             display: flex;
             align-items: center;
@@ -153,52 +128,16 @@
             transition: 0.15s;
             border-bottom: 1px solid #1a345044;
         }
-        .search-results-dropdown .result-item:hover {
-            background: #1a3450;
-        }
-        .search-results-dropdown .result-item:last-child {
-            border-bottom: none;
-        }
-        .search-results-dropdown .result-item .result-day {
-            color: #f9d77e;
-            font-weight: 600;
-            font-size: 0.8rem;
-            min-width: 50px;
-        }
-        .search-results-dropdown .result-item .result-info {
-            flex: 1;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px 10px;
-            align-items: baseline;
-        }
-        .search-results-dropdown .result-item .result-info .result-city {
-            color: #e5efff;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .search-results-dropdown .result-item .result-info .result-country {
-            color: #6a8aaa;
-            font-size: 0.75rem;
-        }
-        .search-results-dropdown .result-item .result-info .result-sights {
-            color: #4a9eff;
-            font-size: 0.7rem;
-            opacity: 0.7;
-        }
-        .search-results-dropdown .result-item .result-date {
-            color: #6a8aaa;
-            font-size: 0.7rem;
-            white-space: nowrap;
-        }
-        .search-results-dropdown .no-result {
-            padding: 20px;
-            text-align: center;
-            color: #4a6a8a;
-            font-size: 0.85rem;
-        }
+        .search-results-dropdown .result-item:hover { background: #1a3450; }
+        .search-results-dropdown .result-item:last-child { border-bottom: none; }
+        .search-results-dropdown .result-item .result-day { color: #f9d77e; font-weight: 600; font-size: 0.8rem; min-width: 50px; }
+        .search-results-dropdown .result-item .result-info { flex: 1; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+        .search-results-dropdown .result-item .result-info .result-city { color: #e5efff; font-size: 0.9rem; font-weight: 500; }
+        .search-results-dropdown .result-item .result-info .result-country { color: #6a8aaa; font-size: 0.75rem; }
+        .search-results-dropdown .result-item .result-info .result-sights { color: #4a9eff; font-size: 0.7rem; opacity: 0.7; }
+        .search-results-dropdown .result-item .result-date { color: #6a8aaa; font-size: 0.7rem; white-space: nowrap; }
+        .search-results-dropdown .no-result { padding: 20px; text-align: center; color: #4a6a8a; font-size: 0.85rem; }
 
-        /* ========== 快捷导航 ========== */
         .quick-nav {
             display: flex;
             gap: 10px;
@@ -210,10 +149,7 @@
             border: 1px solid #1a3450;
             align-items: center;
         }
-        .quick-nav .nav-label {
-            color: #6a8aaa;
-            font-size: 0.8rem;
-        }
+        .quick-nav .nav-label { color: #6a8aaa; font-size: 0.8rem; }
         .quick-nav button {
             background: #142b44;
             border: 1px solid #1a3450;
@@ -225,30 +161,12 @@
             font-size: 0.8rem;
             font-family: inherit;
         }
-        .quick-nav button:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
-        .quick-nav .reminder-btn {
-            background: #e67e2233;
-            border-color: #e67e2244;
-            color: #f9d77e;
-        }
-        .quick-nav .reminder-btn:hover {
-            background: #e67e2255;
-            border-color: #e67e22;
-        }
-        .quick-nav .cost-btn {
-            background: #4a9eff33;
-            border-color: #4a9eff44;
-            color: #4a9eff;
-        }
-        .quick-nav .cost-btn:hover {
-            background: #4a9eff55;
-            border-color: #4a9eff;
-        }
+        .quick-nav button:hover { background: #1a3450; border-color: #f9d77e55; }
+        .quick-nav .reminder-btn { background: #e67e2233; border-color: #e67e2244; color: #f9d77e; }
+        .quick-nav .reminder-btn:hover { background: #e67e2255; border-color: #e67e22; }
+        .quick-nav .cost-btn { background: #4a9eff33; border-color: #4a9eff44; color: #4a9eff; }
+        .quick-nav .cost-btn:hover { background: #4a9eff55; border-color: #4a9eff; }
 
-        /* ========== 年份切换 ========== */
         .year-tabs {
             display: flex;
             gap: 8px;
@@ -266,17 +184,9 @@
             font-size: 0.9rem;
             font-family: inherit;
         }
-        .year-tabs button:hover {
-            background: #1a3450;
-            color: #e5efff;
-        }
-        .year-tabs button.active {
-            background: #f9d77e22;
-            border-color: #f9d77e;
-            color: #f9d77e;
-        }
+        .year-tabs button:hover { background: #1a3450; color: #e5efff; }
+        .year-tabs button.active { background: #f9d77e22; border-color: #f9d77e; color: #f9d77e; }
 
-        /* ========== 日历 ========== */
         .calendar-wrapper { margin-bottom: 20px; }
         .month-nav {
             display: flex;
@@ -286,12 +196,65 @@
             border-bottom: 1px solid #1a3450;
             margin-bottom: 12px;
         }
+        .month-nav .month-select-wrapper { position: relative; display: inline-block; }
         .month-nav .month-title {
             font-size: 1.2rem;
             font-weight: 400;
             color: #f9d77e;
             letter-spacing: 2px;
+            cursor: pointer;
+            user-select: none;
         }
+        .month-nav .month-title:hover { opacity: 0.8; }
+        .month-nav .month-title i { font-size: 0.7rem; opacity: 0.5; margin-left: 6px; }
+        .month-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #0f1f33;
+            border: 1px solid #1a3450;
+            border-radius: 10px;
+            padding: 6px 0;
+            z-index: 200;
+            max-height: 220px;
+            overflow-y: auto;
+            min-width: 140px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .month-dropdown .month-option {
+            padding: 6px 18px;
+            cursor: pointer;
+            color: #e5efff;
+            transition: 0.15s;
+            font-size: 0.85rem;
+        }
+        .month-dropdown .month-option:hover { background: #1a3450; color: #f9d77e; }
+        .month-dropdown .month-option.active { background: #f9d77e22; color: #f9d77e; }
+        .month-dropdown .year-row {
+            padding: 4px 12px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #1a3450;
+            margin-top: 4px;
+            padding-top: 6px;
+            align-items: center;
+            justify-content: center;
+        }
+        .month-dropdown .year-row button {
+            background: transparent;
+            border: 1px solid #1a3450;
+            color: #6a8aaa;
+            padding: 2px 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .month-dropdown .year-row button:hover { background: #1a3450; color: #e5efff; border-color: #f9d77e55; }
+        .month-dropdown .year-row .year-label { color: #f9d77e; font-size: 0.85rem; font-weight: 500; min-width: 40px; text-align: center; }
+
         .month-nav button {
             background: #142b44;
             border: 1px solid #1a3450;
@@ -302,20 +265,9 @@
             font-size: 0.9rem;
             transition: 0.2s;
         }
-        .month-nav button:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
-        .month-nav .today-btn-sm {
-            background: #4caf50;
-            color: #fff;
-            font-weight: 500;
-            font-size: 0.75rem;
-            padding: 4px 12px;
-        }
-        .month-nav .today-btn-sm:hover {
-            background: #66bb6a;
-        }
+        .month-nav button:hover { background: #1a3450; border-color: #f9d77e55; }
+        .month-nav .today-btn-sm { background: #4caf50; color: #fff; font-weight: 500; font-size: 0.75rem; padding: 4px 12px; }
+        .month-nav .today-btn-sm:hover { background: #66bb6a; }
 
         .calendar-grid {
             display: grid;
@@ -344,122 +296,31 @@
             justify-content: flex-start;
             position: relative;
         }
-        .day-cell:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-            transform: scale(1.03);
-            z-index: 2;
-        }
-        .day-cell .date {
-            font-size: 0.65rem;
-            opacity: 0.5;
-            font-weight: 300;
-        }
-        .day-cell .day-label {
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: #f9d77e;
-            margin-top: 1px;
-        }
-        .day-cell .city {
-            font-size: 0.5rem;
-            opacity: 0.6;
-            text-align: center;
-            line-height: 1.1;
-            margin-top: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            padding: 0 2px;
-        }
-        .day-cell .flag {
-            font-size: 0.55rem;
-            opacity: 0.5;
-            margin-top: 1px;
-        }
-        .day-cell .dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #f9d77e;
-            margin-top: 2px;
-            opacity: 0.5;
-        }
-        .day-cell .reminder-dot {
-            background: #e67e22;
-            opacity: 0.9;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        .day-cell .today-dot {
-            background: #4caf50;
-            opacity: 1;
-        }
-        .day-cell .has-cost-dot {
-            background: #6fcf97;
-            opacity: 1;
-        }
-        .day-cell .add-hint {
-            font-size: 0.4rem;
-            opacity: 0.2;
-            margin-top: 1px;
-        }
-        .day-cell .photo-indicator {
-            font-size: 0.45rem;
-            margin-top: 1px;
-            color: #4a9eff;
-            opacity: 0.6;
-        }
-        .day-cell .outside-trip-badge {
-            font-size: 0.45rem;
-            background: #4a9eff33;
-            color: #4a9eff;
-            border-radius: 10px;
-            padding: 0 4px;
-            margin-top: 1px;
-        }
+        .day-cell:hover { background: #1a3450; border-color: #f9d77e55; transform: scale(1.03); z-index: 2; }
+        .day-cell .date { font-size: 0.65rem; opacity: 0.5; font-weight: 300; }
+        .day-cell .day-label { font-size: 0.6rem; font-weight: 600; color: #f9d77e; margin-top: 1px; }
+        .day-cell .city { font-size: 0.5rem; opacity: 0.6; text-align: center; line-height: 1.1; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; padding: 0 2px; }
+        .day-cell .flag { font-size: 0.55rem; opacity: 0.5; margin-top: 1px; }
+        .day-cell .dot { width: 5px; height: 5px; border-radius: 50%; background: #f9d77e; margin-top: 2px; opacity: 0.5; }
+        .day-cell .reminder-dot { background: #e67e22; opacity: 0.9; animation: pulse 1.5s ease-in-out infinite; }
+        .day-cell .today-dot { background: #4caf50; opacity: 1; }
+        .day-cell .has-cost-dot { background: #6fcf97; opacity: 1; }
+        .day-cell .add-hint { font-size: 0.4rem; opacity: 0.2; margin-top: 1px; }
+        .day-cell .photo-indicator { font-size: 0.45rem; margin-top: 1px; color: #4a9eff; opacity: 0.6; }
+        .day-cell .outside-trip-badge { font-size: 0.45rem; background: #4a9eff33; color: #4a9eff; border-radius: 10px; padding: 0 4px; margin-top: 1px; }
         @keyframes pulse {
             0% { opacity: 0.4; transform: scale(0.9); }
             50% { opacity: 1; transform: scale(1.2); }
             100% { opacity: 0.4; transform: scale(0.9); }
         }
-        .day-cell.empty {
-            opacity: 0.1;
-            cursor: default;
-            pointer-events: none;
-        }
-        .day-cell.empty:hover {
-            transform: none;
-            background: #0f1f33;
-            border-color: #1a3450;
-        }
-        .day-cell.today {
-            border-color: #4caf50;
-            background: #1a2a40;
-            box-shadow: 0 0 20px #4caf5022;
-        }
-        .day-cell.selected {
-            border-color: #f9d77e;
-            background: #1a2a40;
-            box-shadow: 0 0 20px #f9d77e33;
-        }
-        .day-cell.no-data {
-            opacity: 0.5;
-            cursor: pointer;
-            border-color: #1a345066;
-        }
-        .day-cell.no-data:hover {
-            opacity: 0.8;
-            border-color: #4a9eff66;
-            background: #0f1f33;
-            transform: scale(1.03);
-        }
-        .day-cell.has-trip {
-            border-color: #f9d77e33;
-        }
-        .day-cell.has-outside-trip {
-            border-color: #4a9eff44;
-        }
+        .day-cell.empty { opacity: 0.1; cursor: default; pointer-events: none; }
+        .day-cell.empty:hover { transform: none; background: #0f1f33; border-color: #1a3450; }
+        .day-cell.today { border-color: #4caf50; background: #1a2a40; box-shadow: 0 0 20px #4caf5022; }
+        .day-cell.selected { border-color: #f9d77e; background: #1a2a40; box-shadow: 0 0 20px #f9d77e33; }
+        .day-cell.no-data { opacity: 0.5; cursor: pointer; border-color: #1a345066; }
+        .day-cell.no-data:hover { opacity: 0.8; border-color: #4a9eff66; background: #0f1f33; transform: scale(1.03); }
+        .day-cell.has-trip { border-color: #f9d77e33; }
+        .day-cell.has-outside-trip { border-color: #4a9eff44; }
 
         .nav-row {
             display: flex;
@@ -478,10 +339,7 @@
             transition: 0.2s;
             font-size: 0.8rem;
         }
-        .nav-row button:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
+        .nav-row button:hover { background: #1a3450; border-color: #f9d77e55; }
         .nav-row .jump-input {
             background: #0f1f33;
             border: 1px solid #1a3450;
@@ -492,20 +350,10 @@
             text-align: center;
             font-size: 0.85rem;
         }
-        .nav-row .jump-input:focus {
-            outline: none;
-            border-color: #f9d77e;
-        }
-        .nav-row .today-btn {
-            background: #4caf50;
-            color: #fff;
-            font-weight: 600;
-        }
-        .nav-row .today-btn:hover {
-            background: #66bb6a;
-        }
+        .nav-row .jump-input:focus { outline: none; border-color: #f9d77e; }
+        .nav-row .today-btn { background: #4caf50; color: #fff; font-weight: 600; }
+        .nav-row .today-btn:hover { background: #66bb6a; }
 
-        /* ========== 行程详情 ========== */
         .day-detail {
             display: none;
             background: #0f1f33;
@@ -531,29 +379,10 @@
             padding-bottom: 12px;
             margin-bottom: 14px;
         }
-        .day-detail .detail-header .day-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #f9d77e;
-        }
-        .day-detail .detail-header .day-date {
-            font-size: 0.85rem;
-            opacity: 0.6;
-        }
-        .day-detail .detail-header .day-country {
-            font-size: 0.9rem;
-            background: #142b44;
-            padding: 2px 14px;
-            border-radius: 30px;
-        }
-        .day-detail .detail-header .trip-type-badge {
-            font-size: 0.7rem;
-            background: #4a9eff33;
-            color: #4a9eff;
-            padding: 2px 12px;
-            border-radius: 30px;
-            border: 1px solid #4a9eff44;
-        }
+        .day-detail .detail-header .day-title { font-size: 1.2rem; font-weight: 600; color: #f9d77e; }
+        .day-detail .detail-header .day-date { font-size: 0.85rem; opacity: 0.6; }
+        .day-detail .detail-header .day-country { font-size: 0.9rem; background: #142b44; padding: 2px 14px; border-radius: 30px; }
+        .day-detail .detail-header .trip-type-badge { font-size: 0.7rem; background: #4a9eff33; color: #4a9eff; padding: 2px 12px; border-radius: 30px; border: 1px solid #4a9eff44; }
 
         .day-detail .photo-gallery {
             display: flex;
@@ -575,15 +404,8 @@
             justify-content: center;
             position: relative;
         }
-        .day-detail .photo-gallery .photo-thumb:hover {
-            border-color: #f9d77e;
-            transform: scale(1.05);
-        }
-        .day-detail .photo-gallery .photo-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .day-detail .photo-gallery .photo-thumb:hover { border-color: #f9d77e; transform: scale(1.05); }
+        .day-detail .photo-gallery .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
         .day-detail .photo-gallery .photo-thumb .remove-photo {
             position: absolute;
             top: -6px;
@@ -603,39 +425,13 @@
             transition: 0.2s;
             z-index: 2;
         }
-        .day-detail .photo-gallery .photo-thumb:hover .remove-photo {
-            opacity: 1;
-        }
+        .day-detail .photo-gallery .photo-thumb:hover .remove-photo { opacity: 1; }
 
-        .day-detail .sights {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px 8px;
-        }
-        .day-detail .sights span {
-            background: #1a3450;
-            padding: 2px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-        }
-        .day-detail .info-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 20px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin: 6px 0;
-        }
-        .day-detail .info-row .label {
-            opacity: 0.4;
-        }
-        .day-detail .note {
-            font-size: 0.85rem;
-            opacity: 0.6;
-            border-top: 1px solid #1a3450;
-            padding-top: 10px;
-            margin-top: 4px;
-        }
+        .day-detail .sights { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+        .day-detail .sights span { background: #1a3450; padding: 2px 12px; border-radius: 30px; font-size: 0.8rem; }
+        .day-detail .info-row { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 0.9rem; opacity: 0.8; margin: 6px 0; }
+        .day-detail .info-row .label { opacity: 0.4; }
+        .day-detail .note { font-size: 0.85rem; opacity: 0.6; border-top: 1px solid #1a3450; padding-top: 10px; margin-top: 4px; }
 
         .day-detail .cost-breakdown {
             display: flex;
@@ -647,27 +443,11 @@
             border-radius: 10px;
             border: 1px solid #1a3450;
         }
-        .day-detail .cost-breakdown .cost-item {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-        .day-detail .cost-breakdown .cost-item .clabel {
-            font-size: 0.6rem;
-            opacity: 0.4;
-            text-transform: uppercase;
-        }
-        .day-detail .cost-breakdown .cost-item .cvalue {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #6fcf97;
-        }
-        .day-detail .cost-breakdown .cost-item .cvalue.total {
-            color: #f9d77e;
-            font-size: 1.1rem;
-        }
+        .day-detail .cost-breakdown .cost-item { display: flex; flex-direction: column; gap: 1px; }
+        .day-detail .cost-breakdown .cost-item .clabel { font-size: 0.6rem; opacity: 0.4; text-transform: uppercase; }
+        .day-detail .cost-breakdown .cost-item .cvalue { font-size: 0.95rem; font-weight: 600; color: #6fcf97; }
+        .day-detail .cost-breakdown .cost-item .cvalue.total { color: #f9d77e; font-size: 1.1rem; }
 
-        /* ====== 汇率转换器 ====== */
         .exchange-widget {
             background: #0a1a2a;
             border: 1px solid #f9d77e44;
@@ -679,20 +459,8 @@
             align-items: center;
             gap: 12px 18px;
         }
-        .exchange-widget .exchange-label {
-            font-size: 0.75rem;
-            color: #f9d77e;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .exchange-widget .exchange-input-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .exchange-widget .exchange-label { font-size: 0.75rem; color: #f9d77e; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .exchange-widget .exchange-input-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .exchange-widget .exchange-input-group input {
             background: #0f1f33;
             border: 1px solid #1a3450;
@@ -703,27 +471,10 @@
             width: 100px;
             font-family: inherit;
         }
-        .exchange-widget .exchange-input-group input:focus {
-            outline: none;
-            border-color: #f9d77e;
-        }
-        .exchange-widget .exchange-input-group .currency-code {
-            color: #6a8aaa;
-            font-size: 0.8rem;
-            font-weight: 600;
-            min-width: 28px;
-        }
-        .exchange-widget .exchange-result {
-            color: #6fcf97;
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-left: 4px;
-        }
-        .exchange-widget .exchange-rate-info {
-            color: #4a6a8a;
-            font-size: 0.7rem;
-            margin-left: 6px;
-        }
+        .exchange-widget .exchange-input-group input:focus { outline: none; border-color: #f9d77e; }
+        .exchange-widget .exchange-input-group .currency-code { color: #6a8aaa; font-size: 0.8rem; font-weight: 600; min-width: 28px; }
+        .exchange-widget .exchange-result { color: #6fcf97; font-size: 0.95rem; font-weight: 600; margin-left: 4px; }
+        .exchange-widget .exchange-rate-info { color: #4a6a8a; font-size: 0.7rem; margin-left: 6px; }
         .exchange-widget .exchange-refresh {
             background: #142b44;
             border: 1px solid #1a3450;
@@ -736,10 +487,7 @@
             transition: 0.2s;
             margin-left: auto;
         }
-        .exchange-widget .exchange-refresh:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
+        .exchange-widget .exchange-refresh:hover { background: #1a3450; border-color: #f9d77e55; }
 
         .day-detail .action-buttons {
             display: flex;
@@ -747,39 +495,13 @@
             flex-wrap: wrap;
             margin-top: 12px;
         }
-        .day-detail .action-buttons button {
-            padding: 6px 20px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-        .day-detail .action-buttons .edit-btn {
-            background: #4a9eff;
-            color: #fff;
-        }
-        .day-detail .action-buttons .edit-btn:hover {
-            background: #6ab4ff;
-        }
-        .day-detail .action-buttons .add-btn {
-            background: #f9d77e;
-            color: #0a1628;
-        }
-        .day-detail .action-buttons .add-btn:hover {
-            background: #ffe28a;
-        }
-        .day-detail .action-buttons .delete-btn {
-            background: #e05a5a44;
-            color: #e05a5a;
-            border: 1px solid #e05a5a44;
-        }
-        .day-detail .action-buttons .delete-btn:hover {
-            background: #e05a5a66;
-        }
+        .day-detail .action-buttons .edit-btn { background: #4a9eff; color: #fff; }
+        .day-detail .action-buttons .edit-btn:hover { background: #6ab4ff; }
+        .day-detail .action-buttons .add-btn { background: #f9d77e; color: #0a1628; }
+        .day-detail .action-buttons .add-btn:hover { background: #ffe28a; }
+        .day-detail .action-buttons .delete-btn { background: #e05a5a44; color: #e05a5a; border: 1px solid #e05a5a44; }
+        .day-detail .action-buttons .delete-btn:hover { background: #e05a5a66; }
 
-        /* ========== 弹窗 ========== */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -805,21 +527,9 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-box h2 {
-            color: #f9d77e;
-            margin-bottom: 14px;
-            font-weight: 400;
-            font-size: 1.2rem;
-        }
-        .modal-box .form-group {
-            margin-bottom: 10px;
-        }
-        .modal-box .form-group label {
-            display: block;
-            font-size: 0.75rem;
-            color: #6a8aaa;
-            margin-bottom: 3px;
-        }
+        .modal-box h2 { color: #f9d77e; margin-bottom: 14px; font-weight: 400; font-size: 1.2rem; }
+        .modal-box .form-group { margin-bottom: 10px; }
+        .modal-box .form-group label { display: block; font-size: 0.75rem; color: #6a8aaa; margin-bottom: 3px; }
         .modal-box .form-group input,
         .modal-box .form-group select,
         .modal-box .form-group textarea {
@@ -835,36 +545,14 @@
         }
         .modal-box .form-group input:focus,
         .modal-box .form-group select:focus,
-        .modal-box .form-group textarea:focus {
-            border-color: #f9d77e;
-        }
-        .modal-box .form-group textarea {
-            min-height: 50px;
-            resize: vertical;
-        }
-        .modal-box .form-group select option {
-            background: #0f1f33;
-        }
-        .modal-box .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .modal-box .cost-input-group {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .modal-box .cost-input-group input {
-            flex: 1;
-        }
-        .modal-box .cost-input-group .currency-label {
-            color: #6a8aaa;
-            font-size: 0.75rem;
-            white-space: nowrap;
-        }
+        .modal-box .form-group textarea:focus { border-color: #f9d77e; }
+        .modal-box .form-group textarea { min-height: 50px; resize: vertical; }
+        .modal-box .form-group select option { background: #0f1f33; }
+        .modal-box .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .modal-box .cost-input-group { display: flex; gap: 8px; align-items: center; }
+        .modal-box .cost-input-group input { flex: 1; }
+        .modal-box .cost-input-group .currency-label { color: #6a8aaa; font-size: 0.75rem; white-space: nowrap; }
 
-        /* ========== 照片上传 ========== */
         .modal-box .photo-upload-area {
             border: 1px dashed #1a3450;
             border-radius: 10px;
@@ -886,22 +574,10 @@
             font-family: inherit;
             transition: 0.2s;
         }
-        .modal-box .photo-upload-area .photo-upload-btn:hover {
-            background: #6ab4ff;
-        }
-        .modal-box .photo-upload-area .photo-upload-btn input[type="file"] {
-            display: none;
-        }
-        .modal-box .photo-upload-area .upload-hint {
-            color: #4a6a8a;
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-        .modal-box .photo-upload-area .upload-status {
-            font-size: 0.7rem;
-            color: #f9d77e;
-            margin-left: 8px;
-        }
+        .modal-box .photo-upload-area .photo-upload-btn:hover { background: #6ab4ff; }
+        .modal-box .photo-upload-area .photo-upload-btn input[type="file"] { display: none; }
+        .modal-box .photo-upload-area .upload-hint { color: #4a6a8a; font-size: 0.7rem; margin-left: 8px; }
+        .modal-box .photo-upload-area .upload-status { font-size: 0.7rem; color: #f9d77e; margin-left: 8px; }
         .modal-box .photo-upload-area .photo-preview-grid {
             display: flex;
             flex-wrap: wrap;
@@ -920,11 +596,7 @@
             align-items: center;
             justify-content: center;
         }
-        .modal-box .photo-upload-area .photo-preview-grid .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .modal-box .photo-upload-area .photo-preview-grid .preview-item img { width: 100%; height: 100%; object-fit: cover; }
         .modal-box .photo-upload-area .photo-preview-grid .preview-item .remove-photo-btn {
             position: absolute;
             top: -4px;
@@ -948,31 +620,11 @@
             margin-top: 16px;
             justify-content: flex-end;
         }
-        .modal-actions button {
-            padding: 7px 24px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-        .modal-actions .save-btn {
-            background: #f9d77e;
-            color: #0a1628;
-        }
-        .modal-actions .save-btn:hover {
-            background: #ffe28a;
-        }
-        .modal-actions .cancel-btn {
-            background: #1a3450;
-            color: #8ab4d6;
-        }
-        .modal-actions .cancel-btn:hover {
-            background: #2a4a6a;
-        }
+        .modal-actions .save-btn { background: #f9d77e; color: #0a1628; }
+        .modal-actions .save-btn:hover { background: #ffe28a; }
+        .modal-actions .cancel-btn { background: #1a3450; color: #8ab4d6; }
+        .modal-actions .cancel-btn:hover { background: #2a4a6a; }
 
-        /* ========== 费用统计 ========== */
         .cost-summary-panel {
             background: #0d1f30;
             border-radius: 14px;
@@ -988,16 +640,8 @@
             gap: 8px;
             margin-bottom: 10px;
         }
-        .cost-summary-panel .cost-header .cost-title {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #f9d77e;
-        }
-        .cost-summary-panel .cost-header .cost-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .cost-summary-panel .cost-header .cost-title { font-size: 1rem; font-weight: 500; color: #f9d77e; }
+        .cost-summary-panel .cost-header .cost-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .cost-summary-panel .cost-header .cost-actions button {
             background: #142b44;
             border: 1px solid #1a3450;
@@ -1009,10 +653,7 @@
             font-family: inherit;
             transition: 0.2s;
         }
-        .cost-summary-panel .cost-header .cost-actions button:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
+        .cost-summary-panel .cost-header .cost-actions button:hover { background: #1a3450; border-color: #f9d77e55; }
         .cost-filter {
             display: flex;
             flex-wrap: wrap;
@@ -1024,10 +665,7 @@
             margin-bottom: 10px;
             border: 1px solid #1a3450;
         }
-        .cost-filter label {
-            font-size: 0.7rem;
-            color: #6a8aaa;
-        }
+        .cost-filter label { font-size: 0.7rem; color: #6a8aaa; }
         .cost-filter input[type="date"] {
             background: #0f1f33;
             border: 1px solid #1a3450;
@@ -1037,14 +675,8 @@
             font-size: 0.75rem;
             font-family: inherit;
         }
-        .cost-filter input[type="date"]:focus {
-            outline: none;
-            border-color: #f9d77e;
-        }
-        .cost-filter input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.6);
-            cursor: pointer;
-        }
+        .cost-filter input[type="date"]:focus { outline: none; border-color: #f9d77e; }
+        .cost-filter input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cursor: pointer; }
         .cost-filter button {
             background: #142b44;
             border: 1px solid #1a3450;
@@ -1056,15 +688,8 @@
             font-family: inherit;
             transition: 0.2s;
         }
-        .cost-filter button:hover {
-            background: #1a3450;
-            border-color: #f9d77e55;
-        }
-        .cost-filter .filter-result {
-            color: #f9d77e;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
+        .cost-filter button:hover { background: #1a3450; border-color: #f9d77e55; }
+        .cost-filter .filter-result { color: #f9d77e; font-size: 0.75rem; font-weight: 500; }
 
         .cost-items-row {
             display: flex;
@@ -1072,38 +697,17 @@
             gap: 10px 20px;
             align-items: center;
         }
-        .cost-item-summary {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-        .cost-item-summary .label {
-            font-size: 0.55rem;
-            opacity: 0.5;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .cost-item-summary .value {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #f9d77e;
-        }
+        .cost-item-summary { display: flex; flex-direction: column; gap: 1px; }
+        .cost-item-summary .label { font-size: 0.55rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cost-item-summary .value { font-size: 0.95rem; font-weight: 600; color: #f9d77e; }
         .cost-item-summary .value.green { color: #6fcf97; }
         .cost-item-summary .value.blue { color: #4a9eff; }
         .cost-item-summary .value.pink { color: #f9a8d4; }
         .cost-item-summary .value.orange { color: #f9a86a; }
         .cost-item-summary .value.purple { color: #b4a8f9; }
-        .cost-item-summary .value.total {
-            color: #fff;
-            font-size: 1.1rem;
-        }
-        .cost-divider {
-            width: 1px;
-            height: 30px;
-            background: #1a3450;
-        }
+        .cost-item-summary .value.total { color: #fff; font-size: 1.1rem; }
+        .cost-divider { width: 1px; height: 30px; background: #1a3450; }
 
-        /* ========== 提醒汇总 ========== */
         .book-summary {
             background: #0d1f30;
             border-radius: 14px;
@@ -1111,6 +715,27 @@
             margin-top: 14px;
             border: 1px solid #1a3450;
         }
+        .book-summary .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .book-summary .summary-header .summary-title { color: #f9d77e; font-weight: 500; font-size: 0.9rem; }
+        .book-summary .summary-header .add-reminder-btn {
+            background: #4a9eff;
+            border: none;
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .book-summary .summary-header .add-reminder-btn:hover { background: #6ab4ff; }
         .book-summary .item {
             display: flex;
             align-items: center;
@@ -1124,35 +749,12 @@
             transition: 0.2s;
             border-radius: 6px;
         }
-        .book-summary .item:hover {
-            background: #1a2a40;
-        }
-        .book-summary .item:last-child {
-            border-bottom: none;
-        }
-        .book-summary .item .left-part {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-            flex-wrap: wrap;
-            flex: 1;
-        }
-        .book-summary .item .left-part .label {
-            color: #f9d77e;
-            font-weight: 500;
-        }
-        .book-summary .item .left-part .detail {
-            opacity: 0.8;
-            font-size: 0.8rem;
-        }
-        .book-summary .item .left-part .date-tag {
-            background: #e67e22;
-            color: #fff;
-            font-size: 0.6rem;
-            padding: 1px 8px;
-            border-radius: 30px;
-            font-weight: 600;
-        }
+        .book-summary .item:hover { background: #1a2a40; }
+        .book-summary .item:last-child { border-bottom: none; }
+        .book-summary .item .left-part { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; flex: 1; }
+        .book-summary .item .left-part .label { color: #f9d77e; font-weight: 500; }
+        .book-summary .item .left-part .detail { opacity: 0.8; font-size: 0.8rem; }
+        .book-summary .item .left-part .date-tag { background: #e67e22; color: #fff; font-size: 0.6rem; padding: 1px 8px; border-radius: 30px; font-weight: 600; }
         .book-summary .item .delete-reminder-btn {
             background: transparent;
             border: 1px solid #e05a5a44;
@@ -1169,20 +771,10 @@
             flex-shrink: 0;
             font-family: inherit;
         }
-        .book-summary .item .delete-reminder-btn:hover {
-            background: #e05a5a22;
-            border-color: #e05a5a;
-        }
+        .book-summary .item .delete-reminder-btn:hover { background: #e05a5a22; border-color: #e05a5a; }
 
-        .empty-state {
-            text-align: center;
-            padding: 30px 20px;
-            opacity: 0.5;
-        }
-        .empty-state .big-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+        .empty-state { text-align: center; padding: 30px 20px; opacity: 0.5; }
+        .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 10px; }
 
         .loading-overlay {
             position: fixed;
@@ -1199,22 +791,10 @@
             gap: 20px;
         }
         .loading-overlay.active { display: flex; }
-        .loading-overlay .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #1a3450;
-            border-top-color: #f9d77e;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .loading-overlay .spinner { width: 40px; height: 40px; border: 4px solid #1a3450; border-top-color: #f9d77e; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 国家搜索下拉 */
-        .country-select-wrapper {
-            position: relative;
-        }
+        .country-select-wrapper { position: relative; }
         .country-select-wrapper input {
             width: 100%;
             padding: 6px 12px;
@@ -1226,9 +806,7 @@
             font-family: inherit;
             outline: none;
         }
-        .country-select-wrapper input:focus {
-            border-color: #f9d77e;
-        }
+        .country-select-wrapper input:focus { border-color: #f9d77e; }
         .country-dropdown {
             display: none;
             position: absolute;
@@ -1243,9 +821,7 @@
             z-index: 100;
             margin-top: 2px;
         }
-        .country-dropdown.active {
-            display: block;
-        }
+        .country-dropdown.active { display: block; }
         .country-dropdown .country-option {
             padding: 6px 12px;
             cursor: pointer;
@@ -1255,23 +831,11 @@
             gap: 8px;
             border-bottom: 1px solid #1a345044;
         }
-        .country-dropdown .country-option:hover {
-            background: #1a3450;
-        }
-        .country-dropdown .country-option:last-child {
-            border-bottom: none;
-        }
-        .country-dropdown .country-option .flag {
-            font-size: 1.1rem;
-        }
-        .country-dropdown .country-option .name {
-            color: #e5efff;
-        }
-        .country-dropdown .no-result {
-            padding: 12px;
-            color: #4a6a8a;
-            text-align: center;
-        }
+        .country-dropdown .country-option:hover { background: #1a3450; }
+        .country-dropdown .country-option:last-child { border-bottom: none; }
+        .country-dropdown .country-option .flag { font-size: 1.1rem; }
+        .country-dropdown .country-option .name { color: #e5efff; }
+        .country-dropdown .no-result { padding: 12px; color: #4a6a8a; text-align: center; }
 
         @media (max-width: 700px) {
             .calendar-grid { gap: 3px; }
@@ -1306,15 +870,10 @@
             .day-cell .flag { display: none; }
             .day-detail .photo-gallery .photo-thumb { width: 50px; height: 50px; }
             .search-results-dropdown .result-item .result-info { flex-direction: column; gap: 2px; }
+            .month-dropdown { min-width: 120px; left: -20px; }
         }
-        ::-webkit-scrollbar {
-            width: 5px;
-            background: #0a1628;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1a3450;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 5px; background: #0a1628; }
+        ::-webkit-scrollbar-thumb { background: #1a3450; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -1325,7 +884,6 @@
     </div>
 
     <div class="container">
-        <!-- ========== 头部 ========== -->
         <div class="header">
             <h1>🗺️ 环球旅行 <small>2027.8.4 – 2027.10.12 (Day 1-70)</small></h1>
             <div class="stats">
@@ -1336,7 +894,6 @@
             </div>
         </div>
 
-        <!-- ========== 搜索栏 ========== -->
         <div class="search-bar">
             <span class="search-icon"><i class="fas fa-search"></i></span>
             <input type="text" id="searchInput" placeholder="🔍 搜索城市、国家、景点名称..." />
@@ -1345,24 +902,20 @@
             <button class="clear-search-btn" id="clearSearchBtn" onclick="clearSearch()">✕ 清除</button>
         </div>
 
-        <!-- ========== 搜索结果下拉 ========== -->
         <div class="search-results-dropdown" id="searchResultsDropdown"></div>
 
-        <!-- ========== 快捷导航 ========== -->
         <div class="quick-nav">
             <span class="nav-label">⚡ 快捷跳转：</span>
             <button onclick="scrollToReminders()" class="reminder-btn">🔔 预约提醒</button>
             <button onclick="scrollToCostPanel()" class="cost-btn">💰 费用统计</button>
         </div>
 
-        <!-- ========== 年份切换 ========== -->
         <div class="year-tabs" id="yearTabs">
             <button data-year="2026">2026</button>
             <button class="active" data-year="2027">2027</button>
             <button data-year="2028">2028</button>
         </div>
 
-        <!-- ========== 导航行 ========== -->
         <div class="nav-row">
             <button onclick="jumpToDay(1)">⏮ 第1天</button>
             <button onclick="jumpToDay(currentDay - 1)">◀ 前一天</button>
@@ -1375,18 +928,21 @@
             <button onclick="refreshAll()" style="background:#1a3450;border-color:#f9d77e44;">🔄 刷新</button>
         </div>
 
-        <!-- ========== 日历 ========== -->
         <div class="calendar-wrapper">
             <div class="month-nav">
                 <button onclick="changeMonth(-1)">◀</button>
-                <div class="month-title" id="monthTitle">2027年8月</div>
+                <div class="month-select-wrapper">
+                    <div class="month-title" id="monthTitle" onclick="toggleMonthDropdown()">
+                        2027年8月 <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="month-dropdown" id="monthDropdown"></div>
+                </div>
                 <button onclick="changeMonth(1)">▶</button>
                 <button class="today-btn-sm" onclick="goToTodayMonth()">📍 今天</button>
             </div>
             <div class="calendar-grid" id="calendarGrid"></div>
         </div>
 
-        <!-- ========== 行程详情 ========== -->
         <div class="day-detail" id="dayDetail">
             <div class="detail-header">
                 <span class="day-title" id="detailTitle">Day 1</span>
@@ -1399,7 +955,6 @@
                 <div class="sights" id="detailSights"></div>
                 <div class="info-row" id="detailInfo"></div>
 
-                <!-- 汇率转换器 -->
                 <div class="exchange-widget" id="exchangeWidget">
                     <span class="exchange-label"><i class="fas fa-exchange-alt"></i> 实时汇率转换</span>
                     <div class="exchange-input-group">
@@ -1423,14 +978,12 @@
             </div>
         </div>
 
-        <!-- ========== 空状态 ========== -->
         <div class="empty-state" id="emptyState">
             <div class="big-icon">📅</div>
             <div>点击日历上的日期查看行程</div>
             <div style="font-size:0.8rem;opacity:0.5;margin-top:4px;">或点击「+ 添加」创建新行程</div>
         </div>
 
-        <!-- ========== 费用统计 ========== -->
         <div class="cost-summary-panel" id="costSummaryPanel">
             <div class="cost-header">
                 <span class="cost-title">💰 费用统计</span>
@@ -1462,11 +1015,15 @@
             </div>
         </div>
 
-        <!-- ========== 提醒汇总 ========== -->
-        <div class="book-summary" id="bookSummary"></div>
+        <div class="book-summary" id="bookSummary">
+            <div class="summary-header">
+                <span class="summary-title">⏰ 预约 & 购票提醒</span>
+                <button class="add-reminder-btn" onclick="openAddReminderModal()">➕ 添加提醒</button>
+            </div>
+            <div id="reminderList"></div>
+        </div>
     </div>
 
-    <!-- ========== 添加/编辑行程弹窗 ========== -->
     <div class="modal-overlay" id="tripModal">
         <div class="modal-box">
             <h2 id="modalTitle">✈️ 添加行程</h2>
@@ -1498,7 +1055,6 @@
                 <textarea id="tripNote" placeholder="行程备注..."></textarea>
             </div>
 
-            <!-- 照片上传 -->
             <div class="form-group">
                 <label>📷 照片（从相册选择，支持多选）</label>
                 <div class="photo-upload-area">
@@ -1561,6 +1117,24 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="reminderModal">
+        <div class="modal-box">
+            <h2>⏰ 添加预约/购票提醒</h2>
+            <div class="form-group">
+                <label>📅 日期</label>
+                <input type="date" id="reminderDate" />
+            </div>
+            <div class="form-group">
+                <label>📝 提醒内容</label>
+                <textarea id="reminderContent" placeholder="例如：预订酒店、购买机票、预约餐厅..." rows="3"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeReminderModal()">取消</button>
+                <button class="save-btn" onclick="saveReminder()">💾 保存提醒</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ================================================================
         //  配置 - Day 1 = 2027年8月4日，共70天
@@ -1574,388 +1148,92 @@
         const UPLOAD_PRESET = 'my_website';
 
         // ================================================================
-        //  全球国家列表 + 货币代码
-        // ================================================================
-        const COUNTRY_CURRENCY_MAP = {
-            "中国": "CNY",
-            "日本": "JPY",
-            "韩国": "KRW",
-            "蒙古": "MNT",
-            "朝鲜": "KPW",
-            "越南": "VND",
-            "老挝": "LAK",
-            "柬埔寨": "KHR",
-            "泰国": "THB",
-            "缅甸": "MMK",
-            "马来西亚": "MYR",
-            "新加坡": "SGD",
-            "印度尼西亚": "IDR",
-            "菲律宾": "PHP",
-            "东帝汶": "USD",
-            "文莱": "BND",
-            "印度": "INR",
-            "巴基斯坦": "PKR",
-            "孟加拉国": "BDT",
-            "斯里兰卡": "LKR",
-            "尼泊尔": "NPR",
-            "不丹": "BTN",
-            "马尔代夫": "MVR",
-            "阿富汗": "AFN",
-            "伊朗": "IRR",
-            "伊拉克": "IQD",
-            "叙利亚": "SYP",
-            "黎巴嫩": "LBP",
-            "约旦": "JOD",
-            "以色列": "ILS",
-            "巴勒斯坦": "ILS",
-            "沙特阿拉伯": "SAR",
-            "也门": "YER",
-            "阿曼": "OMR",
-            "阿联酋": "AED",
-            "卡塔尔": "QAR",
-            "巴林": "BHD",
-            "科威特": "KWD",
-            "土耳其": "TRY",
-            "塞浦路斯": "EUR",
-            "格鲁吉亚": "GEL",
-            "亚美尼亚": "AMD",
-            "阿塞拜疆": "AZN",
-            "哈萨克斯坦": "KZT",
-            "乌兹别克斯坦": "UZS",
-            "土库曼斯坦": "TMT",
-            "吉尔吉斯斯坦": "KGS",
-            "塔吉克斯坦": "TJS",
-            "俄罗斯": "RUB",
-            "乌克兰": "UAH",
-            "白俄罗斯": "BYN",
-            "摩尔多瓦": "MDL",
-            "立陶宛": "EUR",
-            "拉脱维亚": "EUR",
-            "爱沙尼亚": "EUR",
-            "波兰": "PLN",
-            "捷克": "CZK",
-            "斯洛伐克": "EUR",
-            "匈牙利": "HUF",
-            "罗马尼亚": "RON",
-            "保加利亚": "BGN",
-            "希腊": "EUR",
-            "阿尔巴尼亚": "ALL",
-            "北马其顿": "MKD",
-            "塞尔维亚": "RSD",
-            "黑山": "EUR",
-            "波黑": "BAM",
-            "克罗地亚": "EUR",
-            "斯洛文尼亚": "EUR",
-            "奥地利": "EUR",
-            "瑞士": "CHF",
-            "列支敦士登": "CHF",
-            "德国": "EUR",
-            "荷兰": "EUR",
-            "比利时": "EUR",
-            "卢森堡": "EUR",
-            "法国": "EUR",
-            "摩纳哥": "EUR",
-            "英国": "GBP",
-            "爱尔兰": "EUR",
-            "冰岛": "ISK",
-            "挪威": "NOK",
-            "瑞典": "SEK",
-            "芬兰": "EUR",
-            "丹麦": "DKK",
-            "意大利": "EUR",
-            "梵蒂冈": "EUR",
-            "圣马力诺": "EUR",
-            "马耳他": "EUR",
-            "西班牙": "EUR",
-            "葡萄牙": "EUR",
-            "安道尔": "EUR",
-            "摩洛哥": "MAD",
-            "阿尔及利亚": "DZD",
-            "突尼斯": "TND",
-            "利比亚": "LYD",
-            "埃及": "EGP",
-            "苏丹": "SDG",
-            "南苏丹": "SSP",
-            "埃塞俄比亚": "ETB",
-            "厄立特里亚": "ERN",
-            "吉布提": "DJF",
-            "索马里": "SOS",
-            "肯尼亚": "KES",
-            "乌干达": "UGX",
-            "坦桑尼亚": "TZS",
-            "卢旺达": "RWF",
-            "布隆迪": "BIF",
-            "刚果民主共和国": "CDF",
-            "刚果共和国": "XAF",
-            "加蓬": "XAF",
-            "赤道几内亚": "XAF",
-            "喀麦隆": "XAF",
-            "尼日利亚": "NGN",
-            "贝宁": "XOF",
-            "多哥": "XOF",
-            "加纳": "GHS",
-            "科特迪瓦": "XOF",
-            "利比里亚": "LRD",
-            "塞拉利昂": "SLL",
-            "几内亚": "GNF",
-            "几内亚比绍": "XOF",
-            "塞内加尔": "XOF",
-            "冈比亚": "GMD",
-            "马里": "XOF",
-            "布基纳法索": "XOF",
-            "尼日尔": "XOF",
-            "乍得": "XAF",
-            "中非共和国": "XAF",
-            "赞比亚": "ZMW",
-            "津巴布韦": "ZWL",
-            "马拉维": "MWK",
-            "莫桑比克": "MZN",
-            "博茨瓦纳": "BWP",
-            "纳米比亚": "NAD",
-            "安哥拉": "AOA",
-            "南非": "ZAR",
-            "莱索托": "LSL",
-            "斯威士兰": "SZL",
-            "马达加斯加": "MGA",
-            "塞舌尔": "SCR",
-            "毛里求斯": "MUR",
-            "科摩罗": "KMF",
-            "澳大利亚": "AUD",
-            "新西兰": "NZD",
-            "巴布亚新几内亚": "PGK",
-            "所罗门群岛": "SBD",
-            "瓦努阿图": "VUV",
-            "斐济": "FJD",
-            "萨摩亚": "WST",
-            "汤加": "TOP",
-            "加拿大": "CAD",
-            "美国": "USD",
-            "墨西哥": "MXN",
-            "危地马拉": "GTQ",
-            "伯利兹": "BZD",
-            "洪都拉斯": "HNL",
-            "萨尔瓦多": "USD",
-            "尼加拉瓜": "NIO",
-            "哥斯达黎加": "CRC",
-            "巴拿马": "PAB",
-            "古巴": "CUP",
-            "牙买加": "JMD",
-            "海地": "HTG",
-            "多米尼加共和国": "DOP",
-            "波多黎各": "USD",
-            "巴哈马": "BSD",
-            "特立尼达和多巴哥": "TTD",
-            "哥伦比亚": "COP",
-            "委内瑞拉": "VES",
-            "圭亚那": "GYD",
-            "苏里南": "SRD",
-            "厄瓜多尔": "USD",
-            "秘鲁": "PEN",
-            "玻利维亚": "BOB",
-            "巴拉圭": "PYG",
-            "乌拉圭": "UYU",
-            "阿根廷": "ARS",
-            "智利": "CLP",
-            "巴西": "BRL"
-        };
-
-        const COUNTRIES = Object.keys(COUNTRY_CURRENCY_MAP).map(name => ({
-            name,
-            flag: getFlagEmoji(name),
-            currency: COUNTRY_CURRENCY_MAP[name]
-        }));
-
-        function getFlagEmoji(country) {
-            const map = {
-                "中国": "🇨🇳",
-                "日本": "🇯🇵",
-                "韩国": "🇰🇷",
-                "蒙古": "🇲🇳",
-                "朝鲜": "🇰🇵",
-                "越南": "🇻🇳",
-                "老挝": "🇱🇦",
-                "柬埔寨": "🇰🇭",
-                "泰国": "🇹🇭",
-                "缅甸": "🇲🇲",
-                "马来西亚": "🇲🇾",
-                "新加坡": "🇸🇬",
-                "印度尼西亚": "🇮🇩",
-                "菲律宾": "🇵🇭",
-                "东帝汶": "🇹🇱",
-                "文莱": "🇧🇳",
-                "印度": "🇮🇳",
-                "巴基斯坦": "🇵🇰",
-                "孟加拉国": "🇧🇩",
-                "斯里兰卡": "🇱🇰",
-                "尼泊尔": "🇳🇵",
-                "不丹": "🇧🇹",
-                "马尔代夫": "🇲🇻",
-                "阿富汗": "🇦🇫",
-                "伊朗": "🇮🇷",
-                "伊拉克": "🇮🇶",
-                "叙利亚": "🇸🇾",
-                "黎巴嫩": "🇱🇧",
-                "约旦": "🇯🇴",
-                "以色列": "🇮🇱",
-                "巴勒斯坦": "🇵🇸",
-                "沙特阿拉伯": "🇸🇦",
-                "也门": "🇾🇪",
-                "阿曼": "🇴🇲",
-                "阿联酋": "🇦🇪",
-                "卡塔尔": "🇶🇦",
-                "巴林": "🇧🇭",
-                "科威特": "🇰🇼",
-                "土耳其": "🇹🇷",
-                "塞浦路斯": "🇨🇾",
-                "格鲁吉亚": "🇬🇪",
-                "亚美尼亚": "🇦🇲",
-                "阿塞拜疆": "🇦🇿",
-                "哈萨克斯坦": "🇰🇿",
-                "乌兹别克斯坦": "🇺🇿",
-                "土库曼斯坦": "🇹🇲",
-                "吉尔吉斯斯坦": "🇰🇬",
-                "塔吉克斯坦": "🇹🇯",
-                "俄罗斯": "🇷🇺",
-                "乌克兰": "🇺🇦",
-                "白俄罗斯": "🇧🇾",
-                "摩尔多瓦": "🇲🇩",
-                "立陶宛": "🇱🇹",
-                "拉脱维亚": "🇱🇻",
-                "爱沙尼亚": "🇪🇪",
-                "波兰": "🇵🇱",
-                "捷克": "🇨🇿",
-                "斯洛伐克": "🇸🇰",
-                "匈牙利": "🇭🇺",
-                "罗马尼亚": "🇷🇴",
-                "保加利亚": "🇧🇬",
-                "希腊": "🇬🇷",
-                "阿尔巴尼亚": "🇦🇱",
-                "北马其顿": "🇲🇰",
-                "塞尔维亚": "🇷🇸",
-                "黑山": "🇲🇪",
-                "波黑": "🇧🇦",
-                "克罗地亚": "🇭🇷",
-                "斯洛文尼亚": "🇸🇮",
-                "奥地利": "🇦🇹",
-                "瑞士": "🇨🇭",
-                "列支敦士登": "🇱🇮",
-                "德国": "🇩🇪",
-                "荷兰": "🇳🇱",
-                "比利时": "🇧🇪",
-                "卢森堡": "🇱🇺",
-                "法国": "🇫🇷",
-                "摩纳哥": "🇲🇨",
-                "英国": "🇬🇧",
-                "爱尔兰": "🇮🇪",
-                "冰岛": "🇮🇸",
-                "挪威": "🇳🇴",
-                "瑞典": "🇸🇪",
-                "芬兰": "🇫🇮",
-                "丹麦": "🇩🇰",
-                "意大利": "🇮🇹",
-                "梵蒂冈": "🇻🇦",
-                "圣马力诺": "🇸🇲",
-                "马耳他": "🇲🇹",
-                "西班牙": "🇪🇸",
-                "葡萄牙": "🇵🇹",
-                "安道尔": "🇦🇩",
-                "摩洛哥": "🇲🇦",
-                "阿尔及利亚": "🇩🇿",
-                "突尼斯": "🇹🇳",
-                "利比亚": "🇱🇾",
-                "埃及": "🇪🇬",
-                "苏丹": "🇸🇩",
-                "南苏丹": "🇸🇸",
-                "埃塞俄比亚": "🇪🇹",
-                "厄立特里亚": "🇪🇷",
-                "吉布提": "🇩🇯",
-                "索马里": "🇸🇴",
-                "肯尼亚": "🇰🇪",
-                "乌干达": "🇺🇬",
-                "坦桑尼亚": "🇹🇿",
-                "卢旺达": "🇷🇼",
-                "布隆迪": "🇧🇮",
-                "刚果民主共和国": "🇨🇩",
-                "刚果共和国": "🇨🇬",
-                "加蓬": "🇬🇦",
-                "赤道几内亚": "🇬🇶",
-                "喀麦隆": "🇨🇲",
-                "尼日利亚": "🇳🇬",
-                "贝宁": "🇧🇯",
-                "多哥": "🇹🇬",
-                "加纳": "🇬🇭",
-                "科特迪瓦": "🇨🇮",
-                "利比里亚": "🇱🇷",
-                "塞拉利昂": "🇸🇱",
-                "几内亚": "🇬🇳",
-                "几内亚比绍": "🇬🇼",
-                "塞内加尔": "🇸🇳",
-                "冈比亚": "🇬🇲",
-                "马里": "🇲🇱",
-                "布基纳法索": "🇧🇫",
-                "尼日尔": "🇳🇪",
-                "乍得": "🇹🇩",
-                "中非共和国": "🇨🇫",
-                "赞比亚": "🇿🇲",
-                "津巴布韦": "🇿🇼",
-                "马拉维": "🇲🇼",
-                "莫桑比克": "🇲🇿",
-                "博茨瓦纳": "🇧🇼",
-                "纳米比亚": "🇳🇦",
-                "安哥拉": "🇦🇴",
-                "南非": "🇿🇦",
-                "莱索托": "🇱🇸",
-                "斯威士兰": "🇸🇿",
-                "马达加斯加": "🇲🇬",
-                "塞舌尔": "🇸🇨",
-                "毛里求斯": "🇲🇺",
-                "科摩罗": "🇰🇲",
-                "澳大利亚": "🇦🇺",
-                "新西兰": "🇳🇿",
-                "巴布亚新几内亚": "🇵🇬",
-                "所罗门群岛": "🇸🇧",
-                "瓦努阿图": "🇻🇺",
-                "斐济": "🇫🇯",
-                "萨摩亚": "🇼🇸",
-                "汤加": "🇹🇴",
-                "加拿大": "🇨🇦",
-                "美国": "🇺🇸",
-                "墨西哥": "🇲🇽",
-                "危地马拉": "🇬🇹",
-                "伯利兹": "🇧🇿",
-                "洪都拉斯": "🇭🇳",
-                "萨尔瓦多": "🇸🇻",
-                "尼加拉瓜": "🇳🇮",
-                "哥斯达黎加": "🇨🇷",
-                "巴拿马": "🇵🇦",
-                "古巴": "🇨🇺",
-                "牙买加": "🇯🇲",
-                "海地": "🇭🇹",
-                "多米尼加共和国": "🇩🇴",
-                "波多黎各": "🇵🇷",
-                "巴哈马": "🇧🇸",
-                "特立尼达和多巴哥": "🇹🇹",
-                "哥伦比亚": "🇨🇴",
-                "委内瑞拉": "🇻🇪",
-                "圭亚那": "🇬🇾",
-                "苏里南": "🇸🇷",
-                "厄瓜多尔": "🇪🇨",
-                "秘鲁": "🇵🇪",
-                "玻利维亚": "🇧🇴",
-                "巴拉圭": "🇵🇾",
-                "乌拉圭": "🇺🇾",
-                "阿根廷": "🇦🇷",
-                "智利": "🇨🇱",
-                "巴西": "🇧🇷"
-            };
-            return map[country] || '🌍';
-        }
-
-        // ================================================================
         //  Supabase 配置
         // ================================================================
         const SUPABASE_URL = 'https://reugwylbgeqagochuaov.supabase.co/rest/v1/';
         const SUPABASE_KEY = 'sb_publishable_LFpL3nbjs6_bbF-G513fSA_knAxjO_L';
+
+        // ================================================================
+        //  国家数据
+        // ================================================================
+        const COUNTRIES = [
+            { name: '中国', flag: '🇨🇳', currency: 'CNY' },
+            { name: '日本', flag: '🇯🇵', currency: 'JPY' },
+            { name: '韩国', flag: '🇰🇷', currency: 'KRW' },
+            { name: '蒙古', flag: '🇲🇳', currency: 'MNT' },
+            { name: '越南', flag: '🇻🇳', currency: 'VND' },
+            { name: '泰国', flag: '🇹🇭', currency: 'THB' },
+            { name: '马来西亚', flag: '🇲🇾', currency: 'MYR' },
+            { name: '新加坡', flag: '🇸🇬', currency: 'SGD' },
+            { name: '印度尼西亚', flag: '🇮🇩', currency: 'IDR' },
+            { name: '菲律宾', flag: '🇵🇭', currency: 'PHP' },
+            { name: '印度', flag: '🇮🇳', currency: 'INR' },
+            { name: '巴基斯坦', flag: '🇵🇰', currency: 'PKR' },
+            { name: '哈萨克斯坦', flag: '🇰🇿', currency: 'KZT' },
+            { name: '乌兹别克斯坦', flag: '🇺🇿', currency: 'UZS' },
+            { name: '阿塞拜疆', flag: '🇦🇿', currency: 'AZN' },
+            { name: '格鲁吉亚', flag: '🇬🇪', currency: 'GEL' },
+            { name: '亚美尼亚', flag: '🇦🇲', currency: 'AMD' },
+            { name: '土耳其', flag: '🇹🇷', currency: 'TRY' },
+            { name: '俄罗斯', flag: '🇷🇺', currency: 'RUB' },
+            { name: '乌克兰', flag: '🇺🇦', currency: 'UAH' },
+            { name: '波兰', flag: '🇵🇱', currency: 'PLN' },
+            { name: '捷克', flag: '🇨🇿', currency: 'CZK' },
+            { name: '匈牙利', flag: '🇭🇺', currency: 'HUF' },
+            { name: '罗马尼亚', flag: '🇷🇴', currency: 'RON' },
+            { name: '保加利亚', flag: '🇧🇬', currency: 'BGN' },
+            { name: '希腊', flag: '🇬🇷', currency: 'EUR' },
+            { name: '塞尔维亚', flag: '🇷🇸', currency: 'RSD' },
+            { name: '黑山', flag: '🇲🇪', currency: 'EUR' },
+            { name: '波黑', flag: '🇧🇦', currency: 'BAM' },
+            { name: '克罗地亚', flag: '🇭🇷', currency: 'EUR' },
+            { name: '斯洛文尼亚', flag: '🇸🇮', currency: 'EUR' },
+            { name: '奥地利', flag: '🇦🇹', currency: 'EUR' },
+            { name: '瑞士', flag: '🇨🇭', currency: 'CHF' },
+            { name: '德国', flag: '🇩🇪', currency: 'EUR' },
+            { name: '荷兰', flag: '🇳🇱', currency: 'EUR' },
+            { name: '比利时', flag: '🇧🇪', currency: 'EUR' },
+            { name: '法国', flag: '🇫🇷', currency: 'EUR' },
+            { name: '英国', flag: '🇬🇧', currency: 'GBP' },
+            { name: '爱尔兰', flag: '🇮🇪', currency: 'EUR' },
+            { name: '冰岛', flag: '🇮🇸', currency: 'ISK' },
+            { name: '挪威', flag: '🇳🇴', currency: 'NOK' },
+            { name: '瑞典', flag: '🇸🇪', currency: 'SEK' },
+            { name: '芬兰', flag: '🇫🇮', currency: 'EUR' },
+            { name: '丹麦', flag: '🇩🇰', currency: 'DKK' },
+            { name: '意大利', flag: '🇮🇹', currency: 'EUR' },
+            { name: '西班牙', flag: '🇪🇸', currency: 'EUR' },
+            { name: '葡萄牙', flag: '🇵🇹', currency: 'EUR' },
+            { name: '埃及', flag: '🇪🇬', currency: 'EGP' },
+            { name: '南非', flag: '🇿🇦', currency: 'ZAR' },
+            { name: '摩洛哥', flag: '🇲🇦', currency: 'MAD' },
+            { name: '美国', flag: '🇺🇸', currency: 'USD' },
+            { name: '加拿大', flag: '🇨🇦', currency: 'CAD' },
+            { name: '墨西哥', flag: '🇲🇽', currency: 'MXN' },
+            { name: '巴西', flag: '🇧🇷', currency: 'BRL' },
+            { name: '阿根廷', flag: '🇦🇷', currency: 'ARS' },
+            { name: '智利', flag: '🇨🇱', currency: 'CLP' },
+            { name: '澳大利亚', flag: '🇦🇺', currency: 'AUD' },
+            { name: '新西兰', flag: '🇳🇿', currency: 'NZD' },
+            { name: '阿联酋', flag: '🇦🇪', currency: 'AED' },
+            { name: '沙特阿拉伯', flag: '🇸🇦', currency: 'SAR' },
+            { name: '以色列', flag: '🇮🇱', currency: 'ILS' },
+            { name: '约旦', flag: '🇯🇴', currency: 'JOD' },
+            { name: '卡塔尔', flag: '🇶🇦', currency: 'QAR' },
+            { name: '科威特', flag: '🇰🇼', currency: 'KWD' },
+            { name: '巴林', flag: '🇧🇭', currency: 'BHD' },
+            { name: '阿曼', flag: '🇴🇲', currency: 'OMR' }
+        ];
+
+        function getCountryFlag(name) {
+            const c = COUNTRIES.find(c => c.name === name);
+            return c ? c.flag : '🌍';
+        }
+
+        function getCurrencyCode(name) {
+            const c = COUNTRIES.find(c => c.name === name);
+            return c ? c.currency : 'USD';
+        }
 
         // ================================================================
         //  状态
@@ -1968,7 +1246,6 @@
         let editingDateKey = null;
         let editingIsOutside = false;
         let formPhotos = [];
-        let lastSearchTerm = '';
         let currentExchangeRate = null;
 
         // ================================================================
@@ -1978,7 +1255,7 @@
             const now = new Date();
             const diff = Math.floor((now - TRIP_START) / (1000 * 60 * 60 * 24));
             if (diff >= 0 && diff < TOTAL_DAYS) return diff + 1;
-            return 1;
+            return null; // 不在行程范围内返回 null
         }
 
         function getDaysInMonth(year, month) {
@@ -2012,15 +1289,6 @@
 
         function getCountryInfo(name) {
             return COUNTRIES.find(c => c.name === name);
-        }
-
-        function getCountryFlag(name) {
-            const c = getCountryInfo(name);
-            return c ? c.flag : '🌍';
-        }
-
-        function getCurrencyCode(countryName) {
-            return COUNTRY_CURRENCY_MAP[countryName] || 'USD';
         }
 
         function formatDateDisplay(date) {
@@ -2168,8 +1436,6 @@
                 return;
             }
 
-            lastSearchTerm = term;
-
             const results = [];
             tripData.forEach(d => {
                 if (d.city === `Day ${d.day}` && !d.is_outside) return;
@@ -2206,8 +1472,7 @@
             let html = '';
             results.forEach(r => {
                 const dateObj = new Date(r.date);
-                const dateStr =
-                    `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getDate()).padStart(2,'0')}`;
+                const dateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth()+1).padStart(2,'0')}.${String(dateObj.getDate()).padStart(2,'0')}`;
                 const sightsDisplay = r.sights.length > 0 ? r.sights.slice(0, 3).join(' · ') : '';
                 const badge = r.is_outside ? '📌 独立' : `Day ${r.day}`;
                 html += `
@@ -2255,7 +1520,6 @@
             document.getElementById('searchResultsDropdown').classList.remove('active');
             document.getElementById('searchResultsCount').textContent = '';
             document.getElementById('clearSearchBtn').classList.remove('visible');
-            lastSearchTerm = '';
         }
 
         // ================================================================
@@ -2304,7 +1568,6 @@
                         });
                     }
                 }
-                // 确保所有数据都有 date_key
                 tripData.forEach(d => {
                     if (!d.date_key) {
                         const date = new Date(d.date);
@@ -2324,30 +1587,247 @@
             return tripData;
         }
 
+        // ================================================================
+        //  保存到 Supabase（修复版）
+        // ================================================================
         async function saveToSupabase(day, field, value) {
             try {
-                const res = await fetch(`${SUPABASE_URL}trip_days?day=eq.${day}`, {
+                // 1. 先检查数据是否存在
+                const checkRes = await fetch(`${SUPABASE_URL}trip_days?day=eq.${day}&select=id`, {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                if (!checkRes.ok) {
+                    console.error('检查数据失败:', await checkRes.text());
+                    return false;
+                }
+                
+                const existing = await checkRes.json();
+                
+                // 2. 如果数据不存在，先插入
+                if (existing.length === 0) {
+                    const date = getDateFromDay(day);
+                    const dateKey = date.toISOString().split('T')[0];
+                    const insertRes = await fetch(`${SUPABASE_URL}trip_days`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            day: day,
+                            date: dateKey,
+                            date_key: dateKey,
+                            city: `Day ${day}`,
+                            country: '待定',
+                            sights: '["待补充"]',
+                            is_outside: false,
+                            [field]: value
+                        })
+                    });
+                    
+                    if (!insertRes.ok) {
+                        const errText = await insertRes.text();
+                        console.error('插入失败:', errText);
+                        return false;
+                    }
+                    
+                    let result = {};
+                    try {
+                        const text = await insertRes.text();
+                        if (text && text.trim()) {
+                            result = JSON.parse(text);
+                        }
+                    } catch (e) {
+                        // 响应为空或不是 JSON，忽略
+                    }
+                    
+                    const idx = tripData.findIndex(d => d.day === day);
+                    if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result };
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                    return true;
+                }
+                
+                // 3. 数据存在，执行更新
+                const id = existing[0].id;
+                const updateRes = await fetch(`${SUPABASE_URL}trip_days?id=eq.${id}`, {
                     method: 'PATCH',
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ [field]: value, updated_at: new Date().toISOString() })
+                    body: JSON.stringify({ [field]: value })
                 });
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const result = await res.json();
+                
+                if (!updateRes.ok) {
+                    const errText = await updateRes.text();
+                    console.error('更新失败:', errText);
+                    return false;
+                }
+                
+                // 4. 尝试解析响应，如果为空则忽略
+                let result = {};
+                try {
+                    const text = await updateRes.text();
+                    if (text && text.trim()) {
+                        result = JSON.parse(text);
+                    }
+                } catch (e) {
+                    // 响应为空或不是 JSON，忽略
+                }
+                
                 const idx = tripData.findIndex(d => d.day === day);
-                if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result[0] };
+                if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result };
+                localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                return true;
+                
+            } catch (err) {
+                console.error('保存失败:', err);
+                // 即使网络错误，也保存到 localStorage
+                const idx = tripData.findIndex(d => d.day === day);
+                if (idx !== -1) { 
+                    tripData[idx][field] = value;
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData)); 
+                }
+                return false;
+            }
+        }
+
+        // ================================================================
+        //  保存独立行程（修复版）
+        // ================================================================
+        async function saveOutsideTrip(dateKey, updates) {
+            const existing = getTripByDateKey(dateKey);
+
+            const payload = {
+                ...updates,
+                date_key: dateKey,
+                date: dateKey
+            };
+
+            if (existing && existing.is_outside) {
+                try {
+                    // 先获取 id
+                    const checkRes = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}&select=id`, {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+                    if (!checkRes.ok) {
+                        console.error('查询独立行程失败:', await checkRes.text());
+                        return false;
+                    }
+                    const records = await checkRes.json();
+                    if (records.length === 0) {
+                        // 如果不存在，转为创建
+                        return await createOutsideTrip(dateKey, payload);
+                    }
+                    
+                    const id = records[0].id;
+                    const res = await fetch(`${SUPABASE_URL}trip_days?id=eq.${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        console.error('更新独立行程失败:', errText);
+                        return false;
+                    }
+                    
+                    let result = {};
+                    try {
+                        const text = await res.text();
+                        if (text && text.trim()) {
+                            result = JSON.parse(text);
+                        }
+                    } catch (e) {}
+                    
+                    const idx = tripData.findIndex(d => d.date_key === dateKey);
+                    if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result };
+                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                    return true;
+                } catch (err) {
+                    console.error('更新独立行程失败:', err);
+                    throw err;
+                }
+            } else {
+                return await createOutsideTrip(dateKey, payload);
+            }
+        }
+
+        async function createOutsideTrip(dateKey, payload) {
+            const newData = {
+                day: 9999 + Math.floor(Math.random() * 10000),
+                date: dateKey,
+                date_key: dateKey,
+                city: payload.city || '新行程',
+                country: payload.country || '中国',
+                sights: payload.sights || JSON.stringify(['待补充']),
+                hotel_name: payload.hotel_name || '',
+                hotel_note: payload.hotel_note || '',
+                daily_note: payload.daily_note || '',
+                ticket_price: payload.ticket_price || '',
+                transport_note: payload.transport_note || '',
+                image_urls: payload.image_urls || '[]',
+                hotel_price: parseFloat(payload.hotel_price) || 0,
+                transport_price: parseFloat(payload.transport_price) || 0,
+                ticket_price_num: parseFloat(payload.ticket_price_num) || 0,
+                food_price: parseFloat(payload.food_price) || 0,
+                food_note: payload.food_note || '',
+                other_price: parseFloat(payload.other_price) || 0,
+                other_note: payload.other_note || '',
+                is_outside: true
+            };
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}trip_days`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newData)
+                });
+                
+                if (!res.ok) {
+                    const errText = await res.text();
+                    console.error('创建独立行程失败:', errText);
+                    return false;
+                }
+                
+                let result = {};
+                try {
+                    const text = await res.text();
+                    if (text && text.trim()) {
+                        result = JSON.parse(text);
+                    }
+                } catch (e) {}
+                
+                const savedData = { ...newData, ...result };
+                const existingIdx = tripData.findIndex(d => d.date_key === dateKey);
+                if (existingIdx !== -1) {
+                    tripData[existingIdx] = savedData;
+                } else {
+                    tripData.push(savedData);
+                }
                 localStorage.setItem('tripData_cache', JSON.stringify(tripData));
                 return true;
             } catch (err) {
-                console.error('保存失败', err);
-                const idx = tripData.findIndex(d => d.day === day);
-                if (idx !== -1) { tripData[idx][field] = value;
-                    localStorage.setItem('tripData_cache', JSON.stringify(tripData)); }
-                return false;
+                console.error('创建独立行程失败:', err);
+                throw err;
             }
         }
 
@@ -2429,7 +1909,6 @@
                 cell.appendChild(dateEl);
 
                 if (inRange && dayNum !== null && data && data.city && data.city !== `Day ${dayNum}`) {
-                    // 核心行程
                     const dayLabel = document.createElement('div');
                     dayLabel.className = 'day-label';
                     dayLabel.textContent = `Day${data.day}`;
@@ -2474,7 +1953,6 @@
                     cell.addEventListener('click', () => { jumpToDate(dateKey); });
                     cell.classList.add('has-trip');
                 } else if (outsideTrip && outsideTrip.is_outside) {
-                    // 独立行程
                     const badge = document.createElement('div');
                     badge.className = 'outside-trip-badge';
                     badge.textContent = '📌';
@@ -2514,7 +1992,6 @@
                     cell.addEventListener('click', () => { jumpToDate(dateKey); });
                     cell.classList.add('has-outside-trip');
                 } else {
-                    // 空日期 - 可添加独立行程
                     cell.classList.add('no-data');
                     const addHint = document.createElement('div');
                     addHint.className = 'add-hint';
@@ -2531,10 +2008,62 @@
         }
 
         // ================================================================
+        //  月份选择器
+        // ================================================================
+        function toggleMonthDropdown() {
+            const dropdown = document.getElementById('monthDropdown');
+            if (dropdown.style.display === 'block') {
+                dropdown.style.display = 'none';
+                return;
+            }
+            dropdown.innerHTML = '';
+            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            monthNames.forEach((name, index) => {
+                const opt = document.createElement('div');
+                opt.className = 'month-option';
+                if (index === currentMonth) opt.classList.add('active');
+                opt.textContent = `${currentYear}年${name}`;
+                opt.addEventListener('click', function() {
+                    currentMonth = index;
+                    buildCalendar();
+                    dropdown.style.display = 'none';
+                });
+                dropdown.appendChild(opt);
+            });
+            const yearRow = document.createElement('div');
+            yearRow.className = 'year-row';
+            yearRow.innerHTML = `
+                <button onclick="event.stopPropagation();changeYear(-1)">◀</button>
+                <span class="year-label">${currentYear}</span>
+                <button onclick="event.stopPropagation();changeYear(1)">▶</button>
+            `;
+            dropdown.appendChild(yearRow);
+            dropdown.style.display = 'block';
+        }
+
+        function changeYear(delta) {
+            currentYear += delta;
+            if (currentYear < 2026) currentYear = 2026;
+            if (currentYear > 2028) currentYear = 2028;
+            buildCalendar();
+            const dropdown = document.getElementById('monthDropdown');
+            if (dropdown.style.display === 'block') {
+                toggleMonthDropdown();
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const wrapper = document.querySelector('.month-select-wrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                document.getElementById('monthDropdown').style.display = 'none';
+            }
+        });
+
+        // ================================================================
         //  跳转日期
         // ================================================================
         function jumpToDay(day) {
-            if (day < 1) day = 1;
+            if (day === null || day === undefined || day < 1) day = 1;
             if (day > TOTAL_DAYS) day = TOTAL_DAYS;
             currentDay = day;
 
@@ -2586,13 +2115,11 @@
         }
 
         // ================================================================
-        //  显示行程详情（统一使用 dateKey）
+        //  显示行程详情
         // ================================================================
         function showDayDetail(dateKey) {
             let data = getTripByDateKey(dateKey);
-            let isOutside = false;
 
-            // 如果没有找到，尝试从核心行程中找
             if (!data) {
                 const parts = dateKey.split('-');
                 const year = parseInt(parts[0]);
@@ -2625,8 +2152,7 @@
             empty.style.display = 'none';
             detail.classList.add('active');
 
-            isOutside = data.is_outside || false;
-
+            const isOutside = data.is_outside || false;
             const dateObj = new Date(data.date);
             document.getElementById('detailDate').textContent = formatDateDisplay(dateObj);
 
@@ -2646,10 +2172,8 @@
                 badgeEl.style.border = '1px solid #f9d77e44';
             }
 
-            document.getElementById('detailCountry').textContent =
-                `${getCountryFlag(data.country) || '🌍'} ${data.country || '待定'}`;
+            document.getElementById('detailCountry').textContent = `${getCountryFlag(data.country) || '🌍'} ${data.country || '待定'}`;
 
-            // 更新汇率转换器
             if (data.country && data.country !== '待定') {
                 updateExchangeWidget(data.country);
             } else {
@@ -2704,11 +2228,9 @@
                     </div>
                 `).join('');
             } else {
-                photoGallery.innerHTML =
-                    '<div style="color:#4a6a8a;font-size:0.8rem;padding:4px 0;">暂无照片，点击编辑添加</div>';
+                photoGallery.innerHTML = '<div style="color:#4a6a8a;font-size:0.8rem;padding:4px 0;">暂无照片，点击编辑添加</div>';
             }
 
-            // 保存当前编辑信息
             if (isOutside) {
                 editingDateKey = data.date_key;
                 editingIsOutside = true;
@@ -2836,107 +2358,8 @@
                 } else {
                     await saveToSupabase(data.day, 'image_urls', JSON.stringify(photoUrls));
                 }
-                refreshAll();
+                await refreshAll();
                 jumpToDate(dateKey);
-            }
-        }
-
-        // ================================================================
-        //  保存独立行程（核心修复）
-        // ================================================================
-        async function saveOutsideTrip(dateKey, updates) {
-            const existing = getTripByDateKey(dateKey);
-
-            // 确保 updates 中有必要的字段
-            const payload = {
-                ...updates,
-                date_key: dateKey,
-                date: dateKey,
-                updated_at: new Date().toISOString()
-            };
-
-            // 如果已有独立行程，更新
-            if (existing && existing.is_outside) {
-                try {
-                    const res = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`,
-                            'Content-Type': 'application/json',
-                            'Prefer': 'return=representation'
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                    if (!res.ok) {
-                        const errText = await res.text();
-                        throw new Error(`HTTP ${res.status}: ${errText}`);
-                    }
-                    const result = await res.json();
-                    const idx = tripData.findIndex(d => d.date_key === dateKey);
-                    if (idx !== -1) tripData[idx] = { ...tripData[idx], ...result[0] };
-                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
-                    return true;
-                } catch (err) {
-                    console.error('更新独立行程失败:', err);
-                    throw err;
-                }
-            } else {
-                // 创建新的独立行程
-                // 需要构造一个完整的数据对象
-                const newData = {
-                    day: 9999 + Math.floor(Math.random() * 10000),
-                    date: dateKey,
-                    date_key: dateKey,
-                    city: updates.city || '新行程',
-                    country: updates.country || '中国',
-                    sights: updates.sights || JSON.stringify(['待补充']),
-                    hotel_name: updates.hotel_name || '',
-                    hotel_note: updates.hotel_note || '',
-                    daily_note: updates.daily_note || '',
-                    ticket_price: updates.ticket_price || '',
-                    transport_note: updates.transport_note || '',
-                    image_urls: updates.image_urls || '[]',
-                    hotel_price: parseFloat(updates.hotel_price) || 0,
-                    transport_price: parseFloat(updates.transport_price) || 0,
-                    ticket_price_num: parseFloat(updates.ticket_price_num) || 0,
-                    food_price: parseFloat(updates.food_price) || 0,
-                    food_note: updates.food_note || '',
-                    other_price: parseFloat(updates.other_price) || 0,
-                    other_note: updates.other_note || '',
-                    is_outside: true
-                };
-
-                try {
-                    const res = await fetch(`${SUPABASE_URL}trip_days`, {
-                        method: 'POST',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(newData)
-                    });
-                    if (!res.ok) {
-                        const errText = await res.text();
-                        throw new Error(`HTTP ${res.status}: ${errText}`);
-                    }
-                    const result = await res.json();
-                    // 合并结果
-                    const savedData = { ...newData, ...result };
-                    // 检查是否已存在（避免重复）
-                    const existingIdx = tripData.findIndex(d => d.date_key === dateKey);
-                    if (existingIdx !== -1) {
-                        tripData[existingIdx] = savedData;
-                    } else {
-                        tripData.push(savedData);
-                    }
-                    localStorage.setItem('tripData_cache', JSON.stringify(tripData));
-                    return true;
-                } catch (err) {
-                    console.error('创建独立行程失败:', err);
-                    throw err;
-                }
             }
         }
 
@@ -3053,9 +2476,6 @@
             formPhotos = [];
         }
 
-        // ================================================================
-        //  保存行程（核心修复）
-        // ================================================================
         async function saveTrip() {
             const day = parseInt(document.getElementById('editDay').value) || null;
             const dateKey = document.getElementById('editDateKey').value;
@@ -3093,78 +2513,29 @@
 
             try {
                 if (isOutside) {
-                    // 独立行程：使用 saveOutsideTrip
-                    await saveOutsideTrip(dateStr, updates);
+                    const success = await saveOutsideTrip(dateStr, updates);
+                    if (!success) {
+                        alert('保存独立行程失败，请检查控制台错误');
+                        return;
+                    }
                 } else {
-                    // 核心行程：Day 1-70
                     if (day && !isNaN(day) && day >= 1 && day <= TOTAL_DAYS) {
-                        const existing = getDayData(day);
-                        if (existing && existing.city !== `Day ${day}`) {
-                            // 更新已有核心行程
-                            await saveToSupabase(day, 'city', city);
-                            await saveToSupabase(day, 'country', country);
-                            await saveToSupabase(day, 'sights', JSON.stringify(sights.split(',').map(s => s.trim())));
-                            await saveToSupabase(day, 'daily_note', note);
-                            await saveToSupabase(day, 'hotel_price', hotelPrice);
-                            await saveToSupabase(day, 'transport_price', transportPrice);
-                            await saveToSupabase(day, 'ticket_price_num', ticketPrice);
-                            await saveToSupabase(day, 'food_price', foodPrice);
-                            await saveToSupabase(day, 'other_price', otherPrice);
-                            if (formPhotos.length > 0) {
-                                await saveToSupabase(day, 'image_urls', JSON.stringify(formPhotos));
-                            }
-                        } else {
-                            // 创建新的核心行程
-                            const date = getDateFromDay(day);
-                            const newData = {
-                                day: day,
-                                date: date.toISOString().split('T')[0],
-                                date_key: date.toISOString().split('T')[0],
-                                city: city,
-                                country: country,
-                                sights: JSON.stringify(sights.split(',').map(s => s.trim())),
-                                hotel_name: '',
-                                hotel_note: '',
-                                daily_note: note,
-                                ticket_price: '',
-                                transport_note: '',
-                                image_urls: JSON.stringify(formPhotos),
-                                hotel_price: hotelPrice,
-                                transport_price: transportPrice,
-                                ticket_price_num: ticketPrice,
-                                food_price: foodPrice,
-                                food_note: '',
-                                other_price: otherPrice,
-                                other_note: '',
-                                is_outside: false
-                            };
-                            try {
-                                const res = await fetch(`${SUPABASE_URL}trip_days`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'apikey': SUPABASE_KEY,
-                                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(newData)
-                                });
-                                if (!res.ok) {
-                                    const errText = await res.text();
-                                    throw new Error(`HTTP ${res.status}: ${errText}`);
-                                }
-                                const result = await res.json();
-                                const existingIdx = tripData.findIndex(d => d.day === day);
-                                if (existingIdx !== -1) {
-                                    tripData[existingIdx] = { ...newData, ...result };
-                                } else {
-                                    tripData.push({ ...newData, ...result });
-                                }
-                                localStorage.setItem('tripData_cache', JSON.stringify(tripData));
-                            } catch (err) {
-                                console.error('创建核心行程失败:', err);
-                                alert('创建行程失败: ' + err.message);
-                                return;
-                            }
+                        // 逐个保存字段
+                        const fields = {
+                            city: city,
+                            country: country,
+                            sights: JSON.stringify(sights.split(',').map(s => s.trim())),
+                            daily_note: note,
+                            hotel_price: hotelPrice,
+                            transport_price: transportPrice,
+                            ticket_price_num: ticketPrice,
+                            food_price: foodPrice,
+                            other_price: otherPrice,
+                            image_urls: JSON.stringify(formPhotos)
+                        };
+                        
+                        for (const [field, value] of Object.entries(fields)) {
+                            await saveToSupabase(day, field, value);
                         }
                     } else {
                         alert('请选择有效的核心行程日期 (Day 1-70)');
@@ -3194,47 +2565,210 @@
             editCurrentDay();
         }
 
+        // ================================================================
+        //  删除行程
+        // ================================================================
         async function deleteCurrentTrip() {
             const isOutside = editingIsOutside;
             const dateKey = editingDateKey;
             const day = editingDay;
 
+            console.log('🗑️ 删除调试信息:', { isOutside, dateKey, day });
+
             if (isOutside && dateKey) {
                 if (!confirm(`确定要删除 ${dateKey} 的独立行程吗？`)) return;
                 try {
-                    const res = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}`, {
+                    const queryRes = await fetch(`${SUPABASE_URL}trip_days?date_key=eq.${dateKey}&select=id`, {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+                    if (!queryRes.ok) throw new Error(`查询失败: ${queryRes.status}`);
+                    const records = await queryRes.json();
+
+                    if (records.length === 0) {
+                        alert('该行程已不存在');
+                        tripData = tripData.filter(d => d.date_key !== dateKey);
+                        localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                        await refreshAll();
+                        const todayDay = getTodayDay() || 1;
+                        jumpToDay(todayDay);
+                        return;
+                    }
+
+                    const targetId = records[0]?.id;
+                    if (!targetId) {
+                        alert('找不到要删除的行程');
+                        return;
+                    }
+
+                    const res = await fetch(`${SUPABASE_URL}trip_days?id=eq.${targetId}`, {
                         method: 'DELETE',
                         headers: {
                             'apikey': SUPABASE_KEY,
                             'Authorization': `Bearer ${SUPABASE_KEY}`
                         }
                     });
-                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    tripData = tripData.filter(d => d.date_key !== dateKey);
+
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error(`HTTP ${res.status}: ${errText}`);
+                    }
+
+                    tripData = tripData.filter(d => d.id !== targetId);
                     localStorage.setItem('tripData_cache', JSON.stringify(tripData));
                     await refreshAll();
-                    jumpToDay(getTodayDay());
+                    const todayDay = getTodayDay() || 1;
+                    jumpToDay(todayDay);
+                    alert('✅ 独立行程已删除');
                 } catch (err) {
-                    console.error('删除失败', err);
-                    alert('删除失败，请重试');
+                    console.error('删除独立行程失败:', err);
+                    alert('删除失败: ' + err.message);
                 }
             } else if (day) {
-                if (!confirm(`确定要删除 Day ${day} 的行程吗？`)) return;
-                const date = getDateFromDay(day);
-                const dateKey2 = date.toISOString().split('T')[0];
-                await saveToSupabase(day, 'city', `Day ${day}`);
-                await saveToSupabase(day, 'country', '待定');
-                await saveToSupabase(day, 'sights', JSON.stringify(['待补充']));
-                await saveToSupabase(day, 'daily_note', '');
-                await saveToSupabase(day, 'hotel_price', 0);
-                await saveToSupabase(day, 'transport_price', 0);
-                await saveToSupabase(day, 'ticket_price_num', 0);
-                await saveToSupabase(day, 'food_price', 0);
-                await saveToSupabase(day, 'other_price', 0);
-                await saveToSupabase(day, 'image_urls', JSON.stringify([]));
-                await refreshAll();
-                jumpToDay(day);
+                if (!confirm(`确定要重置 Day ${day} 的行程吗？`)) return;
+                try {
+                    const queryRes = await fetch(`${SUPABASE_URL}trip_days?day=eq.${day}&select=id`, {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+                    if (!queryRes.ok) throw new Error(`查询失败: ${queryRes.status}`);
+                    const records = await queryRes.json();
+
+                    if (records.length === 0) {
+                        alert('该行程已不存在');
+                        tripData = tripData.filter(d => d.day !== day);
+                        localStorage.setItem('tripData_cache', JSON.stringify(tripData));
+                        await refreshAll();
+                        jumpToDay(day);
+                        return;
+                    }
+
+                    const targetId = records[0]?.id;
+                    if (!targetId) {
+                        alert('找不到要删除的行程');
+                        return;
+                    }
+
+                    const res = await fetch(`${SUPABASE_URL}trip_days?id=eq.${targetId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+
+                    if (!res.ok) {
+                        const errText = await res.text();
+                        throw new Error(`HTTP ${res.status}: ${errText}`);
+                    }
+
+                    const date = getDateFromDay(day);
+                    const dateKey2 = date.toISOString().split('T')[0];
+                    const emptyData = {
+                        day: day,
+                        date: dateKey2,
+                        date_key: dateKey2,
+                        city: `Day ${day}`,
+                        country: '待定',
+                        sights: JSON.stringify(['待补充']),
+                        hotel_name: '',
+                        hotel_note: '',
+                        daily_note: '',
+                        ticket_price: '',
+                        transport_note: '',
+                        image_urls: JSON.stringify([]),
+                        hotel_price: 0,
+                        transport_price: 0,
+                        ticket_price_num: 0,
+                        food_price: 0,
+                        food_note: '',
+                        other_price: 0,
+                        other_note: '',
+                        is_outside: false
+                    };
+                    await fetch(`${SUPABASE_URL}trip_days`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(emptyData)
+                    });
+                    await refreshAll();
+                    jumpToDay(day);
+                    alert('✅ 核心行程已重置');
+                } catch (err) {
+                    console.error('删除核心行程失败:', err);
+                    alert('删除失败: ' + err.message);
+                }
+            } else {
+                alert('没有找到要删除的行程');
             }
+        }
+
+        // ================================================================
+        //  提醒功能
+        // ================================================================
+        function openAddReminderModal() {
+            document.getElementById('reminderDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('reminderContent').value = '';
+            document.getElementById('reminderModal').classList.add('active');
+        }
+
+        function closeReminderModal() {
+            document.getElementById('reminderModal').classList.remove('active');
+        }
+
+        async function saveReminder() {
+            const date = document.getElementById('reminderDate').value;
+            const content = document.getElementById('reminderContent').value.trim();
+            if (!date) { alert('请选择日期'); return; }
+            if (!content) { alert('请输入提醒内容'); return; }
+
+            const existing = getTripByDateKey(date);
+            if (existing) {
+                const newNote = existing.daily_note ? existing.daily_note + '\n' + content : content;
+                if (existing.is_outside) {
+                    await saveOutsideTrip(date, { daily_note: newNote });
+                } else {
+                    await saveToSupabase(existing.day, 'daily_note', newNote);
+                }
+            } else {
+                await saveOutsideTrip(date, {
+                    city: '📌 提醒',
+                    country: '待定',
+                    daily_note: content,
+                    sights: JSON.stringify(['📌 预约提醒'])
+                });
+            }
+
+            closeReminderModal();
+            await refreshAll();
+            jumpToDate(date);
+        }
+
+        async function deleteReminder(dateKey) {
+            if (!confirm(`确定删除 ${dateKey} 的预约/购票提醒吗？`)) return;
+            const data = getTripByDateKey(dateKey);
+            if (!data) return;
+            const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
+            let note = data.daily_note || '';
+            reminderKeywords.forEach(kw => {
+                note = note.replace(new RegExp(kw, 'g'), '');
+            });
+            note = note.replace(/\s+/g, ' ').trim();
+            if (data.is_outside) {
+                await saveOutsideTrip(dateKey, { daily_note: note });
+            } else {
+                await saveToSupabase(data.day, 'daily_note', note);
+            }
+            await refreshAll();
+            jumpToDate(dateKey);
         }
 
         // ================================================================
@@ -3305,10 +2839,10 @@
         }
 
         // ================================================================
-        //  提醒汇总
+        //  提醒列表渲染
         // ================================================================
         function updateBookSummary() {
-            const container = document.getElementById('bookSummary');
+            const container = document.getElementById('reminderList');
             const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
             const reminders = tripData.filter(d => {
                 const note = d.daily_note || '';
@@ -3319,7 +2853,7 @@
                 document.getElementById('reminderCount').textContent = '⏰ 0 提醒';
                 return;
             }
-            let html = '<div style="font-weight:500;margin-bottom:6px;color:#f9d77e;font-size:0.9rem;">⏰ 预约 & 购票提醒</div>';
+            let html = '';
             reminders.forEach(d => {
                 let displayText = d.daily_note || '';
                 reminderKeywords.forEach(kw => {
@@ -3342,25 +2876,6 @@
             });
             container.innerHTML = html;
             document.getElementById('reminderCount').textContent = `⏰ ${reminders.length} 提醒`;
-        }
-
-        async function deleteReminder(dateKey) {
-            if (!confirm(`确定删除 ${dateKey} 的预约/购票提醒吗？`)) return;
-            const data = getTripByDateKey(dateKey);
-            if (!data) return;
-            const reminderKeywords = ['预约', '提醒', '预订', '买票', '购票', '订票', '购买'];
-            let note = data.daily_note || '';
-            reminderKeywords.forEach(kw => {
-                note = note.replace(new RegExp(kw, 'g'), '');
-            });
-            note = note.replace(/\s+/g, ' ').trim();
-            if (data.is_outside) {
-                await saveOutsideTrip(dateKey, { daily_note: note });
-            } else {
-                await saveToSupabase(data.day, 'daily_note', note);
-            }
-            await refreshAll();
-            jumpToDate(dateKey);
         }
 
         // ================================================================
@@ -3388,10 +2903,10 @@
                 currentMonth = 11; }
             buildCalendar();
             const todayDay = getTodayDay();
-            if (todayDay >= 1 && todayDay <= TOTAL_DAYS) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (todayDay !== null && todayDay >= 1 && todayDay <= TOTAL_DAYS) {
                 jumpToDay(todayDay);
             } else {
-                const todayStr = today.toISOString().split('T')[0];
                 jumpToDate(todayStr);
             }
         }
@@ -3430,7 +2945,9 @@
             } else if (currentDay) {
                 jumpToDay(currentDay);
             } else {
-                jumpToDay(1);
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                jumpToDate(todayStr);
             }
             updateCostSummary();
             updateBookSummary();
@@ -3465,6 +2982,10 @@
         window.performSearch = performSearch;
         window.clearSearch = clearSearch;
         window.refreshExchangeRate = refreshExchangeRate;
+        window.toggleMonthDropdown = toggleMonthDropdown;
+        window.openAddReminderModal = openAddReminderModal;
+        window.closeReminderModal = closeReminderModal;
+        window.saveReminder = saveReminder;
 
         // ================================================================
         //  初始化
@@ -3476,21 +2997,24 @@
             setupPhotoUpload();
 
             const today = new Date();
-            currentYear = today.getFullYear();
-            currentMonth = today.getMonth();
-            if (currentYear < 2026) { currentYear = 2026;
-                currentMonth = 0; }
-            if (currentYear > 2028) { currentYear = 2028;
-                currentMonth = 11; }
-
-            buildCalendar();
-
             const todayDay = getTodayDay();
-            if (todayDay >= 1 && todayDay <= TOTAL_DAYS) {
+
+            if (todayDay !== null && todayDay >= 1 && todayDay <= TOTAL_DAYS) {
+                const date = getDateFromDay(todayDay);
+                currentYear = date.getFullYear();
+                currentMonth = date.getMonth();
+                buildCalendar();
                 jumpToDay(todayDay);
             } else {
+                currentYear = 2027;
+                currentMonth = 7;
+                buildCalendar();
                 const todayStr = today.toISOString().split('T')[0];
-                jumpToDate(todayStr);
+                if (isDateInCalendarRange(today.getFullYear(), today.getMonth(), today.getDate())) {
+                    jumpToDate(todayStr);
+                } else {
+                    jumpToDay(1);
+                }
             }
 
             updateCostSummary();
